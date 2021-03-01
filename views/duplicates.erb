@@ -1,5 +1,5 @@
 <%
-  trashcan       = Octicons::Octicon.new("trashcan").to_svg
+  trashcan       = Octicons::Octicon.new("trash").to_svg
   info           = Octicons::Octicon.new("info").to_svg
   move           = Octicons::Octicon.new("git-compare").to_svg
   images         = Image.where(duplicate: true).order(fingerprint: :asc).paginate(
