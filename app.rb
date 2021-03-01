@@ -2,13 +2,14 @@ require 'action_view'
 require 'config'
 require 'digest'
 require 'fileutils'
+require 'find'
 require 'logger'
 require 'mini_magick'
 require 'octicons'
 require 'phashion'
 require 'securerandom'
-require 'sinatra/base'
 require 'sinatra/activerecord'
+require 'sinatra/base'
 require 'sinatra/custom_logger'
 require 'streamio-ffmpeg'
 require 'will_paginate'
@@ -19,7 +20,7 @@ require_relative 'lib/bootstrap_link_renderer'
 require_relative 'lib/helpers'
 require_relative 'lib/models'
 
-class Kohinga < Sinatra::Base
+class BronkoMedia < Sinatra::Base
   include ActionView::Helpers::TextHelper
 
   register Sinatra::ActiveRecordExtension

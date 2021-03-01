@@ -1,38 +1,29 @@
-def index_files(path, extensions)
-  files_list = []
-  files = []
+def index_files_to_db(path, extensions)
+  time = Time.now
 
-  extensions.each do |extension|
-    # FNM_CASEFOLD is for case insensivity
-    files << Dir.glob("#{path}/**/*.#{extension}", File::FNM_CASEFOLD)
-  end
+  Find.find(path) do |file|
+    next unless extensions.include? File.extname(file).delete('.')
 
-  files.flatten.each do |file|
-    if Settings.movie_extentions.include? File.extname(file).delete('.')
-      files_list << {
-        file_path: file,
-        folder_path: File.dirname(file),
-        image_name: File.basename(file, '.*'),
-        md5_path: Digest::MD5.hexdigest(file),
-        is_video: true,
-        is_image: false
-      }
+    is_video = true if Settings.movie_extentions.include? File.extname(file).delete('.')
+
+    if Settings.image_extentions.include? File.extname(file).delete('.')
+      fingerprint = Phashion::Image.new(file).fingerprint
+      is_image    = true
     end
 
-    next unless Settings.image_extentions.include? File.extname(file).delete('.')
-
-    files_list << {
+    file_meta_hash = {
       file_path: file,
       folder_path: File.dirname(file),
       image_name: File.basename(file, '.*'),
       md5_path: Digest::MD5.hexdigest(file),
-      fingerprint: Phashion::Image.new(file).fingerprint,
-      is_image: true,
-      is_video: false
+      fingerprint: fingerprint || false,
+      is_video: is_video || false,
+      is_image: is_image || false
     }
+    write_file_to_db(file_meta_hash)
   end
 
-  files_list
+  logger.debug "Indexing took #{Time.now - time} seconds."
 end
 
 def index_folders(path)
@@ -50,32 +41,29 @@ def index_folders(path)
   folder_list
 end
 
-def write_files_to_db(file_hash)
-  logger.info 'writing new files to db ...'
+def write_file_to_db(file)
+  logger.debug "processing: #{file[:file_path]}"
 
-  file_hash.each do |file|
-    logger.debug "processing: #{file[:file_path]}"
-    Image.find_or_create_by(md5_path: file[:md5_path]) do |image|
-      if Settings.image_extentions.include? File.extname(file[:file_path]).delete('.')
-        duplicates = Image.where(fingerprint: file[:fingerprint])
+  Image.find_or_create_by(md5_path: file[:md5_path]) do |image|
+    if Settings.image_extentions.include? File.extname(file[:file_path]).delete('.')
+      duplicates = Image.where(fingerprint: file[:fingerprint])
 
-        if duplicates.size > 1
-          image.duplicate = true
-          duplicates.each { |dupe| image.duplicate_of = dupe.file_path }
-        else
-          image.duplicate = false
-        end
+      if duplicates.size > 1
+        image.duplicate = true
+        duplicates.each { |dupe| image.duplicate_of = dupe.file_path }
+      else
+        image.duplicate = false
       end
-
-      image.file_path    = file[:file_path]
-      image.fingerprint  = file[:fingerprint]
-      image.folder_path  = file[:folder_path]
-      image.image_name   = file[:image_name]
-      image.is_image     = file[:is_image]
-      image.is_video     = file[:is_video]
-      image.md5_path     = file[:md5_path]
-      image.save
     end
+
+    image.file_path    = file[:file_path]
+    image.fingerprint  = file[:fingerprint]
+    image.folder_path  = file[:folder_path]
+    image.image_name   = file[:image_name]
+    image.is_image     = file[:is_image]
+    image.is_video     = file[:is_video]
+    image.md5_path     = file[:md5_path]
+    image.save
   end
 end
 
@@ -199,7 +187,7 @@ def build_index(image_root, thumb_target, thumb_size, extensions)
   remove_file(thumb_target)
   remove_folder
   write_folders_to_db(index_folders(image_root))
-  write_files_to_db(index_files(image_root, extensions))
+  index_files_to_db(image_root, extensions)
   create_thumbs(thumb_target, thumb_size)
   find_duplicates
 end
