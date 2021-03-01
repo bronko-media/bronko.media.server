@@ -1,14 +1,14 @@
-# Kohinga
+# Bronko Media
 
 [![Docker Hub package][dockerhub-badge]][dockerhub-link]
 
 [dockerhub-badge]: https://img.shields.io/badge/images%20on-Docker%20Hub-blue.svg
 
-[dockerhub-link]: https://hub.docker.com/r/rwaffen/kohinga
+[dockerhub-link]: https://hub.docker.com/r/rwaffen/bronko.media
 
 ## General
 
-Kohinga is the maori word for collection.
+Bronko Media is the maori word for collection.
 
 This is an app to handle your image collection.
 It is a ruby sinatra web app bundled with bootstrap, jquery and fancybox.
@@ -31,14 +31,14 @@ It is a ruby sinatra web app bundled with bootstrap, jquery and fancybox.
 To index your images run `curl -v localhost:4567/indexer` or use the `/indexer` path from inside the app.
 The `/indexer` path will get no output at the moment, but will report when finished.
 This could take a while, depending on the size of your collection.
-You can see the progress on the console or from `docker logs kohinga -f`
+You can see the progress on the console or from `docker logs bronko.media -f`
 
 All png, jpg and jpeg files will be indexed into a sqlite3.
 They will be referenced only by their md5 hashed path.
 
 For example:
 
-    https://kohinga.example.com:4567/image/7299f8a29c06b9bfa30c412c6082e884
+    https://bronko.media:4567/image/7299f8a29c06b9bfa30c412c6082e884
 
 ## Folders
 
@@ -54,8 +54,8 @@ The folders can be configured in `config/settings.yml`. But be aware that the de
 
 There is a Dockerfile to build a container. This can be done with:
 
-    cd kohinga
-    docker build -t kohinga .
+    cd bronko.media
+    docker build -t bronko.media .
 
 ### Docker Compose
 
@@ -64,15 +64,15 @@ For docker-compose see `docker-compose.yaml` or use this example:
     ---
     version: "3.5"
     services:
-      kohinga:
-        image: rwaffen/kohinga:develop
-        container_name: kohinga
+      bronko.media:
+        image: rwaffen/bronko.media:develop
+        container_name: bronko.media
         volumes:
           # keep db outside of container
-          - /srv/data/kohinga/db:/kohinga/data/db
+          - /srv/data/bronko.media/db:/bronko.media/data/db
 
           # keep thumbnails outside of container
-          - /srv/data/kohinga/public/images:/kohinga/public/images
+          - /srv/data/bronko.media/public/images:/bronko.media/public/images
 
           # add media files read only
           - /srv/media/Images:/app/data/images:ro
