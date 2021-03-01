@@ -20,7 +20,7 @@ require_relative 'lib/bootstrap_link_renderer'
 require_relative 'lib/helpers'
 require_relative 'lib/models'
 
-class Kohinga < Sinatra::Base
+class BronkoMedia < Sinatra::Base
   include ActionView::Helpers::TextHelper
 
   register Sinatra::ActiveRecordExtension
