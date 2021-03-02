@@ -1,4 +1,4 @@
-# Bronko Media
+# bronko.media.server
 
 [![Docker Hub package][dockerhub-badge]][dockerhub-link]
 
@@ -8,7 +8,7 @@
 
 ## General
 
-Bronko Media is the maori word for collection.
+bronko.media is the maori word for collection.
 
 This is an app to handle your image collection.
 It is a ruby sinatra web app bundled with bootstrap, jquery and fancybox.
