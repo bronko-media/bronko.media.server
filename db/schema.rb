@@ -10,28 +10,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_210_120_130_715) do
-  create_table 'folders', force: :cascade do |t|
-    t.string 'md5_path'
-    t.string 'folder_path'
-    t.string 'parent_folder'
-    t.string 'sub_folders'
-    t.datetime 'created_at'
-    t.datetime 'updated_at'
+ActiveRecord::Schema.define(version: 2021_01_20_130715) do
+
+  create_table "folders", force: :cascade do |t|
+    t.string "md5_path"
+    t.string "folder_path"
+    t.string "parent_folder"
+    t.string "sub_folders"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  create_table 'images', force: :cascade do |t|
-    t.string 'md5_path'
-    t.string 'file_path'
-    t.string 'folder_path'
-    t.datetime 'created_at'
-    t.datetime 'updated_at'
-    t.string 'image_name'
-    t.boolean 'favorite', default: false
-    t.string 'fingerprint'
-    t.boolean 'duplicate', default: false
-    t.string 'duplicate_of'
-    t.boolean 'is_video'
-    t.boolean 'is_image'
+  create_table "images", force: :cascade do |t|
+    t.string "md5_path"
+    t.string "file_path"
+    t.string "folder_path"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "image_name"
+    t.boolean "favorite", default: false
+    t.string "fingerprint"
+    t.boolean "duplicate", default: false
+    t.string "duplicate_of"
+    t.boolean "is_video"
+    t.boolean "is_image"
   end
+
 end
