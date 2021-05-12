@@ -9,6 +9,7 @@
   upload         = Octicons::Octicon.new("repo-push").to_svg
   star           = Octicons::Octicon.new("star").to_svg
   star_fill      = Octicons::Octicon.new("star-fill").to_svg
+  recreate_thumb = Octicons::Octicon.new("issue-reopened").to_svg
   state          = ''
 
   unless current_folder.nil?
@@ -97,6 +98,7 @@ end %>
                 <button class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"><%= move %></button>
                 <button class="btn btn-outline-warning btn-sm mr-1" type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"><%= fav_icon %></button>
                 <button class="btn btn-outline-danger  btn-sm mr-1" type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"><%= trashcan %></button>
+                <button class="btn btn-outline-warning btn-sm mr-1" type="button" onclick="recreateThumb(this)" value="<%= image.md5_path %>"><%= recreate_thumb %></button>
             </div>
         </div>
       <% end %>
@@ -297,6 +299,11 @@ end %>
       // and assuming that your data goes in an element with the id data-table
       // $("#data-table").html(result)
     });
+    return false; // prevents the form from submitting normally
+  }
+  function recreateThumb(elem) {
+    var md5 = elem.value;
+    $.post("/image/recreate/" + md5, { }, function(result){ });
     return false; // prevents the form from submitting normally
   }
 </script>

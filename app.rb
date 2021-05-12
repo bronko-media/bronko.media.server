@@ -79,7 +79,6 @@ class BronkoMedia < Sinatra::Base
     if params[:add_folder]
       folder_path   = params['add_folder']
       folder_path   = "#{params['add_folder']}/" if folder_path[-1, 1] != '/'
-
       md5_path      = Digest::MD5.hexdigest(folder_path)
 
       # cut slash  from folder_path to get parent and than add slash to parent,
@@ -178,7 +177,6 @@ class BronkoMedia < Sinatra::Base
 
         Image.find_or_create_by(md5_path: md5_path) do |image|
           is_video = true if Settings.movie_extentions.include? File.extname(file[:filename]).delete('.')
-
           is_image = true if Settings.image_extentions.include? File.extname(file[:filename]).delete('.')
 
           image.file_path   = target
@@ -205,7 +203,6 @@ class BronkoMedia < Sinatra::Base
 
     Image.find_or_create_by(md5_path: new_md5_path) do |image_item|
       is_video = true if Settings.movie_extentions.include? File.extname(new_file_path).delete('.')
-
       is_image = true if Settings.image_extentions.include? File.extname(new_file_path).delete('.')
 
       image_item.file_path   = new_file_path
@@ -222,6 +219,11 @@ class BronkoMedia < Sinatra::Base
     redirect back
   end
 
+  post '/image/recreate/:md5' do
+    create_thumb(params[:md5], Settings.thumb_target, Settings.thumb_res)
+    redirect back
+  end
+
   get '/indexer' do
     build_index(
       Settings.originals_path,
@@ -230,10 +232,5 @@ class BronkoMedia < Sinatra::Base
       Settings.image_extentions + Settings.movie_extentions
     )
     erb :index, locals: { message: 'Index ready' }
-  end
-
-  get '/testing' do
-    duplicates = Image.find_by(fingerprint: '13153662325975432931')
-    puts duplicates.file_path
   end
 end
