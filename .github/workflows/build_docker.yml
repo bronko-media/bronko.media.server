@@ -2,20 +2,55 @@ name: Publish Docker image
 
 # Only build when there is a "github release"
 on:
-  release:
-    types: [published]
-
+  push:
+    branches:
+      - main
+      - develop
 jobs:
-  push_to_registry:
-    name: Push Docker image to Docker Hub
+  # push_to_registry:
+  #   name: Push Docker image to Docker Hub
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check out the repo
+  #       uses: actions/checkout@v2
+  #     - name: Push to Docker Hub
+  #       uses: docker/build-push-action@v1
+  #       with:
+  #         username: ${{ secrets.DOCKER_USERNAME }}
+  #         password: ${{ secrets.DOCKER_PASSWORD }}
+  #         repository: rwaffen/bronko.media.server
+  #         tag_with_ref: true
+
+  docker:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the repo
-        uses: actions/checkout@v2
-      - name: Push to Docker Hub
-        uses: docker/build-push-action@v1
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          # list of Docker images to use as base name for tags
+          images: rwaffen/bronko.media.server
+          # generate Docker tags based on the following events/attributes
+          tags: type=ref,event=branch
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: rwaffen/bronko.media.server
-          tag_with_ref: true
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
