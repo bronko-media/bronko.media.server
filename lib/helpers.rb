@@ -9,6 +9,7 @@ def index_files_to_db(path, extensions)
 
     files.each do |file|
       next unless extensions.include? File.extname(file).delete('.')
+
       file_path = "#{folder}#{file}"
 
       logger.debug "Indexing: #{file_path}"
