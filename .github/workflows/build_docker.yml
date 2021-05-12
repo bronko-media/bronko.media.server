@@ -9,6 +9,7 @@ on:
       - develop
     types:
       - completed
+  workflow_dispatch:
 
 jobs:
   docker:
