@@ -1,26 +1,36 @@
 def index_files_to_db(path, extensions)
   time = Time.now
 
-  Find.find(path) do |file|
-    next unless extensions.include? File.extname(file).delete('.')
+  logger.debug "Indexing started - #{time}"
 
-    is_video = true if Settings.movie_extentions.include? File.extname(file).delete('.')
+  Dir.glob("#{path}/**/").each do |folder|
+    logger.debug "Indexing Folder: #{folder}"
+    files = Dir.entries(folder).reject { |f| File.directory?(f) }
 
-    if Settings.image_extentions.include? File.extname(file).delete('.')
-      fingerprint = Phashion::Image.new(file).fingerprint
-      is_image    = true
+    files.each do |file|
+      next unless extensions.include? File.extname(file).delete('.')
+      file_path = "#{folder}#{file}"
+
+      logger.debug "Indexing: #{file_path}"
+      is_video = true if Settings.movie_extentions.include? File.extname(file).delete('.')
+
+      if Settings.image_extentions.include? File.extname(file).delete('.')
+        fingerprint = Phashion::Image.new(file_path).fingerprint
+        is_image    = true
+      end
+
+      file_meta_hash = {
+        file_path: file_path,
+        folder_path: folder,
+        image_name: File.basename(file, '.*'),
+        md5_path: Digest::MD5.hexdigest(file_path),
+        fingerprint: fingerprint || false,
+        is_video: is_video || false,
+        is_image: is_image || false
+      }
+
+      write_file_to_db(file_meta_hash)
     end
-
-    file_meta_hash = {
-      file_path: file,
-      folder_path: File.dirname(file),
-      image_name: File.basename(file, '.*'),
-      md5_path: Digest::MD5.hexdigest(file),
-      fingerprint: fingerprint || false,
-      is_video: is_video || false,
-      is_image: is_image || false
-    }
-    write_file_to_db(file_meta_hash)
   end
 
   logger.debug "Indexing took #{Time.now - time} seconds."
@@ -152,32 +162,43 @@ def create_thumb(md5, thumb_target, size)
 end
 
 def remove_file(thumb_target)
-  logger.info 'removing obsolete files ...'
-
   Image.all.each do |image|
     image_path = image.file_path
     thumb_path = "#{thumb_target}/#{image.md5_path}.png"
 
     next if File.file?(image_path)
 
-    logger.info "removing image from db: #{image.file_path}"
+    logger.info "Removing image from db: #{image.file_path}"
     image.destroy
 
     if File.file?(thumb_path)
-      logger.info "removing thumbnail from fs: #{thumb_path}"
+      logger.info "Removing thumbnail from fs: #{thumb_path}"
       File.delete(thumb_path)
     end
   end
 end
 
-def remove_folder
-  logger.info 'removing obsolete folders ...'
+def remove_thumb(thumb_target)
+  thumbs = Dir.entries(thumb_target).reject { |f| File.directory?(f) }
 
+  Image.all.each do |image|
+    thumb = "#{image.md5_path}.png"
+    logger.debug "Checking thumb #{thumb}"
+    thumbs.delete(thumb) if thumbs.include?(thumb)
+  end
+
+  thumbs.each do |t|
+    logger.info "Removing thumb: #{t}"
+    File.delete("#{thumb_target}/#{t}")
+  end
+end
+
+def remove_folder
   Folder.all.each do |folder|
     folder_path = folder.folder_path
 
     unless File.directory?(folder_path)
-      logger.info "removing folder from db: #{folder.folder_path}"
+      logger.info "Removing folder from db: #{folder.folder_path}"
       folder.destroy
     end
   end
@@ -186,6 +207,7 @@ end
 def build_index(image_root, thumb_target, thumb_size, extensions)
   remove_file(thumb_target)
   remove_folder
+  remove_thumb(thumb_target)
   write_folders_to_db(index_folders(image_root))
   index_files_to_db(image_root, extensions)
   create_thumbs(thumb_target, thumb_size)
