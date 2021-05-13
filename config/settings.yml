@@ -20,4 +20,4 @@ images_per_page: '30'
 col_options: col-md-3
 sort_order: DESC
 db_path: data/db/bronko.media.sqlite3
-db_options: PRAGMA case_sensitive_like = true
+#db_options: PRAGMA case_sensitive_like = true

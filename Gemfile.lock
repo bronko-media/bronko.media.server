@@ -112,6 +112,9 @@ GEM
       parser (>= 2.7.1.5)
     rubocop-rake (0.5.1)
       rubocop
+    rubocop-rspec (2.3.0)
+      rubocop (~> 1.0)
+      rubocop-ast (>= 1.1.0)
     ruby-progressbar (1.11.0)
     ruby2_keywords (0.0.2)
     sinatra (2.0.8.1)
@@ -153,6 +156,7 @@ DEPENDENCIES
   rake
   rubocop
   rubocop-rake
+  rubocop-rspec
   sinatra
   sinatra-activerecord
   sinatra-contrib
@@ -161,4 +165,4 @@ DEPENDENCIES
   will_paginate
 
 BUNDLED WITH
-   2.0.2
+   2.2.17

@@ -3,4 +3,4 @@
 
 bundle exec rake db:create
 bundle exec rake db:migrate
-bundle exec ruby index.rb
+bundle exec ruby test.rb

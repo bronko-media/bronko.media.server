@@ -18,7 +18,7 @@
     parent_folder = folder.parent_folder
     this_folder   = folder.folder_path
     images        = Image.where(
-                      folder_path: folder_root.delete_suffix('/')
+                      folder_path: folder_root
                     ).order("created_at #{Settings.sort_order}, image_name").paginate(
                       page: params[:page],
                       per_page: Settings.images_per_page

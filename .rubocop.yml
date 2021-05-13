@@ -2,6 +2,7 @@ AllCops:
   NewCops: enable
   Exclude:
     - 'db/schema.rb'
+    - 'vendor/**/*'
 Layout/SpaceBeforeBrackets:
   Enabled: true
 Lint/AmbiguousAssignment:
@@ -59,6 +60,8 @@ Metrics/MethodLength:
 Metrics/BlockLength:
   Enabled: false
 Metrics/CyclomaticComplexity:
+  Enabled: false
+Metrics/PerceivedComplexity:
   Enabled: false
 
 require: rubocop-rake

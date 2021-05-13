@@ -8,7 +8,7 @@ WORKDIR $APP_HOME
 
 ADD Gemfile $APP_HOME/
 RUN bundle install --without development test
-RUN apt-get install -y ffmpeg
+RUN apt-get install -y ffmpeg graphicsmagick
 ADD . $APP_HOME
 
 EXPOSE 4567

@@ -2,7 +2,7 @@
 version: "3.5"
 services:
   bronko.media:
-    image: rwaffen/bronko.media:develop
+    image: rwaffen/bronko.media.server:main
     container_name: bronko.media
     environment:
       - PUID=1001

@@ -2,7 +2,6 @@ require 'action_view'
 require 'config'
 require 'digest'
 require 'fileutils'
-require 'find'
 require 'logger'
 require 'mini_magick'
 require 'octicons'
@@ -27,6 +26,7 @@ class BronkoMedia < Sinatra::Base
   register WillPaginate::Sinatra
 
   Config.load_and_set_settings "#{File.dirname(__FILE__)}/config/settings.yml"
+  ActiveRecord::Base.logger = nil
 
   set :method_override, true
   set :logger, Logger.new($stdout)
