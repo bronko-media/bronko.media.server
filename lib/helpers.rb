@@ -1,10 +1,10 @@
 def index_files_to_db(path, extensions)
   time = Time.now
 
-  logger.debug "Indexing started - #{time}"
+  logger.info "Indexing started - #{time}"
 
   Dir.glob("#{path}/**/").each do |folder|
-    logger.debug "Indexing Folder: #{folder}"
+    logger.info "Indexing Folder: #{folder}"
     files = Dir.entries(folder).reject { |f| File.directory?(f) }
 
     files.each do |file|
@@ -12,7 +12,7 @@ def index_files_to_db(path, extensions)
 
       file_path = "#{folder}#{file}"
 
-      logger.debug "Indexing: #{file_path}"
+      logger.info "Indexing Image: #{file_path}"
       is_video = true if Settings.movie_extentions.include? File.extname(file).delete('.')
 
       if Settings.image_extentions.include? File.extname(file).delete('.')
@@ -34,7 +34,7 @@ def index_files_to_db(path, extensions)
     end
   end
 
-  logger.debug "Indexing took #{Time.now - time} seconds."
+  logger.info "Indexing took #{Time.now - time} seconds."
 end
 
 def index_folders(path)
@@ -53,20 +53,7 @@ def index_folders(path)
 end
 
 def write_file_to_db(file)
-  logger.debug "processing: #{file[:file_path]}"
-
   Image.find_or_create_by(md5_path: file[:md5_path]) do |image|
-    if Settings.image_extentions.include? File.extname(file[:file_path]).delete('.')
-      duplicates = Image.where(fingerprint: file[:fingerprint])
-
-      if duplicates.size > 1
-        image.duplicate = true
-        duplicates.each { |dupe| image.duplicate_of = dupe.file_path }
-      else
-        image.duplicate = false
-      end
-    end
-
     image.file_path    = file[:file_path]
     image.fingerprint  = file[:fingerprint]
     image.folder_path  = file[:folder_path]
@@ -79,11 +66,9 @@ def write_file_to_db(file)
 end
 
 def write_folders_to_db(folder_hash)
-  logger.info 'writing new folders to db ...'
+  logger.info 'Writing new Folders to DB ...'
 
   folder_hash.each do |folder_path|
-    logger.debug "processing: #{folder_path[:folder_path]}"
-
     Folder.find_or_create_by(md5_path: folder_path[:md5_path]) do |folder|
       folder.folder_path   = folder_path[:folder_path]
       folder.parent_folder = folder_path[:parent_folder]
@@ -92,6 +77,7 @@ def write_folders_to_db(folder_hash)
     end
 
     updates = Folder.find_by(md5_path: folder_path[:md5_path])
+
     if updates.sub_folders != folder_path[:sub_folders]
       updates.sub_folders = folder_path[:sub_folders]
       updates.save
@@ -113,9 +99,9 @@ def create_thumbs(thumb_target, size)
           { seek_time: 1, resolution: size[0...-1], quality: 3 },
           preserve_aspect_ratio: :hight
         )
-        logger.info "generated: #{image_path}"
+        logger.info "Generating Thumb: #{image_path}"
       rescue StandardError => e
-        logger.info "Error: #{e.message}"
+        logger.error "Error: #{e.message}"
       end
     end
 
@@ -129,9 +115,9 @@ def create_thumbs(thumb_target, size)
       convert.extent(size)
       convert << image_path # output file
       convert.call
-      logger.info "generated: #{image_path}"
+      logger.info "Generating Thumb: #{image_path}"
     rescue StandardError => e
-      logger.info "Error: #{e.message}"
+      logger.error "Error: #{e.message}"
     end
   end
 end
@@ -159,7 +145,7 @@ def create_thumb(md5, thumb_target, size)
     convert.call
   end
 
-  logger.info "generated: #{image_path}"
+  logger.info "Generating Thumb: #{image_path}"
 end
 
 def remove_file(thumb_target)
@@ -169,27 +155,28 @@ def remove_file(thumb_target)
 
     next if File.file?(image_path)
 
-    logger.info "Removing image from db: #{image.file_path}"
+    logger.info "Removing Image from DB: #{image.file_path}"
     image.destroy
 
     if File.file?(thumb_path)
-      logger.info "Removing thumbnail from fs: #{thumb_path}"
+      logger.info "Removing Thumb from FS: #{thumb_path}"
       File.delete(thumb_path)
     end
   end
 end
 
 def remove_thumb(thumb_target)
-  thumbs = Dir.entries(thumb_target).reject { |f| File.directory?(f) }
+  thumbs = Dir.entries(thumb_target).reject { |f| File.directory?(f) } if File.exist? thumb_target
+  return if thumbs.nil?
 
   Image.all.each do |image|
     thumb = "#{image.md5_path}.png"
-    logger.debug "Checking thumb #{thumb}"
+    logger.debug "Checking Thumb #{thumb}"
     thumbs.delete(thumb) if thumbs.include?(thumb)
   end
 
   thumbs.each do |t|
-    logger.info "Removing thumb: #{t}"
+    logger.info "Removing Thumb: #{t}"
     File.delete("#{thumb_target}/#{t}")
   end
 end
@@ -199,7 +186,7 @@ def remove_folder
     folder_path = folder.folder_path
 
     unless File.directory?(folder_path)
-      logger.info "Removing folder from db: #{folder.folder_path}"
+      logger.info "Removing Folder from DB: #{folder.folder_path}"
       folder.destroy
     end
   end

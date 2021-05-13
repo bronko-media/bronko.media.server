@@ -25,6 +25,8 @@ ActiveRecord::Base.establish_connection(
   options: Settings.db_options
 )
 
+ActiveRecord::Base.logger = nil
+
 time         = Time.now
 image_root   = Settings.originals_path
 extensions   = Settings.image_extentions + Settings.movie_extentions

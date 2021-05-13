@@ -26,6 +26,7 @@ class BronkoMedia < Sinatra::Base
   register WillPaginate::Sinatra
 
   Config.load_and_set_settings "#{File.dirname(__FILE__)}/config/settings.yml"
+  ActiveRecord::Base.logger = nil
 
   set :method_override, true
   set :logger, Logger.new($stdout)
