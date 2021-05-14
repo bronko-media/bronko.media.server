@@ -29,31 +29,31 @@ def move_folder(md5, new_folder_path)
 end
 
 def create_folder(add_folder)
-  if add_folder
-    folder_path   = add_folder
-    folder_path   = "#{add_folder}/" if folder_path[-1, 1] != '/'
-    md5_path      = Digest::MD5.hexdigest(folder_path)
+  folder_path   = add_folder
+  folder_path   = "#{add_folder}/" if folder_path[-1, 1] != '/'
+  md5_path      = Digest::MD5.hexdigest(folder_path)
 
-    # cut slash  from folder_path to get parent and than add slash to parent,
-    # because all pathes end with a slash
-    parent_folder = "#{File.dirname(folder_path.delete_suffix('/'))}/"
-    parent_md5    = Digest::MD5.hexdigest(parent_folder)
+  # cut slash  from folder_path to get parent and than add slash to parent,
+  # because all pathes end with a slash
+  parent_folder = "#{File.dirname(folder_path.delete_suffix('/'))}/"
+  parent_md5    = Digest::MD5.hexdigest(parent_folder)
 
-    FileUtils.mkdir_p folder_path
+  FileUtils.mkdir_p folder_path
 
-    Folder.find_or_create_by(md5_path: md5_path) do |folder|
-      folder.folder_path   = folder_path
-      folder.parent_folder = parent_folder
-      folder.sub_folders   = Dir.glob("#{folder_path}*/")
-      folder.md5_path      = md5_path
-    end
-
-    updates = Folder.find_by(md5_path: parent_md5)
-    if updates.sub_folders != Dir.glob("#{parent_folder}*/")
-      updates.sub_folders = Dir.glob("#{parent_folder}*/")
-      updates.save
-    end
+  Folder.find_or_create_by(md5_path: md5_path) do |folder|
+    folder.folder_path   = folder_path
+    folder.parent_folder = parent_folder
+    folder.sub_folders   = Dir.glob("#{folder_path}*/")
+    folder.md5_path      = md5_path
   end
+
+  # rubocop:disable Style/GuardClause
+  updates = Folder.find_by(md5_path: parent_md5)
+  if updates.sub_folders != Dir.glob("#{parent_folder}*/")
+    updates.sub_folders = Dir.glob("#{parent_folder}*/")
+    updates.save
+  end
+  # rubocop:enable Style/GuardClause
 end
 
 def delete_folder(md5)

@@ -230,6 +230,7 @@ end
 def fix_database
   Image.all.each do |image|
     next if image.folder_path[-1] == '/'
+
     image.folder_path = "#{image.folder_path}/"
     image.save
   end

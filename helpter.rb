@@ -32,7 +32,7 @@ thumb_target = Settings.thumb_target
 thumb_size   = Settings.thumb_res
 extensions   = Settings.image_extentions + Settings.movie_extentions
 
-@options = { }
+@options = {}
 
 OptionParser.new do |opts|
   opts.banner = 'Usage: helper.rb [options]'
@@ -64,7 +64,7 @@ end.parse!
 
 build_index(image_root, thumb_target, thumb_size, extensions) if @options[:index]
 remove_thumb(Settings.thumb_target) if @options[:clean_thumbs]
-remove_folder()                     if @options[:clean_folders]
+remove_folder                       if @options[:clean_folders]
 remove_file(Settings.thumb_target)  if @options[:clean_files]
-find_duplicates()                   if @options[:find_duplicates]
-fix_database()                      if @options[:fix_database]
+find_duplicates                     if @options[:find_duplicates]
+fix_database                        if @options[:fix_database]

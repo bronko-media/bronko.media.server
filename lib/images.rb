@@ -1,25 +1,23 @@
 def upload_image(files, file_target)
-  if files
-    files.each do |file|
-      target   = "#{file_target}#{file[:filename]}"
-      md5_path = Digest::MD5.hexdigest(target)
+  files.each do |file|
+    target   = "#{file_target}#{file[:filename]}"
+    md5_path = Digest::MD5.hexdigest(target)
 
-      File.open(target, 'wb') { |f| f.write file[:tempfile].read }
+    File.open(target, 'wb') { |f| f.write file[:tempfile].read }
 
-      Image.find_or_create_by(md5_path: md5_path) do |image|
-        is_video = true if Settings.movie_extentions.include? File.extname(file[:filename]).delete('.')
-        is_image = true if Settings.image_extentions.include? File.extname(file[:filename]).delete('.')
+    Image.find_or_create_by(md5_path: md5_path) do |image|
+      is_video = true if Settings.movie_extentions.include? File.extname(file[:filename]).delete('.')
+      is_image = true if Settings.image_extentions.include? File.extname(file[:filename]).delete('.')
 
-        image.file_path   = target
-        image.folder_path = file_target
-        image.image_name  = File.basename(file[:filename], '.*')
-        image.md5_path    = md5_path
-        image.is_image    = is_image
-        image.is_video    = is_video
-      end
-
-      create_thumb(md5_path, Settings.thumb_target, Settings.thumb_res)
+      image.file_path   = target
+      image.folder_path = file_target
+      image.image_name  = File.basename(file[:filename], '.*')
+      image.md5_path    = md5_path
+      image.is_image    = is_image
+      image.is_video    = is_video
     end
+
+    create_thumb(md5_path, Settings.thumb_target, Settings.thumb_res)
   end
 end
 

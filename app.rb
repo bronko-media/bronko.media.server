@@ -56,7 +56,7 @@ class BronkoMedia < Sinatra::Base
   end
 
   get '/duplicate/scan' do
-    find_duplicates()
+    find_duplicates
 
     erb :index, locals: { message: 'Duplicate Scan ready' }
   end
