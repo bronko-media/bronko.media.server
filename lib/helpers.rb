@@ -88,10 +88,12 @@ end
 def create_thumbs(thumb_target, size)
   FileUtils.mkdir_p thumb_target
   Image.all.each do |image|
+    extension  = File.extname(image.file_path).delete('.')
     image_path = "#{thumb_target}/#{image.md5_path}.png"
+
     next if File.file?(image_path)
 
-    if Settings.movie_extentions.include? File.extname(image.file_path).delete('.')
+    if Settings.movie_extentions.include?(extension)
       begin
         movie = FFMPEG::Movie.new(image.file_path)
         movie.screenshot(
@@ -105,7 +107,7 @@ def create_thumbs(thumb_target, size)
       end
     end
 
-    next unless Settings.image_extentions.include? File.extname(image.file_path).delete('.')
+    next unless Settings.image_extentions.include?(extension)
 
     begin
       convert = MiniMagick::Tool::Convert.new
