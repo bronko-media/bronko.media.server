@@ -3,11 +3,12 @@ require 'digest'
 require 'fileutils'
 require 'logger'
 require 'mini_magick'
+require 'optparse'
+require 'parallel'
 require 'phashion'
 require 'sinatra/activerecord'
 require 'streamio-ffmpeg'
 require 'yaml'
-require 'optparse'
 
 require_relative 'lib/helpers'
 require_relative 'lib/models'
@@ -22,7 +23,7 @@ end
 ActiveRecord::Base.establish_connection(
   adapter: 'sqlite3',
   database: Settings.db_path,
-  pool: 5,
+  pool: 20,
   timeout: 5000,
   options: Settings.db_options
 )

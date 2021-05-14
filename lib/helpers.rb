@@ -7,15 +7,16 @@ def index_files_to_db(path, extensions)
     logger.info "Indexing Folder: #{folder}"
     files = Dir.entries(folder).reject { |f| File.directory?(f) }
 
-    files.each do |file|
-      next unless extensions.include? File.extname(file).delete('.')
+    Parallel.each(files, in_threads: Settings.threads) do |file|
+      extension = File.extname(file).delete('.')
+      next unless extensions.include?(extension)
 
       file_path = "#{folder}#{file}"
 
       logger.info "Indexing Image: #{file_path}"
-      is_video = true if Settings.movie_extentions.include? File.extname(file).delete('.')
+      is_video = true if Settings.movie_extentions.include?(extension)
 
-      if Settings.image_extentions.include? File.extname(file).delete('.')
+      if Settings.image_extentions.include?(extension)
         fingerprint = Phashion::Image.new(file_path).fingerprint
         is_image    = true
       end
@@ -32,6 +33,7 @@ def index_files_to_db(path, extensions)
 
       write_file_to_db(file_meta_hash)
     end
+    logger.info "Indexing Image took #{Time.now - time} seconds."
   end
 
   logger.info "Indexing took #{Time.now - time} seconds."
@@ -68,7 +70,7 @@ end
 def write_folders_to_db(folder_hash)
   logger.info 'Writing new Folders to DB ...'
 
-  folder_hash.each do |folder_path|
+  Parallel.each(folder_hash, in_threads: Settings.threads) do |folder_path|
     Folder.find_or_create_by(md5_path: folder_path[:md5_path]) do |folder|
       folder.folder_path   = folder_path[:folder_path]
       folder.parent_folder = folder_path[:parent_folder]
@@ -87,7 +89,8 @@ end
 
 def create_thumbs(thumb_target, size)
   FileUtils.mkdir_p thumb_target
-  Image.all.each do |image|
+
+  Parallel.each(Image.all, in_threads: Settings.threads) do |image|
     extension  = File.extname(image.file_path).delete('.')
     image_path = "#{thumb_target}/#{image.md5_path}.png"
 
@@ -151,7 +154,7 @@ def create_thumb(md5, thumb_target, size)
 end
 
 def remove_file(thumb_target)
-  Image.all.each do |image|
+  Parallel.each(Image.all, in_threads: Settings.threads) do |image|
     image_path = image.file_path
     thumb_path = "#{thumb_target}/#{image.md5_path}.png"
 
@@ -171,20 +174,20 @@ def remove_thumb(thumb_target)
   thumbs = Dir.entries(thumb_target).reject { |f| File.directory?(f) } if File.exist? thumb_target
   return if thumbs.nil?
 
-  Image.all.each do |image|
+  Parallel.each(Image.all, in_threads: Settings.threads) do |image|
     thumb = "#{image.md5_path}.png"
     logger.debug "Checking Thumb #{thumb}"
     thumbs.delete(thumb) if thumbs.include?(thumb)
   end
 
-  thumbs.each do |t|
+  Parallel.each(thumbs, in_threads: Settings.threads) do |t|
     logger.info "Removing Thumb: #{t}"
     File.delete("#{thumb_target}/#{t}")
   end
 end
 
 def remove_folder
-  Folder.all.each do |folder|
+  Parallel.each(Folder.all, in_threads: Settings.threads) do |folder|
     folder_path = folder.folder_path
 
     unless File.directory?(folder_path)
@@ -207,30 +210,30 @@ end
 def find_duplicates
   logger.info 'finding duplicates ...'
 
-  Image.find_each do |image|
-    if image.is_image
-      if image.fingerprint.nil?
-        logger.info "genrating image fingerprint for #{image.file_path}"
-        fingerprint       = Phashion::Image.new(image.file_path).fingerprint
-        image.fingerprint = fingerprint
-      end
+  Parallel.each(Image.find_each, in_threads: Settings.threads) do |image|
+    next unless image.is_image
 
-      duplicates = Image.where(fingerprint: image.fingerprint)
-
-      if duplicates.size > 1
-        image.duplicate = true
-        duplicates.each { |dupe| image.duplicate_of = dupe.file_path }
-      else
-        image.duplicate = false
-      end
-
-      image.save
+    if image.fingerprint.nil?
+      logger.info "genrating image fingerprint for #{image.file_path}"
+      fingerprint       = Phashion::Image.new(image.file_path).fingerprint
+      image.fingerprint = fingerprint
     end
+
+    duplicates = Image.where(fingerprint: image.fingerprint)
+
+    if duplicates.size > 1
+      image.duplicate = true
+      duplicates.each { |dupe| image.duplicate_of = dupe.file_path }
+    else
+      image.duplicate = false
+    end
+
+    image.save
   end
 end
 
 def fix_database
-  Image.all.each do |image|
+  Parallel.each(Image.all, in_threads: Settings.threads) do |image|
     next if image.folder_path[-1] == '/'
 
     image.folder_path = "#{image.folder_path}/"

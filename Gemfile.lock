@@ -152,6 +152,7 @@ DEPENDENCIES
   config
   mini_magick
   octicons
+  parallel
   phashion
   rake
   rubocop
