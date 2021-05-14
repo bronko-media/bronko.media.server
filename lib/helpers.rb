@@ -5,7 +5,8 @@ def index_files_to_db(path, extensions)
 
   Dir.glob("#{path}/**/").each do |folder|
     logger.info "Indexing Folder: #{folder}"
-    files = Dir.entries(folder).reject { |f| File.directory?(f) }
+    folder_time = Time.now
+    files       = Dir.entries(folder).reject { |f| File.directory?(f) }
 
     Parallel.each(files, in_threads: Settings.threads) do |file|
       extension = File.extname(file).delete('.')
@@ -33,7 +34,7 @@ def index_files_to_db(path, extensions)
 
       write_file_to_db(file_meta_hash)
     end
-    logger.info "Indexing Image took #{Time.now - time} seconds."
+    logger.info "Indexing Folder took #{Time.now - folder_time} seconds."
   end
 
   logger.info "Indexing took #{Time.now - time} seconds."
