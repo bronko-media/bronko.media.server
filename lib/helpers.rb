@@ -12,7 +12,10 @@ def index_files_to_db(path, extensions)
       extension = File.extname(file).delete('.')
       next unless extensions.include?(extension)
 
-      file_path = "#{folder}#{file}"
+      file_path   = "#{folder}#{file}"
+      md5_path    = Digest::MD5.hexdigest(file_path)
+      db_md5_path = Image.where(md5_path: md5_path).first.md5_path
+      next if db_md5_path == md5_path
 
       logger.info "Indexing Image: #{file_path}"
       is_video = true if Settings.movie_extentions.include?(extension)
@@ -26,17 +29,16 @@ def index_files_to_db(path, extensions)
         file_path: file_path,
         folder_path: folder,
         image_name: File.basename(file, '.*'),
-        md5_path: Digest::MD5.hexdigest(file_path),
-        fingerprint: fingerprint || false,
-        is_video: is_video || false,
-        is_image: is_image || false
+        md5_path: md5_path,
+        fingerprint: fingerprint ||= false,
+        is_video: is_video ||= false,
+        is_image: is_image ||= false
       }
 
       write_file_to_db(file_meta_hash)
     end
     logger.info "Indexing Folder took #{Time.now - folder_time} seconds."
   end
-
   logger.info "Indexing took #{Time.now - time} seconds."
 end
 
@@ -57,13 +59,13 @@ end
 
 def write_file_to_db(file)
   Image.find_or_create_by(md5_path: file[:md5_path]) do |image|
-    image.file_path    = file[:file_path]
-    image.fingerprint  = file[:fingerprint]
-    image.folder_path  = file[:folder_path]
-    image.image_name   = file[:image_name]
-    image.is_image     = file[:is_image]
-    image.is_video     = file[:is_video]
-    image.md5_path     = file[:md5_path]
+    image.file_path   = file[:file_path]
+    image.fingerprint = file[:fingerprint]
+    image.folder_path = file[:folder_path]
+    image.image_name  = file[:image_name]
+    image.is_image    = file[:is_image]
+    image.is_video    = file[:is_video]
+    image.md5_path    = file[:md5_path]
     image.save
   end
 end
@@ -80,11 +82,40 @@ def write_folders_to_db(folder_hash)
     end
 
     updates = Folder.find_by(md5_path: folder_path[:md5_path])
-
     if updates.sub_folders != folder_path[:sub_folders]
       updates.sub_folders = folder_path[:sub_folders]
       updates.save
     end
+  end
+end
+
+def create_img_thumb(image, image_path, size)
+  begin
+    convert = MiniMagick::Tool::Convert.new
+    convert << image.file_path # input file
+    convert.resize(size)
+    convert.gravity('north')
+    convert.extent(size)
+    convert << image_path # output file
+    convert.call
+    logger.info "Generating Thumb: #{image_path}"
+  rescue StandardError => e
+    logger.error "Error: #{e.message}"
+  end
+end
+
+def create_vid_thumb(image, image_path, size)
+  begin
+    movie = FFMPEG::Movie.new(image.file_path)
+    movie.screenshot(
+      image_path,
+      { seek_time: 1, resolution: size[0...-1], quality: 3 },
+      preserve_aspect_ratio: :hight
+    )
+
+    logger.info "Generating Thumb: #{image_path}"
+  rescue StandardError => e
+    logger.error "Error: #{e.message}"
   end
 end
 
@@ -95,63 +126,20 @@ def create_thumbs(thumb_target, size)
     extension  = File.extname(image.file_path).delete('.')
     image_path = "#{thumb_target}/#{image.md5_path}.png"
 
-    next if File.file?(image_path)
+    next if File.exist?(image_path)
 
-    if Settings.movie_extentions.include?(extension)
-      begin
-        movie = FFMPEG::Movie.new(image.file_path)
-        movie.screenshot(
-          image_path,
-          { seek_time: 1, resolution: size[0...-1], quality: 3 },
-          preserve_aspect_ratio: :hight
-        )
-        logger.info "Generating Thumb: #{image_path}"
-      rescue StandardError => e
-        logger.error "Error: #{e.message}"
-      end
-    end
-
-    next unless Settings.image_extentions.include?(extension)
-
-    begin
-      convert = MiniMagick::Tool::Convert.new
-      convert << image.file_path # input file
-      convert.resize(size)
-      convert.gravity('north')
-      convert.extent(size)
-      convert << image_path # output file
-      convert.call
-      logger.info "Generating Thumb: #{image_path}"
-    rescue StandardError => e
-      logger.error "Error: #{e.message}"
-    end
+    create_vid_thumb(image, image_path, size) if Settings.movie_extentions.include?(extension)
+    create_img_thumb(image, image_path, size) if Settings.image_extentions.include?(extension)
   end
 end
 
 def create_thumb(md5, thumb_target, size)
   image      = Image.find_or_create_by(md5_path: md5)
   image_path = "#{thumb_target}/#{md5}.png"
+  extension  = File.extname(image.file_path).delete('.')
 
-  if Settings.movie_extentions.include? File.extname(image.file_path).delete('.')
-    movie = FFMPEG::Movie.new(image.file_path)
-    movie.screenshot(
-      image_path,
-      { seek_time: 1, resolution: size[0...-1], quality: 3 },
-      preserve_aspect_ratio: :hight
-    )
-  end
-
-  if Settings.image_extentions.include? File.extname(image.file_path).delete('.')
-    convert = MiniMagick::Tool::Convert.new
-    convert << image.file_path # input file
-    convert.resize(size)
-    convert.gravity('north')
-    convert.extent(size)
-    convert << image_path # output file
-    convert.call
-  end
-
-  logger.info "Generating Thumb: #{image_path}"
+  create_vid_thumb(image, image_path, size) if Settings.movie_extentions.include?(extension)
+  create_img_thumb(image, image_path, size) if Settings.image_extentions.include?(extension)
 end
 
 def remove_file(thumb_target)
@@ -211,11 +199,11 @@ end
 def find_duplicates
   logger.info 'finding duplicates ...'
 
-  Parallel.each(Image.find_each, in_threads: Settings.threads) do |image|
+  Parallel.each(Image.all, in_threads: Settings.threads) do |image|
     next unless image.is_image
 
     if image.fingerprint.nil?
-      logger.info "genrating image fingerprint for #{image.file_path}"
+      logger.info "generating image fingerprint for #{image.file_path}"
       fingerprint       = Phashion::Image.new(image.file_path).fingerprint
       image.fingerprint = fingerprint
     end
