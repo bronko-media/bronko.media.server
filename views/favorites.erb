@@ -23,7 +23,7 @@
       <% if image.is_image %>
           <div class="card mb-1">
             <a href="/image/<%= image.md5_path %>" data-fancybox="gallery" data-caption="<%= image.image_name %>">
-            <img src="<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
+            <img src="/<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
             </a>
             <small class="mt-1" align="center"><%= truncate(image.image_name, :length => 27) %></small>
             <div class="btn-toolbar mb-1 ml-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
@@ -38,7 +38,7 @@
       <% if image.is_video %>
         <div class="card mb-1">
           <a href="#video<%= image.md5_path %>" data-fancybox="gallery" data-caption="<%= image.image_name %>">
-          <img src="<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
+          <img src="/<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
           </a>
           <small class="mt-1" align="center"><%= truncate(image.image_name, :length => 27) %></small>
           <div class="btn-toolbar mb-1 ml-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">

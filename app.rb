@@ -37,7 +37,7 @@ class BronkoMedia < Sinatra::Base
   set :database, {
     adapter: 'sqlite3',
     database: Settings.db_path,
-    pool: 5,
+    pool: 20,
     timeout: 5000,
     options: Settings.db_options
   }

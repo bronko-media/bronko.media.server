@@ -1,5 +1,5 @@
 ---
-thumb_path: /images/thumbs
+thumb_path: images/thumbs
 originals_path: data/images
 thumb_target: public/images/thumbs
 thumb_res: 300x400^
@@ -20,5 +20,4 @@ images_per_page: '30'
 col_options: col-md-3
 sort_order: DESC
 db_path: data/db/bronko.media.sqlite3
-#db_options: PRAGMA case_sensitive_like = true
 threads: 10

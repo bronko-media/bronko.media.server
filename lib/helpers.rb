@@ -14,8 +14,6 @@ def index_files_to_db(path, extensions)
 
       file_path   = "#{folder}#{file}"
       md5_path    = Digest::MD5.hexdigest(file_path)
-      db_md5_path = Image.where(md5_path: md5_path).first.md5_path
-      next if db_md5_path == md5_path
 
       logger.info "Indexing Image: #{file_path}"
       is_video = true if Settings.movie_extentions.include?(extension)
@@ -144,17 +142,16 @@ end
 
 def remove_file(thumb_target)
   Parallel.each(Image.all, in_threads: Settings.threads) do |image|
-    image_path = image.file_path
-    thumb_path = "#{thumb_target}/#{image.md5_path}.png"
+    thumb_target_path = "#{thumb_target}/#{image.md5_path}.png"
 
-    next if File.file?(image_path)
+    next if File.file?(image.file_path)
 
     logger.info "Removing Image from DB: #{image.file_path}"
     image.destroy
 
-    if File.file?(thumb_path)
-      logger.info "Removing Thumb from FS: #{thumb_path}"
-      File.delete(thumb_path)
+    if File.file?(thumb_target_path)
+      logger.info "Removing Thumb from FS: #{thumb_target_path}"
+      File.delete(thumb_target_path)
     end
   end
 end
