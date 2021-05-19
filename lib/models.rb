@@ -1,4 +1,5 @@
 class Image < ActiveRecord::Base
+  serialize :tags, Array
 end
 
 class Folder < ActiveRecord::Base

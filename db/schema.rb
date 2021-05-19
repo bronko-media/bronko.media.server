@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_20_130715) do
+ActiveRecord::Schema.define(version: 2021_05_19_201429) do
 
   create_table "folders", force: :cascade do |t|
     t.string "md5_path"
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 2021_01_20_130715) do
     t.string "duplicate_of"
     t.boolean "is_video"
     t.boolean "is_image"
+    t.string "tags"
   end
 
 end

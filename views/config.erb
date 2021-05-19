@@ -4,7 +4,9 @@
   Settings.each do |setting|
     if setting.first.to_s.include? 'extention'
       settings_yaml[setting.first.to_s] = params[setting.first].split(',')
-    elsif setting.first.to_s.include? 'threads'
+    elsif setting.first.to_s == 'threads'
+      settings_yaml[setting.first.to_s] = params[setting.first].to_i
+    elsif setting.first.to_s == 'images_per_page'
       settings_yaml[setting.first.to_s] = params[setting.first].to_i
     else
       settings_yaml[setting.first.to_s] = params[setting.first]

@@ -222,3 +222,7 @@ def fix_database
     image.save
   end
 end
+
+def octicon(name)
+  Octicons::Octicon.new(name).to_svg
+end

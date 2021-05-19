@@ -128,6 +128,11 @@ class BronkoMedia < Sinatra::Base
     redirect back
   end
 
+  post '/image/tag/:md5' do
+    image = Image.find_by(md5_path: params[:md5])
+    image.update_attribute(:tags, params[:tags].split(','))
+  end
+
   get '/indexer' do
     build_index(
       Settings.originals_path,

@@ -16,7 +16,7 @@ movie_extentions:
 - mpeg
 - ts
 - gif
-images_per_page: '30'
+images_per_page: 30
 col_options: col-md-3
 sort_order: DESC
 db_path: data/db/bronko.media.sqlite3
