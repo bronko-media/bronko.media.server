@@ -28,9 +28,9 @@ def index_files_to_db(path, extensions)
         folder_path: folder,
         image_name: File.basename(file, '.*'),
         md5_path: md5_path,
-        fingerprint: fingerprint ||= false,
-        is_video: is_video ||= false,
-        is_image: is_image ||= false
+        fingerprint: fingerprint || false,
+        is_video: is_video || false,
+        is_image: is_image || false
       }
 
       write_file_to_db(file_meta_hash)
@@ -88,33 +88,29 @@ def write_folders_to_db(folder_hash)
 end
 
 def create_img_thumb(image, image_path, size)
-  begin
-    convert = MiniMagick::Tool::Convert.new
-    convert << image.file_path # input file
-    convert.resize(size)
-    convert.gravity('north')
-    convert.extent(size)
-    convert << image_path # output file
-    convert.call
-    logger.info "Generating Thumb: #{image_path}"
-  rescue StandardError => e
-    logger.error "Error: #{e.message}"
-  end
+  convert = MiniMagick::Tool::Convert.new
+  convert << image.file_path # input file
+  convert.resize(size)
+  convert.gravity('north')
+  convert.extent(size)
+  convert << image_path # output file
+  convert.call
+  logger.info "Generating Thumb: #{image_path}"
+rescue StandardError => e
+  logger.error "Error: #{e.message}"
 end
 
 def create_vid_thumb(image, image_path, size)
-  begin
-    movie = FFMPEG::Movie.new(image.file_path)
-    movie.screenshot(
-      image_path,
-      { seek_time: 1, resolution: size[0...-1], quality: 3 },
-      preserve_aspect_ratio: :hight
-    )
+  movie = FFMPEG::Movie.new(image.file_path)
+  movie.screenshot(
+    image_path,
+    { seek_time: 1, resolution: size[0...-1], quality: 3 },
+    preserve_aspect_ratio: :hight
+  )
 
-    logger.info "Generating Thumb: #{image_path}"
-  rescue StandardError => e
-    logger.error "Error: #{e.message}"
-  end
+  logger.info "Generating Thumb: #{image_path}"
+rescue StandardError => e
+  logger.error "Error: #{e.message}"
 end
 
 def create_thumbs(thumb_target, size)
