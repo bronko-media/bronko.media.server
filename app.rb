@@ -19,6 +19,7 @@ require 'yaml'
 require_relative 'lib/bootstrap_link_renderer'
 require_relative 'lib/helpers'
 require_relative 'lib/folders'
+require_relative 'lib/thumbs'
 require_relative 'lib/images'
 require_relative 'lib/models'
 

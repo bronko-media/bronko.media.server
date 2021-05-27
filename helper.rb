@@ -11,6 +11,9 @@ require 'streamio-ffmpeg'
 require 'yaml'
 
 require_relative 'lib/helpers'
+require_relative 'lib/folders'
+require_relative 'lib/thumbs'
+require_relative 'lib/images'
 require_relative 'lib/models'
 
 Config.load_and_set_settings("#{File.dirname(__FILE__)}/config/settings.yml")
