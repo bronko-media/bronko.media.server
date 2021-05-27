@@ -24,14 +24,14 @@ def logger
 end
 
 ActiveRecord::Base.establish_connection(
-  adapter:   Settings.db_adapter,
-  database:  Settings.db_name,
-  password:  Settings.db_password,
-  username:  Settings.db_username,
-  host:      Settings.db_host,
-  encoding:  Settings.db_ecnoding,
+  adapter: Settings.db_adapter,
+  database: Settings.db_name,
+  password: Settings.db_password,
+  username: Settings.db_username,
+  host: Settings.db_host,
+  encoding: Settings.db_ecnoding,
   collation: Settings.db_collation,
-  pool:      Settings.db_pool,
+  pool: Settings.db_pool
 )
 
 image_root   = Settings.originals_path
