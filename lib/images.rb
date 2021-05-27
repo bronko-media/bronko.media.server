@@ -97,6 +97,8 @@ def write_file_to_db(file)
     image.md5_path    = file[:md5_path]
     image.save
   end
+
+  ActiveRecord::Base.clear_active_connections!
 end
 
 def remove_file(thumb_target)
