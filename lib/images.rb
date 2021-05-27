@@ -18,6 +18,8 @@ def upload_image(files, file_target)
     end
 
     create_thumb(md5_path, Settings.thumb_target, Settings.thumb_res)
+
+    ActiveRecord::Base.clear_active_connections!
   end
 end
 
@@ -42,6 +44,7 @@ def move_image(new_file_path, md5)
   create_thumb(new_md5_path, Settings.thumb_target, Settings.thumb_res)
 
   image.destroy
+  ActiveRecord::Base.clear_active_connections!
 end
 
 def index_files_to_db(path, extensions)
@@ -56,10 +59,11 @@ def index_files_to_db(path, extensions)
 
     Parallel.each(files, in_threads: Settings.threads) do |file|
       extension = File.extname(file).delete('.')
-      next unless extensions.include?(extension)
+      file_path = "#{folder}#{file}"
+      md5_path  = Digest::MD5.hexdigest(file_path)
 
-      file_path   = "#{folder}#{file}"
-      md5_path    = Digest::MD5.hexdigest(file_path)
+      next unless extensions.include?(extension)
+      next if File.exist? "#{Settings.thumb_target}/#{md5_path}.png"
 
       logger.info "Indexing Image: #{file_path}"
       is_video = true if Settings.movie_extentions.include?(extension)
@@ -114,5 +118,7 @@ def remove_file(thumb_target)
       logger.info "Removing Thumb from FS: #{thumb_target_path}"
       File.delete(thumb_target_path)
     end
+
+    ActiveRecord::Base.clear_active_connections!
   end
 end
