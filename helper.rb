@@ -3,13 +3,17 @@ require 'digest'
 require 'fileutils'
 require 'logger'
 require 'mini_magick'
+require 'optparse'
+require 'parallel'
 require 'phashion'
 require 'sinatra/activerecord'
 require 'streamio-ffmpeg'
 require 'yaml'
-require 'optparse'
 
 require_relative 'lib/helpers'
+require_relative 'lib/folders'
+require_relative 'lib/thumbs'
+require_relative 'lib/images'
 require_relative 'lib/models'
 
 Config.load_and_set_settings("#{File.dirname(__FILE__)}/config/settings.yml")
@@ -20,11 +24,14 @@ def logger
 end
 
 ActiveRecord::Base.establish_connection(
-  adapter: 'sqlite3',
-  database: Settings.db_path,
-  pool: 5,
-  timeout: 5000,
-  options: Settings.db_options
+  adapter: Settings.db_adapter,
+  database: Settings.db_name,
+  password: Settings.db_password,
+  username: Settings.db_username,
+  host: Settings.db_host,
+  encoding: Settings.db_ecnoding,
+  collation: Settings.db_collation,
+  pool: Settings.db_pool
 )
 
 image_root   = Settings.originals_path

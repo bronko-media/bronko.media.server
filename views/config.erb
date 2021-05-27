@@ -1,68 +1,51 @@
-<% settings_yaml = YAML.load_file('config/settings.yml') %>
+<%- settings_yaml = YAML.load_file('config/settings.yml') -%>
 
-  <% unless params.empty? %>
+<%- unless params.empty?
+  Settings.each do |setting|
+    if setting.first.to_s.include? 'extention'
+      settings_yaml[setting.first.to_s] = params[setting.first].split(',')
+    elsif setting.first.to_s == 'threads'
+      settings_yaml[setting.first.to_s] = params[setting.first].to_i
+    elsif setting.first.to_s == 'images_per_page'
+      settings_yaml[setting.first.to_s] = params[setting.first].to_i
+    else
+      settings_yaml[setting.first.to_s] = params[setting.first]
+    end
+  end
+
+  File.open("config/settings.yml", "w") { |file| file.write(settings_yaml.to_yaml) }
+  Settings.reload!
+end -%>
+
+  <%- unless params.empty? -%>
   <div class="alert alert-success alert-dismissible fade show" role="alert">
     All settings have been saved!
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-  <% end %>
+  <%- end -%>
 
 <div class="row ml-1">
-  <form action="/config" method="get" >
+  <div class="col-4">
+    <form action="/config" method="get" >
 
-    <div class="input-group mb-2">
-      <div class="input-group-prepend">
-        <div class="input-group-text fixed-width">Images per Page</div>
+  <%- Settings.each do |setting| -%>
+    <div class="input-group mb-1">
+        <div class="input-group-prepend">
+          <div class="input-group-text"><%= setting.first %></div>
+        </div>
+        <%- if setting.last.is_a? Array -%>
+        <input type="text" class="form-control" name="<%= setting.first %>" value="<%= setting.last.join(',') %>" >
+        <%- else -%>
+        <input type="text" class="form-control" name="<%= setting.first %>" value="<%= setting.last %>" >
+        <%- end -%>
       </div>
-      <input type="text" class="form-control" name="images_per_page" value="<%= Settings.images_per_page %>" >
-    </div>
+  <%- end -%>
 
-    <div class="input-group mb-2">
-      <div class="input-group-prepend">
-        <div class="input-group-text fixed-width">Thumbs Path</div>
-      </div>
-      <input type="text" class="form-control" name="thumb_path" value="<%= Settings.thumb_path %>" >
-    </div>
-
-    <div class="input-group mb-2">
-      <div class="input-group-prepend">
-        <div class="input-group-text fixed-width">Thumb Resolution</div>
-      </div>
-      <input type="text" class="form-control" name="thumb_res" value="<%= Settings.thumb_res %>" >
-    </div>
-
-    <div class="input-group mb-2">
-      <div class="input-group-prepend">
-        <div class="input-group-text fixed-width">Thumbs Target</div>
-      </div>
-      <input type="text" class="form-control" name="thumb_target" value="<%= Settings.thumb_target %>" >
-    </div>
-
-    <div class="input-group mb-2">
-      <div class="input-group-prepend">
-        <div class="input-group-text fixed-width">Originals Path</div>
-      </div>
-      <input type="text" class="form-control" name="originals_path" value="<%= Settings.originals_path %>" >
-    </div>
-
-    <div class="input-group mb-2">
-      <div class="input-group-prepend">
-        <div class="input-group-text fixed-width">Collum Options</div>
-      </div>
-      <input type="text" class="form-control" name="col_options" value="<%= Settings.col_options %>" >
-    </div>
-
-    <div class="input-group mb-2">
-      <div class="input-group-prepend">
-        <div class="input-group-text fixed-width">Sort Order</div>
-      </div>
-      <input type="text" class="form-control" name="sort_order" value="<%= Settings.sort_order %>" >
-    </div>
-
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
 </div>
 
 <br>
@@ -76,18 +59,3 @@ This may take a while...
 <div class="row ml-1">
   <a class="btn btn-outline-danger" href="/duplicate/scan">Online Duplicate Scan</a>
 </div>
-
-<%
-unless params.empty?
-  settings_yaml['images_per_page'] = params['images_per_page']
-  settings_yaml['thumb_path']      = params['thumb_path']
-  settings_yaml['thumb_res']       = params['thumb_res']
-  settings_yaml['thumb_target']    = params['thumb_target']
-  settings_yaml['originals_path']  = params['originals_path']
-  settings_yaml['col_options']     = params['col_options']
-  settings_yaml['sort_order']      = params['sort_order']
-
-  File.open("config/settings.yml", "w") { |file| file.write(settings_yaml.to_yaml) }
-  Settings.reload!
-end
-%>

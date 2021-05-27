@@ -1,15 +1,11 @@
 <%
-  trashcan       = Octicons::Octicon.new("trash").to_svg
-  info           = Octicons::Octicon.new("info").to_svg
-  move           = Octicons::Octicon.new("git-compare").to_svg
-  fav_icon       = Octicons::Octicon.new("star-fill").to_svg
   images         = Image.where(favorite: true).order(image_name: :asc).paginate(
                     page: params[:page],
                     per_page: Settings.images_per_page
                   )
 %>
 <% unless images.empty? %>
-  <% unless images.count < Settings.images_per_page.to_i %>
+  <% unless images.count < Settings.images_per_page %>
   <hr />
   <%= will_paginate images, {:previous_label => '«', :next_label => '»'} %>
   <hr />
@@ -23,14 +19,14 @@
       <% if image.is_image %>
           <div class="card mb-1">
             <a href="/image/<%= image.md5_path %>" data-fancybox="gallery" data-caption="<%= image.image_name %>">
-            <img src="<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
+            <img src="/<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
             </a>
             <small class="mt-1" align="center"><%= truncate(image.image_name, :length => 27) %></small>
-            <div class="btn-toolbar mb-1 ml-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
-                <button class="btn btn-outline-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"><%= info %></button>
-                <button class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"><%= move %></button>
-                <button class="btn btn-outline-warning btn-sm mr-1" type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"><%= fav_icon %></button>
-                <button class="btn btn-outline-danger  btn-sm mr-1" type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"><%= trashcan %></button>
+            <div class="btn-toolbar mb-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
+                <button class="btn btn-outline-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"><%= octicon 'info' %></button>
+                <button class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"><%= octicon 'git-compare' %></button>
+                <button class="btn btn-outline-warning btn-sm mr-1" type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"><%= octicon 'star-fill' %></button>
+                <button class="btn btn-outline-danger  btn-sm mr-1" type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"><%= octicon 'trash' %></button>
             </div>
         </div>
       <% end %>
@@ -38,14 +34,14 @@
       <% if image.is_video %>
         <div class="card mb-1">
           <a href="#video<%= image.md5_path %>" data-fancybox="gallery" data-caption="<%= image.image_name %>">
-          <img src="<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
+          <img src="/<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
           </a>
           <small class="mt-1" align="center"><%= truncate(image.image_name, :length => 27) %></small>
-          <div class="btn-toolbar mb-1 ml-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
-              <button class="btn btn-outline-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"><%= info %></button>
-              <button class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"><%= move %></button>
-              <button class="btn btn-outline-warning btn-sm mr-1" type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"><%= fav_icon %></button>
-              <button class="btn btn-outline-danger  btn-sm mr-1" type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"><%= trashcan %></button>
+          <div class="btn-toolbar mb-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
+              <button class="btn btn-outline-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"><%= octicon 'info' %></button>
+              <button class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"><%= octicon 'git-compare' %></button>
+              <button class="btn btn-outline-warning btn-sm mr-1" type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"><%= octicon 'star-fill' %></button>
+              <button class="btn btn-outline-danger  btn-sm mr-1" type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"><%= octicon 'trash' %></button>
           </div>
 
           <video controls id="video<%= image.md5_path %>" style="display:none;">
@@ -126,7 +122,7 @@
 
     <% end %>
 
-  <% unless images.count < Settings.images_per_page.to_i %>
+  <% unless images.count < Settings.images_per_page %>
   <hr />
   <%= will_paginate images, {:previous_label => '«', :next_label => '»', :inner_window => 0, :outer_window => 0} %>
   <% end %>

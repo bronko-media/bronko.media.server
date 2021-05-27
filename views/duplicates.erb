@@ -1,14 +1,11 @@
 <%
-  trashcan       = Octicons::Octicon.new("trash").to_svg
-  info           = Octicons::Octicon.new("info").to_svg
-  move           = Octicons::Octicon.new("git-compare").to_svg
   images         = Image.where(duplicate: true).order(fingerprint: :asc).paginate(
                       page: params[:page],
                       per_page: Settings.images_per_page
                    )
 %>
 <% unless images.empty? %>
-  <% unless images.count < Settings.images_per_page.to_i %>
+  <% unless images.count < Settings.images_per_page %>
   <hr />
   <%= will_paginate images, {:previous_label => '«', :next_label => '»'} %>
   <hr />
@@ -19,14 +16,14 @@
     <% short_md5 = truncate(image.md5_path, :length => 8, :omission => '') %>
       <div class="<%= Settings.col_options %>">
           <div class="card mb-1">
-            <img src="<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
+            <img src="/<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
             <small class="mt-1" align="center"><%= truncate(image.image_name, :length => 27) %></small>
             <small class="mt-1" align="center"><%= image.created_at %></small>
             <small class="mt-1" align="center"><%= image.folder_path %></small>
-            <div class="btn-toolbar mb-1 ml-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
-                <a class="btn btn-outline-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"><%= info %></a>
-                <a class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"><%= move %></a>
-                <a class="btn btn-outline-danger  btn-sm mr-1" type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"><%= trashcan %></a>
+            <div class="btn-toolbar mb-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
+                <a class="btn btn-outline-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"><%= octicon 'info' %></a>
+                <a class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"><%= octicon 'git-compare' %></a>
+                <a class="btn btn-outline-danger  btn-sm mr-1" type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"><%= octicon 'trash' %></a>
             </div>
         </div>
       </div>
@@ -103,7 +100,7 @@
     <% end %>
   </div>
 
-  <% unless images.count < Settings.images_per_page.to_i %>
+  <% unless images.count < Settings.images_per_page %>
   <hr />
   <%= will_paginate images, {:previous_label => '«', :next_label => '»', :inner_window => 0, :outer_window => 0} %>
   <% end %>

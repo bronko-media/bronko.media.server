@@ -70,3 +70,52 @@ def delete_folder(md5)
 
   folder.destroy
 end
+
+def remove_folder
+  Parallel.each(Folder.all, in_threads: Settings.threads) do |folder|
+    folder_path = folder.folder_path
+
+    unless File.directory?(folder_path)
+      logger.info "Removing Folder from DB: #{folder.folder_path}"
+      folder.destroy
+    end
+  end
+end
+
+def index_folders(path)
+  folder_list = []
+
+  Dir.glob("#{path}/**/").each do |folder|
+    folder_list << {
+      md5_path: Digest::MD5.hexdigest(folder),
+      folder_path: folder,
+      parent_folder: "#{File.dirname(folder)}/",
+      sub_folders: Dir.glob("#{folder}*/")
+    }
+  end
+
+  folder_list
+end
+
+def write_folders_to_db(folder_hash)
+  logger.info 'Writing new Folders to DB ...'
+
+  Parallel.each(folder_hash, in_threads: Settings.threads) do |folder_path|
+    logger.info "Indexing Folder: #{folder_path[:folder_path]}"
+
+    Folder.find_or_create_by(md5_path: folder_path[:md5_path]) do |folder|
+      folder.folder_path   = folder_path[:folder_path]
+      folder.parent_folder = folder_path[:parent_folder]
+      folder.sub_folders   = folder_path[:sub_folders]
+      folder.md5_path      = folder_path[:md5_path]
+    end
+
+    updates = Folder.find_by(md5_path: folder_path[:md5_path])
+    if updates.sub_folders != folder_path[:sub_folders]
+      updates.sub_folders = folder_path[:sub_folders]
+      updates.save
+    end
+
+    ActiveRecord::Base.clear_active_connections!
+  end
+end

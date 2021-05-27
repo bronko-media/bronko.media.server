@@ -5,6 +5,7 @@ require 'fileutils'
 require 'logger'
 require 'mini_magick'
 require 'octicons'
+require 'parallel'
 require 'phashion'
 require 'securerandom'
 require 'sinatra/activerecord'
@@ -18,6 +19,7 @@ require 'yaml'
 require_relative 'lib/bootstrap_link_renderer'
 require_relative 'lib/helpers'
 require_relative 'lib/folders'
+require_relative 'lib/thumbs'
 require_relative 'lib/images'
 require_relative 'lib/models'
 
@@ -34,11 +36,14 @@ class BronkoMedia < Sinatra::Base
   set :logger, Logger.new($stdout)
   set :session_secret, SecureRandom.uuid
   set :database, {
-    adapter: 'sqlite3',
-    database: Settings.db_path,
-    pool: 5,
-    timeout: 5000,
-    options: Settings.db_options
+    adapter: Settings.db_adapter,
+    database: Settings.db_name,
+    password: Settings.db_password,
+    username: Settings.db_username,
+    host: Settings.db_host,
+    encoding: Settings.db_ecnoding,
+    collation: Settings.db_collation,
+    pool: Settings.db_pool
   }
 
   enable :sessions
@@ -125,6 +130,11 @@ class BronkoMedia < Sinatra::Base
     create_thumb(params[:md5], Settings.thumb_target, Settings.thumb_res)
 
     redirect back
+  end
+
+  post '/image/tag/:md5' do
+    image = Image.find_by(md5_path: params[:md5])
+    image.update_attribute(:tags, params[:tags].split(','))
   end
 
   get '/indexer' do

@@ -1,15 +1,5 @@
 <%
   current_folder = Folder.where(folder_path: folder_root).first
-  trashcan       = Octicons::Octicon.new("trash").to_svg
-  arrow_up       = Octicons::Octicon.new("arrow-up").to_svg
-  versions       = Octicons::Octicon.new("versions").to_svg
-  plus           = Octicons::Octicon.new("plus").to_svg
-  info           = Octicons::Octicon.new("info").to_svg
-  move           = Octicons::Octicon.new("git-compare").to_svg
-  upload         = Octicons::Octicon.new("repo-push").to_svg
-  star           = Octicons::Octicon.new("star").to_svg
-  star_fill      = Octicons::Octicon.new("star-fill").to_svg
-  recreate_thumb = Octicons::Octicon.new("issue-reopened").to_svg
   state          = ''
 
   unless current_folder.nil?
@@ -32,7 +22,7 @@
       <% breadcrumbs.each_with_index do |breadcrump, i| %>
         <% if i == 0 %>
         <li class="breadcrumb-item">
-          <a href="/folders"><%= versions %></a>
+          <a href="/folders"><%= octicon 'versions' %></a>
         </li>
       <% elsif i == 1 %>
       <% else %>
@@ -49,19 +39,19 @@
 <% if folder_root == "#{Settings.originals_path}/"
   state = 'disabled'
 end %>
-  <a class="btn btn-outline-primary btn-sm mr-1 mb-1 <%= state %>" href="/folders/<%= parent_folder %>/"><%= arrow_up %></a>
+  <a class="btn btn-outline-primary btn-sm mr-1 mb-1 <%= state %>" href="/folders/<%= parent_folder %>/"><%= octicon 'arrow-up' %></a>
 <% entry_point.sort.each do |entry| %>
   <a class="btn btn-outline-primary btn-sm mr-1 mb-1" href="/folders/<%= entry %>"><%= entry.split('/').last %></a>
 <% end %>
-  <button class="btn btn-outline-secondary btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderPlusModal"><%= plus %></button>
-  <button class="btn btn-outline-primary btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderUploadModal"><%= upload %></button>
-  <button class="btn btn-outline-info btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderMoveModal"><%= move %></button>
-  <button class="btn btn-outline-danger btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderDeleteModal"><%= trashcan %></button>
+  <button class="btn btn-outline-secondary btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderPlusModal"><%= octicon "plus" %></button>
+  <button class="btn btn-outline-primary btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderUploadModal"><%= octicon 'repo-push' %></button>
+  <button class="btn btn-outline-info btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderMoveModal"><%= octicon 'git-compare' %></button>
+  <button class="btn btn-outline-danger btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderDeleteModal"><%= octicon 'trash' %></button>
 </div>
 
   <% unless images.empty? %>
 
-  <% unless images.count < Settings.images_per_page.to_i %>
+  <% unless images.count < Settings.images_per_page %>
   <hr />
   <%= will_paginate images, {:previous_label => '«', :next_label => '»', :inner_window => 0, :outer_window => 0} %>
   <hr />
@@ -78,9 +68,9 @@ end %>
     end
 
     if image.favorite
-      fav_icon = star_fill
+      fav_icon = octicon 'star-fill'
     else
-      fav_icon = star
+      fav_icon = octicon 'star'
     end
     %>
 
@@ -90,15 +80,16 @@ end %>
       <% if image.is_image %>
           <div class="card mb-1 <%= duplicate_color %>">
             <a href="/image/<%= image.md5_path %>" data-fancybox="gallery" data-caption="<%= image.image_name %>">
-            <img src="<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
+            <img src="/<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
             </a>
             <small class="mt-1" align="center"><%= truncate(image.image_name, :length => 27) %></small>
-            <div class="btn-toolbar mb-1 ml-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
-                <button class="btn btn-outline-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"><%= info %></button>
-                <button class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"><%= move %></button>
+            <div class="btn-toolbar mb-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
+                <button class="btn btn-outline-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"><%= octicon 'info' %></button>
+                <button class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"><%= octicon 'git-compare' %></button>
+                <button class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Tag<%= short_md5 %>Modal"><%= octicon 'hash' %></button>
                 <button class="btn btn-outline-warning btn-sm mr-1" type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"><%= fav_icon %></button>
-                <button class="btn btn-outline-danger  btn-sm mr-1" type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"><%= trashcan %></button>
-                <button class="btn btn-outline-warning btn-sm mr-1" type="button" onclick="recreateThumb(this)" value="<%= image.md5_path %>"><%= recreate_thumb %></button>
+                <button class="btn btn-outline-danger  btn-sm mr-1" type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"><%= octicon 'trash' %></button>
+                <button class="btn btn-outline-warning btn-sm mr-1" type="button" onclick="recreateThumb(this)" value="<%= image.md5_path %>"><%= octicon 'issue-reopened' %></button>
             </div>
         </div>
       <% end %>
@@ -106,14 +97,14 @@ end %>
       <% if image.is_video %>
         <div class="card mb-1 <%= duplicate_color %>">
           <a href="#video<%= image.md5_path %>" data-fancybox="gallery" data-caption="<%= image.image_name %>">
-          <img src="<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
+          <img src="/<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
           </a>
           <small class="mt-1" align="center"><%= truncate(image.image_name, :length => 27) %></small>
           <div class="btn-toolbar mb-1 ml-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
-              <button class="btn btn-outline-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"><%= info %></button>
-              <button class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"><%= move %></button>
+              <button class="btn btn-outline-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"><%= octicon 'info' %></button>
+              <button class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"><%= octicon 'git-compare' %></button>
               <button class="btn btn-outline-warning btn-sm mr-1" type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"><%= fav_icon %></button>
-              <button class="btn btn-outline-danger  btn-sm mr-1" type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"><%= trashcan %></button>
+              <button class="btn btn-outline-danger  btn-sm mr-1" type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"><%= octicon 'trash' %></button>
           </div>
 
           <video controls id="video<%= image.md5_path %>" style="display:none;">
@@ -170,6 +161,7 @@ end %>
           </div>
         </div>
       </div>
+
       <!-- Modal -->
       <div class="modal fade" id="Move<%= short_md5 %>Modal" tabindex="-1" role="dialog" aria-labelledby="Move<%= short_md5 %>ModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -187,6 +179,26 @@ end %>
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
               </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal -->
+      <div class="modal fade" id="Tag<%= short_md5 %>Modal" tabindex="-1" role="dialog" aria-labelledby="Tag<%= short_md5 %>ModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="Tag<%= short_md5 %>ModalLabel">Tag Image</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="input-group mb-2">
+                <input type="text" id="Tag<%= image.md5_path %>Input" class="form-control">
+              </div>
+              <button type="submit "class="btn btn-primary" onclick="addTags(this)" value="<%= image.md5_path %>">Submit</button>
             </div>
           </div>
         </div>
@@ -285,7 +297,7 @@ end %>
     </div>
   </div>
 
-  <% unless images.count < Settings.images_per_page.to_i %>
+  <% unless images.count < Settings.images_per_page %>
   <hr />
   <%= will_paginate images, {:previous_label => '«', :next_label => '»', :inner_window => 0, :outer_window => 0} %>
   <% end %>
@@ -294,13 +306,17 @@ end %>
 <script type="text/javascript">
   function addFavorite(elem) {
     var md5 = elem.value;
-    $.post("/favorite/" + md5, { favorite: true }, function(result){
-      // assuming result is a string of the updated data in html
-      // and assuming that your data goes in an element with the id data-table
-      // $("#data-table").html(result)
-    });
+    $.post("/favorite/" + md5, { favorite: true }, function(result){ });
     return false; // prevents the form from submitting normally
   }
+
+  function addTags(elem) {
+    var md5 = elem.value;
+    var tags = document.getElementById("Tag" + md5 + "Input").value;
+    $.post("/image/tag/" + md5, { tags: tags }, function(result){ });
+    return true; // prevents the form from submitting normally
+  }
+
   function recreateThumb(elem) {
     var md5 = elem.value;
     $.post("/image/recreate/" + md5, { }, function(result){ });
