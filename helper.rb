@@ -69,7 +69,7 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-build_index(image_root, thumb_target, thumb_size, extensions) if @options[:index]
+build_index(image_root, thumb_target, extensions) if @options[:index]
 remove_thumb(Settings.thumb_target) if @options[:clean_thumbs]
 remove_folder                       if @options[:clean_folders]
 remove_file(Settings.thumb_target)  if @options[:clean_files]
