@@ -115,6 +115,5 @@ def write_folders_to_db(folder_hash)
       updates.sub_folders = folder_path[:sub_folders]
       updates.save
     end
-
   end
 end
