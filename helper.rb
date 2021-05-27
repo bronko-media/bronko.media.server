@@ -36,7 +36,6 @@ ActiveRecord::Base.establish_connection(
 
 image_root   = Settings.originals_path
 thumb_target = Settings.thumb_target
-thumb_size   = Settings.thumb_res
 extensions   = Settings.image_extentions + Settings.movie_extentions
 
 @options = {}
