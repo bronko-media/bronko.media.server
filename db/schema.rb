@@ -10,21 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_19_201429) do
+ActiveRecord::Schema.define(version: 2021_05_27_182147) do
 
   create_table "folders", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
     t.string "md5_path"
-    t.string "folder_path"
-    t.string "parent_folder"
-    t.string "sub_folders"
+    t.text "folder_path"
+    t.text "parent_folder"
+    t.text "sub_folders"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "images", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
     t.string "md5_path"
-    t.string "file_path"
-    t.string "folder_path"
+    t.text "file_path"
+    t.text "folder_path"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "image_name"
@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 2021_05_19_201429) do
     t.string "duplicate_of"
     t.boolean "is_video"
     t.boolean "is_image"
-    t.string "tags"
+    t.text "tags"
   end
 
 end
