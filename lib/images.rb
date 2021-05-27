@@ -49,6 +49,7 @@ end
 
 def index_files_to_db(path, extensions)
   time = Time.now
+  FileUtils.mkdir_p Settings.thumb_target
 
   logger.info "Indexing started - #{time}"
 
@@ -69,8 +70,13 @@ def index_files_to_db(path, extensions)
       is_video = true if Settings.movie_extentions.include?(extension)
 
       if Settings.image_extentions.include?(extension)
-        fingerprint = Phashion::Image.new(file_path).fingerprint
-        is_image    = true
+        begin
+          fingerprint = Phashion::Image.new(file_path).fingerprint
+        rescue StandardError => e
+          logger.error "Error: #{e.message}"
+        end
+
+        is_image = true
       end
 
       file_meta_hash = {
@@ -84,6 +90,14 @@ def index_files_to_db(path, extensions)
       }
 
       write_file_to_db(file_meta_hash)
+
+      if Settings.movie_extentions.include?(extension)
+        create_vid_thumb(file_path, "#{Settings.thumb_target}/#{md5_path}.png", Settings.thumb_res)
+      end
+
+      if Settings.image_extentions.include?(extension)
+        create_img_thumb(file_path, "#{Settings.thumb_target}/#{md5_path}.png", Settings.thumb_res)
+      end
     end
     logger.info "Indexing Images from Folder took: #{Time.now - folder_time} seconds."
   end

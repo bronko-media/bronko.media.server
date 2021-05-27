@@ -1,41 +1,27 @@
-def create_img_thumb(image, image_path, size)
+def create_img_thumb(input_path, output_path, size)
   convert = MiniMagick::Tool::Convert.new
-  convert << image.file_path # input file
+  convert << input_path
   convert.resize(size)
   convert.gravity('north')
   convert.extent(size)
-  convert << image_path # output file
+  convert << output_path
   convert.call
-  logger.info "Generating Thumb: #{image_path}"
+  logger.info "Generating Thumb: #{output_path}"
 rescue StandardError => e
   logger.error "Error: #{e.message}"
 end
 
-def create_vid_thumb(image, image_path, size)
-  movie = FFMPEG::Movie.new(image.file_path)
+def create_vid_thumb(input_path, output_path, size)
+  movie = FFMPEG::Movie.new(input_path)
   movie.screenshot(
-    image_path,
+    output_path,
     { seek_time: 1, resolution: size[0...-1], quality: 3 },
     preserve_aspect_ratio: :hight
   )
 
-  logger.info "Generating Thumb: #{image_path}"
+  logger.info "Generating Thumb: #{output_path}"
 rescue StandardError => e
   logger.error "Error: #{e.message}"
-end
-
-def create_thumbs(thumb_target, size)
-  FileUtils.mkdir_p thumb_target
-
-  Parallel.each(Image.all, in_threads: Settings.threads) do |image|
-    extension  = File.extname(image.file_path).delete('.')
-    image_path = "#{thumb_target}/#{image.md5_path}.png"
-
-    next if File.exist?(image_path)
-
-    create_vid_thumb(image, image_path, size) if Settings.movie_extentions.include?(extension)
-    create_img_thumb(image, image_path, size) if Settings.image_extentions.include?(extension)
-  end
 end
 
 def create_thumb(md5, thumb_target, size)
