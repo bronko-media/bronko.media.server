@@ -24,11 +24,14 @@ def logger
 end
 
 ActiveRecord::Base.establish_connection(
-  adapter: 'sqlite3',
-  database: Settings.db_path,
-  pool: 20,
-  timeout: 5000,
-  options: Settings.db_options
+  adapter:   Settings.db_adapter,
+  database:  Settings.db_name,
+  password:  Settings.db_password,
+  username:  Settings.db_username,
+  host:      Settings.db_host,
+  encoding:  Settings.db_ecnoding,
+  collation: Settings.db_collation,
+  pool:      Settings.db_pool,
 )
 
 image_root   = Settings.originals_path

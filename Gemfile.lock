@@ -71,10 +71,10 @@ GEM
     multi_json (1.15.0)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
-    nokogiri (1.11.4-x86_64-darwin)
+    mysql2 (0.5.3)
+    nokogiri (1.11.6-x86_64-darwin)
       racc (~> 1.4)
-    octicons (14.1.0)
-      nokogiri (>= 1.6.3.1)
+    octicons (14.2.0)
     parallel (1.20.1)
     parser (3.0.1.1)
       ast (~> 2.4.1)
@@ -101,7 +101,7 @@ GEM
       rubocop-ast (>= 1.5.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.5.0)
+    rubocop-ast (1.6.0)
       parser (>= 3.0.1.1)
     rubocop-rake (0.5.1)
       rubocop
@@ -142,6 +142,7 @@ DEPENDENCIES
   activerecord
   config
   mini_magick
+  mysql2
   octicons
   parallel
   phashion

@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2021_05_19_201429) do
 
-  create_table "folders", force: :cascade do |t|
+  create_table "folders", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
     t.string "md5_path"
     t.string "folder_path"
     t.string "parent_folder"
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 2021_05_19_201429) do
     t.datetime "updated_at"
   end
 
-  create_table "images", force: :cascade do |t|
+  create_table "images", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
     t.string "md5_path"
     t.string "file_path"
     t.string "folder_path"

@@ -19,5 +19,12 @@ movie_extentions:
 images_per_page: 30
 col_options: col-md-3
 sort_order: DESC
-db_path: data/db/bronko.media.sqlite3
 threads: 10
+db_adapter: mysql2
+db_name: BronkoMediaServer
+db_username: bronko
+db_password: password
+db_host: localhost
+db_ecnoding: utf8mb4
+db_collation: utf8mb4_bin
+db_pool: '100'
