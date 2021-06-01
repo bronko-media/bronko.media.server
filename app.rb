@@ -30,7 +30,6 @@ class BronkoMedia < Sinatra::Base
   register WillPaginate::Sinatra
 
   Config.load_and_set_settings "#{File.dirname(__FILE__)}/config/settings.yml"
-  # ActiveRecord::Base.logger = nil
 
   set :method_override, true
   set :logger, Logger.new($stdout)
@@ -126,13 +125,19 @@ class BronkoMedia < Sinatra::Base
     redirect back
   end
 
-  post '/image/recreate/:md5' do
+  post '/thumb/recreate/:md5' do
+    File.delete("#{Settings.thumb_target}/#{params[:md5]}.png")
     create_thumb(params[:md5], Settings.thumb_target, Settings.thumb_res)
   end
 
   post '/image/tag/:md5' do
+    tags  = params[:tags].split(',')
+    tags.each { |tag| Tag.find_or_create_by(name: tag) }
+
     image = Image.find_by(md5_path: params[:md5])
-    image.update_attribute(:tags, params[:tags].split(','))
+    image.update_attribute(:tags, tags)
+
+    redirect back
   end
 
   get '/indexer' do

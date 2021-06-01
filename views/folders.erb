@@ -196,10 +196,12 @@ end %>
               </button>
             </div>
             <div class="modal-body">
-              <div class="input-group mb-2">
-                <input type="text" id="Tag<%= image.md5_path %>Input" class="form-control">
-              </div>
-              <button id="closemodal" type="submit "class="btn btn-primary" data-dismiss="modal" onclick="addTags(this)" value="<%= image.md5_path %>">Submit</button>
+              <form action="/image/tag/<%= image.md5_path %>" method="post" >
+                <div class="input-group mb-2">
+                  <input type="text" class="form-control" name="tags" value="<%= image.tags.join(',') %>" >
+                </div>
+                <button type="submit "class="btn btn-primary">Submit</button>
+              </form>
             </div>
           </div>
         </div>
@@ -311,15 +313,9 @@ end %>
     return false; // prevents the form from submitting normally
   }
 
-  function addTags(elem) {
-    var md5 = elem.value;
-    var tags = document.getElementById("Tag" + md5 + "Input").value;
-    $.post("/image/tag/" + md5, { tags: tags }, function(result){ });
-  }
-
   function recreateThumb(elem) {
     var md5 = elem.value;
-    $.post("/image/recreate/" + md5, { }, function(result){ });
+    $.post("/thumb/recreate/" + md5, { }, function(result){ });
     return false; // prevents the form from submitting normally
   }
 </script>
