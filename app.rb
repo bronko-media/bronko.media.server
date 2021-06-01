@@ -141,7 +141,6 @@ class BronkoMedia < Sinatra::Base
     build_index(
       Settings.originals_path,
       Settings.thumb_target,
-      Settings.thumb_res,
       Settings.image_extentions + Settings.movie_extentions
     )
 
