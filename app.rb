@@ -130,6 +130,10 @@ class BronkoMedia < Sinatra::Base
     create_thumb(params[:md5], Settings.thumb_target, Settings.thumb_res)
   end
 
+  get '/tags' do
+    erb :tags
+  end
+
   post '/image/tag/:md5' do
     tags  = params[:tags].split(',')
     tags.each { |tag| Tag.find_or_create_by(name: tag) }
