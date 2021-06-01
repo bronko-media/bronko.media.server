@@ -8,8 +8,8 @@ require 'octicons'
 require 'parallel'
 require 'phashion'
 require 'securerandom'
-require 'sinatra/activerecord'
 require 'sinatra/base'
+require 'sinatra/activerecord'
 require 'sinatra/custom_logger'
 require 'streamio-ffmpeg'
 require 'will_paginate'
@@ -128,8 +128,6 @@ class BronkoMedia < Sinatra::Base
 
   post '/image/recreate/:md5' do
     create_thumb(params[:md5], Settings.thumb_target, Settings.thumb_res)
-
-    redirect back
   end
 
   post '/image/tag/:md5' do

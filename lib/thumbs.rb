@@ -33,7 +33,7 @@ def create_thumb(md5, thumb_target, size)
   create_img_thumb(image.file_path, image_path, size) if Settings.image_extentions.include?(extension)
 end
 
-def remove_thumb(thumb_target)
+def remove_thumbs(thumb_target)
   thumbs = Dir.entries(thumb_target).reject { |f| File.directory?(f) } if File.exist? thumb_target
   return if thumbs.nil?
 

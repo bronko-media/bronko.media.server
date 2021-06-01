@@ -137,6 +137,7 @@ end %>
               Video?: <small><%= image.is_video %></small><br>
               Created: <small><%= image.created_at %></small><br>
               Updated: <small><%= image.updated_at %></small><br>
+              Tags: <small><%= image.tags %></small><br>
             </div>
           </div>
         </div>
@@ -198,7 +199,7 @@ end %>
               <div class="input-group mb-2">
                 <input type="text" id="Tag<%= image.md5_path %>Input" class="form-control">
               </div>
-              <button type="submit "class="btn btn-primary" onclick="addTags(this)" value="<%= image.md5_path %>">Submit</button>
+              <button id="closemodal" type="submit "class="btn btn-primary" data-dismiss="modal" onclick="addTags(this)" value="<%= image.md5_path %>">Submit</button>
             </div>
           </div>
         </div>
@@ -314,7 +315,6 @@ end %>
     var md5 = elem.value;
     var tags = document.getElementById("Tag" + md5 + "Input").value;
     $.post("/image/tag/" + md5, { tags: tags }, function(result){ });
-    return true; // prevents the form from submitting normally
   }
 
   function recreateThumb(elem) {
