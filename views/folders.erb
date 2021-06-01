@@ -27,7 +27,7 @@
       <% elsif i == 1 %>
       <% else %>
         <li class="breadcrumb-item">
-          <a href="/folders/<%= breadcrumbs.take(i).join('/') %>/<%= breadcrump %>/"><%= breadcrump %></a>
+          <a href="/folders/<%= ERB::Util.url_encode breadcrumbs.take(i).join('/') %>/<%= ERB::Util.url_encode breadcrump %>/"><%= breadcrump %></a>
         </li>
       <% end %>
     <% end %>
@@ -41,7 +41,7 @@
 end %>
   <a class="btn btn-outline-primary btn-sm mr-1 mb-1 <%= state %>" href="/folders/<%= parent_folder %>/"><%= octicon 'arrow-up' %></a>
 <% entry_point.sort.each do |entry| %>
-  <a class="btn btn-outline-primary btn-sm mr-1 mb-1" href="/folders/<%= entry %>"><%= entry.split('/').last %></a>
+  <a class="btn btn-outline-primary btn-sm mr-1 mb-1" href="/folders/<%= ERB::Util.url_encode entry %>"><%= entry.split('/').last %></a>
 <% end %>
   <button class="btn btn-outline-secondary btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderPlusModal"><%= octicon "plus" %></button>
   <button class="btn btn-outline-primary btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderUploadModal"><%= octicon 'repo-push' %></button>
