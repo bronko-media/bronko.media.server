@@ -126,7 +126,11 @@ class BronkoMedia < Sinatra::Base
   end
 
   post '/thumb/recreate/:md5' do
-    File.delete("#{Settings.thumb_target}/#{params[:md5]}.png")
+    begin
+      File.delete("#{Settings.thumb_target}/#{params[:md5]}.png")
+    rescue StandardError => e
+      logger.error "Error: #{e.message}"
+    end
     create_thumb(params[:md5], Settings.thumb_target, Settings.thumb_res)
   end
 
