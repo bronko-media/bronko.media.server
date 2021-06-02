@@ -1,6 +1,10 @@
 def create_img_thumb(input_path, output_path, size)
   convert = MiniMagick::Tool::Convert.new
-  convert << input_path
+  if File.extname(input_path).delete('.').match /gif/
+    convert << "#{input_path}[0]"
+  else
+    convert << input_path
+  end
   convert.resize(size)
   convert.gravity('north')
   convert.extent(size)
@@ -29,8 +33,10 @@ def create_thumb(md5, thumb_target, size)
   image_path = "#{thumb_target}/#{md5}.png"
   extension  = File.extname(image.file_path).delete('.')
 
-  create_vid_thumb(image.file_path, image_path, size) if Settings.movie_extentions.include?(extension)
-  create_img_thumb(image.file_path, image_path, size) if Settings.image_extentions.include?(extension)
+  Timeout::timeout(10) {
+    create_vid_thumb(image.file_path, image_path, size) if Settings.movie_extentions.include?(extension)
+    create_img_thumb(image.file_path, image_path, size) if Settings.image_extentions.include?(extension)
+  }
 end
 
 def remove_thumbs(thumb_target)

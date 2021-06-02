@@ -1,8 +1,8 @@
 <%
-  images         = Image.where(duplicate: true).order(fingerprint: :asc).paginate(
-                      page: params[:page],
-                      per_page: Settings.images_per_page
-                   )
+  images = Image.where(duplicate: true).order(fingerprint: :asc).paginate(
+            page: params[:page],
+            per_page: Settings.images_per_page
+          )
 %>
 <% unless images.empty? %>
   <% unless images.count < Settings.images_per_page %>
@@ -21,9 +21,9 @@
             <small class="mt-1" align="center"><%= image.created_at %></small>
             <small class="mt-1" align="center"><%= image.folder_path %></small>
             <div class="btn-toolbar mb-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
-                <a class="btn btn-outline-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"><%= octicon 'info' %></a>
-                <a class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"><%= octicon 'git-compare' %></a>
-                <a class="btn btn-outline-danger  btn-sm mr-1" type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"><%= octicon 'trash' %></a>
+                <button class="btn btn-outline-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"><%= octicon 'info' %></button>
+                <button class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"><%= octicon 'git-compare' %></button>
+                <button class="btn btn-outline-danger  btn-sm mr-1" type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"><%= octicon 'trash' %></button>
             </div>
         </div>
       </div>

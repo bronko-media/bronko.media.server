@@ -8,6 +8,7 @@ require 'parallel'
 require 'phashion'
 require 'sinatra/activerecord'
 require 'streamio-ffmpeg'
+require 'timeout'
 require 'yaml'
 
 require_relative 'lib/helpers'
