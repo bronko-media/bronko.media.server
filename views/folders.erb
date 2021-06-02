@@ -27,7 +27,7 @@
       <% elsif i == 1 %>
       <% else %>
         <li class="breadcrumb-item">
-          <a href="/folders/<%= breadcrumbs.take(i).join('/') %>/<%= breadcrump %>/"><%= breadcrump %></a>
+          <a href="/folders/<%= ERB::Util.url_encode breadcrumbs.take(i).join('/') %>/<%= ERB::Util.url_encode breadcrump %>/"><%= breadcrump %></a>
         </li>
       <% end %>
     <% end %>
@@ -41,7 +41,7 @@
 end %>
   <a class="btn btn-outline-primary btn-sm mr-1 mb-1 <%= state %>" href="/folders/<%= parent_folder %>/"><%= octicon 'arrow-up' %></a>
 <% entry_point.sort.each do |entry| %>
-  <a class="btn btn-outline-primary btn-sm mr-1 mb-1" href="/folders/<%= entry %>"><%= entry.split('/').last %></a>
+  <a class="btn btn-outline-primary btn-sm mr-1 mb-1" href="/folders/<%= ERB::Util.url_encode entry %>"><%= entry.split('/').last %></a>
 <% end %>
   <button class="btn btn-outline-secondary btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderPlusModal"><%= octicon "plus" %></button>
   <button class="btn btn-outline-primary btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderUploadModal"><%= octicon 'repo-push' %></button>
@@ -137,6 +137,7 @@ end %>
               Video?: <small><%= image.is_video %></small><br>
               Created: <small><%= image.created_at %></small><br>
               Updated: <small><%= image.updated_at %></small><br>
+              Tags: <small><%= image.tags %></small><br>
             </div>
           </div>
         </div>
@@ -195,10 +196,12 @@ end %>
               </button>
             </div>
             <div class="modal-body">
-              <div class="input-group mb-2">
-                <input type="text" id="Tag<%= image.md5_path %>Input" class="form-control">
-              </div>
-              <button type="submit "class="btn btn-primary" onclick="addTags(this)" value="<%= image.md5_path %>">Submit</button>
+              <form action="/image/tag/<%= image.md5_path %>" method="post" >
+                <div class="input-group mb-2">
+                  <input type="text" class="form-control" name="tags" value="<%= image.tags.join(',') %>" >
+                </div>
+                <button type="submit "class="btn btn-primary">Submit</button>
+              </form>
             </div>
           </div>
         </div>
@@ -310,16 +313,9 @@ end %>
     return false; // prevents the form from submitting normally
   }
 
-  function addTags(elem) {
-    var md5 = elem.value;
-    var tags = document.getElementById("Tag" + md5 + "Input").value;
-    $.post("/image/tag/" + md5, { tags: tags }, function(result){ });
-    return true; // prevents the form from submitting normally
-  }
-
   function recreateThumb(elem) {
     var md5 = elem.value;
-    $.post("/image/recreate/" + md5, { }, function(result){ });
+    $.post("/thumb/recreate/" + md5, { }, function(result){ });
     return false; // prevents the form from submitting normally
   }
 </script>

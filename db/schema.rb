@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_27_182147) do
+ActiveRecord::Schema.define(version: 2021_06_01_204103) do
 
   create_table "folders", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
     t.string "md5_path"
@@ -35,6 +35,12 @@ ActiveRecord::Schema.define(version: 2021_05_27_182147) do
     t.boolean "is_video"
     t.boolean "is_image"
     t.text "tags"
+  end
+
+  create_table "tags", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end
