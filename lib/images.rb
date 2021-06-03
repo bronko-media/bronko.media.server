@@ -67,7 +67,10 @@ def index_files_to_db(path, extensions)
       next if File.exist? "#{Settings.thumb_target}/#{md5_path}.png"
 
       logger.info "Indexing Image: #{file_path}"
-      is_video = true if Settings.movie_extentions.include?(extension)
+      if Settings.movie_extentions.include?(extension)
+        is_video = true
+        is_image = false
+      end
 
       if Settings.image_extentions.include?(extension)
         begin
@@ -75,7 +78,7 @@ def index_files_to_db(path, extensions)
         rescue StandardError => e
           logger.error "Error: #{e.message}"
         end
-
+        is_video = false
         is_image = true
       end
 

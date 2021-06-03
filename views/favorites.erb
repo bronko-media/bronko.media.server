@@ -1,8 +1,8 @@
 <%
-  images         = Image.where(favorite: true).order(image_name: :asc).paginate(
-                    page: params[:page],
-                    per_page: Settings.images_per_page
-                  )
+  images = Image.where(favorite: true).order(image_name: :asc).paginate(
+            page: params[:page],
+            per_page: Settings.images_per_page
+          )
 %>
 <% unless images.empty? %>
   <% unless images.count < Settings.images_per_page %>
@@ -133,11 +133,7 @@
 <script type="text/javascript">
   function addFavorite(elem) {
     var md5 = elem.value;
-    $.post("/favorite/" + md5, { favorite: false }, function(result){
-      // assuming result is a string of the updated data in html
-      // and assuming that your data goes in an element with the id data-table
-      // $("#data-table").html(result)
-    });
-    return false; // prevents the form from submitting normally
+    $.post("/favorite/" + md5, { favorite: false }, function(result){});
+    return false;
   }
 </script>

@@ -1,6 +1,11 @@
 def create_img_thumb(input_path, output_path, size)
   convert = MiniMagick::Tool::Convert.new
-  convert << input_path
+  convert << if File.extname(input_path).delete('.') == 'gif'
+               "#{input_path}[0]"
+             else
+               input_path
+             end
+
   convert.resize(size)
   convert.gravity('north')
   convert.extent(size)

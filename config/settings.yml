@@ -7,6 +7,8 @@ image_extentions:
 - jpg
 - jpeg
 - png
+- webp
+- gif
 movie_extentions:
 - avi
 - m4v
@@ -15,7 +17,6 @@ movie_extentions:
 - mp4
 - mpeg
 - ts
-- gif
 images_per_page: 30
 col_options: col-md-3
 sort_order: DESC
