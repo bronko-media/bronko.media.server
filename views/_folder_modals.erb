@@ -1,0 +1,88 @@
+  <!-- Modal Add Folder -->
+  <div class="modal fade" id="FolderPlusModal" tabindex="-1" role="dialog" aria-labelledby="FolderPlusModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="FolderPlusModalLabel">Add Folder</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="/folder/create" method="post">
+            <div class="input-group mb-2">
+              <input type="text" class="form-control" name="add_folder" value="<%= this_folder %>" >
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Delete Folder -->
+  <div class="modal fade" id="FolderDeleteModal" tabindex="-1" role="dialog" aria-labelledby="FolderDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="FolderDeleteModalLabel">delete Folder</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="/folder/delete/<%= folder.md5_path %>" method="post">
+            <div class="input-group mb-2">
+              <input name="_method" type="hidden" value="delete" />
+            </div>
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Move Folder -->
+  <div class="modal fade" id="FolderMoveModal" tabindex="-1" role="dialog" aria-labelledby="FolderMoveModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="FolderMoveModalLabel">Move Folder</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="/folder/move/<%= folder.md5_path %>" method="post" >
+            <div class="input-group mb-2">
+              <input type="text" class="form-control" name="move_folder" value="<%= this_folder %>" >
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Upload -->
+  <div class="modal fade" id="FolderUploadModal" tabindex="-1" role="dialog" aria-labelledby="FolderUploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="FolderUploadModalLabel">Upload Image</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action='/image/upload' enctype="multipart/form-data" method='POST'>
+            <div class="input-group mb-2">
+              <input name="files[]" multiple type="file" class="form-control-file" />
+              <input type="hidden" name="file_target" value="<%= this_folder %>">
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
