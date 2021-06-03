@@ -1,0 +1,136 @@
+<%- images.each do |image| -%>
+  <%- fav_icon = octicon 'star-fill' if image.favorite -%>
+  <%- fav_icon = octicon 'star' unless image.favorite -%>
+  <%- short_md5 = truncate(image.md5_path, :length => 8, :omission => '') -%>
+
+    <div class="<%= Settings.col_options %>">
+    <%- if image.is_image -%>
+        <div class="card mb-1">
+          <a href="/image/<%= image.md5_path %>" data-fancybox="gallery" data-caption="<%= image.image_name %>">
+          <img src="/<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
+          </a>
+          <small class="mt-1" align="center"><%= truncate(image.image_name, :length => 27) %></small>
+          <div class="btn-toolbar mb-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
+              <button class="btn btn-outline-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"><%= octicon 'info' %></button>
+              <button class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"><%= octicon 'git-compare' %></button>
+              <button class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Tag<%= short_md5 %>Modal"><%= octicon 'hash' %></button>
+              <button class="btn btn-outline-warning btn-sm mr-1" type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"><%= fav_icon %></button>
+              <button class="btn btn-outline-danger  btn-sm mr-1" type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"><%= octicon 'trash' %></button>
+              <button class="btn btn-outline-warning btn-sm mr-1" type="button" onclick="recreateThumb(this)" value="<%= image.md5_path %>"><%= octicon 'issue-reopened' %></button>
+          </div>
+      </div>
+    <%- end -%>
+
+    <%- if image.is_video -%>
+      <div class="card mb-1">
+        <a href="#video<%= image.md5_path %>" data-fancybox="gallery" data-caption="<%= image.image_name %>">
+        <img src="/<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
+        </a>
+        <small class="mt-1" align="center"><%= truncate(image.image_name, :length => 27) %></small>
+        <div class="btn-toolbar mb-1 ml-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
+            <button class="btn btn-outline-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"><%= octicon 'info' %></button>
+            <button class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"><%= octicon 'git-compare' %></button>
+            <button class="btn btn-outline-warning btn-sm mr-1" type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"><%= fav_icon %></button>
+            <button class="btn btn-outline-danger  btn-sm mr-1" type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"><%= octicon 'trash' %></button>
+        </div>
+
+        <video controls id="video<%= image.md5_path %>" style="display:none;">
+          <source src="/image/<%= image.md5_path %>">
+        </video>
+      </div>
+    <%- end -%>
+    </div>
+
+      <!-- Modal Info -->
+      <div class="modal fade" id="Info<%= short_md5 %>Modal" tabindex="-1" role="dialog" aria-labelledby="Info<%= short_md5 %>ModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="Info<%= short_md5 %>ModalLabel">Info</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              ID: <small><%= image.id %></small><br>
+              Name: <small><%= image.image_name %></small><br>
+              MD5 Path: <small><%= image.md5_path %></small><br>
+              Fingerprint: <small><%= image.fingerprint %></small><br>
+              Duplicate: <small><%= image.duplicate %></small><br>
+              Duplicates: <small><%= image.duplicate_of %></small><br>
+              Path: <small><%= image.file_path %></small><br>
+              Folder: <small><%= image.folder_path %></small><br>
+              Image?: <small><%= image.is_image %></small><br>
+              Video?: <small><%= image.is_video %></small><br>
+              Created: <small><%= image.created_at %></small><br>
+              Updated: <small><%= image.updated_at %></small><br>
+              Tags: <small><%= image.tags %></small><br>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Delete -->
+      <div class="modal fade" id="Delete<%= short_md5 %>Modal" tabindex="-1" role="dialog" aria-labelledby="Delete<%= short_md5 %>ModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="Delete<%= short_md5 %>ModalLabel">Delete Image?</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <form action="/image/<%= image.md5_path %>" method="post">
+                  <input name="_method" type="hidden" value="delete" />
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Move -->
+      <div class="modal fade" id="Move<%= short_md5 %>Modal" tabindex="-1" role="dialog" aria-labelledby="Move<%= short_md5 %>ModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="Move<%= short_md5 %>ModalLabel">Move Image</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="/image/move/<%= image.md5_path %>" method="post" >
+                <div class="input-group mb-2">
+                  <input type="text" class="form-control" name="file_path" value="<%= image.file_path %>" >
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Tag-->
+      <div class="modal fade" id="Tag<%= short_md5 %>Modal" tabindex="-1" role="dialog" aria-labelledby="Tag<%= short_md5 %>ModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="Tag<%= short_md5 %>ModalLabel">Tag Image</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="/image/tag/<%= image.md5_path %>" method="post" >
+                <div class="input-group mb-2">
+                  <input type="text" class="form-control" name="tags" value="<%= image.tags %>" >
+                </div>
+                <button type="submit "class="btn btn-primary">Submit</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+<%- end -%>

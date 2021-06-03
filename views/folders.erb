@@ -1,4 +1,4 @@
-<%
+<%-
   current_folder = Folder.where(folder_path: folder_root).first
   state          = ''
 
@@ -14,297 +14,52 @@
                       per_page: Settings.images_per_page
                     )
   end
-%>
+-%>
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <% breadcrumbs = folder_root.split("/") %>
-      <% breadcrumbs.each_with_index do |breadcrump, i| %>
-        <% if i == 0 %>
+    <%- breadcrumbs = folder_root.split("/") -%>
+      <%- breadcrumbs.each_with_index do |breadcrump, i| -%>
+        <%- if i == 0 -%>
         <li class="breadcrumb-item">
           <a href="/folders"><%= octicon 'versions' %></a>
         </li>
-      <% elsif i == 1 %>
-      <% else %>
+      <%- elsif i == 1 -%>
+      <%- else -%>
         <li class="breadcrumb-item">
           <a href="/folders/<%= ERB::Util.url_encode breadcrumbs.take(i).join('/') %>/<%= ERB::Util.url_encode breadcrump %>/"><%= breadcrump %></a>
         </li>
-      <% end %>
-    <% end %>
+      <%- end -%>
+    <%- end -%>
   </ol>
 </nav>
 
-<% unless current_folder.nil? %>
+<%- unless current_folder.nil? -%>
 <div class="btn-toolbar">
-<% if folder_root == "#{Settings.originals_path}/"
-  state = 'disabled'
-end %>
+<%- state = 'disabled' if folder_root == "#{Settings.originals_path}/" -%>
   <a class="btn btn-outline-primary btn-sm mr-1 mb-1 <%= state %>" href="/folders/<%= parent_folder %>/"><%= octicon 'arrow-up' %></a>
-<% entry_point.sort.each do |entry| %>
+<%- entry_point.sort.each do |entry| -%>
   <a class="btn btn-outline-primary btn-sm mr-1 mb-1" href="/folders/<%= ERB::Util.url_encode entry %>"><%= entry.split('/').last %></a>
-<% end %>
+<%- end -%>
   <button class="btn btn-outline-secondary btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderPlusModal"><%= octicon "plus" %></button>
   <button class="btn btn-outline-primary btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderUploadModal"><%= octicon 'repo-push' %></button>
   <button class="btn btn-outline-info btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderMoveModal"><%= octicon 'git-compare' %></button>
   <button class="btn btn-outline-danger btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderDeleteModal"><%= octicon 'trash' %></button>
 </div>
 
-  <% unless images.empty? %>
+  <%- unless images.empty? -%>
 
-  <% unless images.count < Settings.images_per_page %>
-  <hr />
-  <%= will_paginate images, {:previous_label => '«', :next_label => '»', :inner_window => 0, :outer_window => 0} %>
-  <hr />
-  <% end %>
+  <%= erb :_paginator, locals: {images: images} %>
 
   <div class="row mt-1">
-    <% images.each do |image| %>
-
-    <%
-    if image.duplicate
-      duplicate_color = "bg-secondary"
-    else
-      duplicate_color = ""
-    end
-
-    if image.favorite
-      fav_icon = octicon 'star-fill'
-    else
-      fav_icon = octicon 'star'
-    end
-    %>
-
-    <% short_md5 = truncate(image.md5_path, :length => 8, :omission => '') %>
-      <div class="<%= Settings.col_options %>">
-
-      <% if image.is_image %>
-          <div class="card mb-1 <%= duplicate_color %>">
-            <a href="/image/<%= image.md5_path %>" data-fancybox="gallery" data-caption="<%= image.image_name %>">
-            <img src="/<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
-            </a>
-            <small class="mt-1" align="center"><%= truncate(image.image_name, :length => 27) %></small>
-            <div class="btn-toolbar mb-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
-                <button class="btn btn-outline-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"><%= octicon 'info' %></button>
-                <button class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"><%= octicon 'git-compare' %></button>
-                <button class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Tag<%= short_md5 %>Modal"><%= octicon 'hash' %></button>
-                <button class="btn btn-outline-warning btn-sm mr-1" type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"><%= fav_icon %></button>
-                <button class="btn btn-outline-danger  btn-sm mr-1" type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"><%= octicon 'trash' %></button>
-                <button class="btn btn-outline-warning btn-sm mr-1" type="button" onclick="recreateThumb(this)" value="<%= image.md5_path %>"><%= octicon 'issue-reopened' %></button>
-            </div>
-        </div>
-      <% end %>
-
-      <% if image.is_video %>
-        <div class="card mb-1 <%= duplicate_color %>">
-          <a href="#video<%= image.md5_path %>" data-fancybox="gallery" data-caption="<%= image.image_name %>">
-          <img src="/<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
-          </a>
-          <small class="mt-1" align="center"><%= truncate(image.image_name, :length => 27) %></small>
-          <div class="btn-toolbar mb-1 ml-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
-              <button class="btn btn-outline-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"><%= octicon 'info' %></button>
-              <button class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"><%= octicon 'git-compare' %></button>
-              <button class="btn btn-outline-warning btn-sm mr-1" type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"><%= fav_icon %></button>
-              <button class="btn btn-outline-danger  btn-sm mr-1" type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"><%= octicon 'trash' %></button>
-          </div>
-
-          <video controls id="video<%= image.md5_path %>" style="display:none;">
-            <source src="/image/<%= image.md5_path %>">
-          </video>
-        </div>
-      <% end %>
-      </div>
-
-      <!-- Modal -->
-      <div class="modal fade" id="Info<%= short_md5 %>Modal" tabindex="-1" role="dialog" aria-labelledby="Info<%= short_md5 %>ModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="Info<%= short_md5 %>ModalLabel">Info</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              ID: <small><%= image.id %></small><br>
-              Name: <small><%= image.image_name %></small><br>
-              MD5 Path: <small><%= image.md5_path %></small><br>
-              Fingerprint: <small><%= image.fingerprint %></small><br>
-              Duplicate: <small><%= image.duplicate %></small><br>
-              Duplicates: <small><%= image.duplicate_of %></small><br>
-              Path: <small><%= image.file_path %></small><br>
-              Folder: <small><%= image.folder_path %></small><br>
-              Image?: <small><%= image.is_image %></small><br>
-              Video?: <small><%= image.is_video %></small><br>
-              Created: <small><%= image.created_at %></small><br>
-              Updated: <small><%= image.updated_at %></small><br>
-              Tags: <small><%= image.tags %></small><br>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Modal -->
-      <div class="modal fade" id="Delete<%= short_md5 %>Modal" tabindex="-1" role="dialog" aria-labelledby="Delete<%= short_md5 %>ModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="Delete<%= short_md5 %>ModalLabel">Delete Image?</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-                <form action="/image/<%= image.md5_path %>" method="post">
-                  <input name="_method" type="hidden" value="delete" />
-                  <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Modal -->
-      <div class="modal fade" id="Move<%= short_md5 %>Modal" tabindex="-1" role="dialog" aria-labelledby="Move<%= short_md5 %>ModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="Move<%= short_md5 %>ModalLabel">Move Image</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form action="/image/move/<%= image.md5_path %>" method="post" >
-                <div class="input-group mb-2">
-                  <input type="text" class="form-control" name="file_path" value="<%= image.file_path %>" >
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Modal -->
-      <div class="modal fade" id="Tag<%= short_md5 %>Modal" tabindex="-1" role="dialog" aria-labelledby="Tag<%= short_md5 %>ModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="Tag<%= short_md5 %>ModalLabel">Tag Image</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form action="/image/tag/<%= image.md5_path %>" method="post" >
-                <div class="input-group mb-2">
-                  <input type="text" class="form-control" name="tags" value="<%= image.tags.join(',') %>" >
-                </div>
-                <button type="submit "class="btn btn-primary">Submit</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    <% end %>
+    <%= erb :_image_cards, locals: {images: images} %>
   </div>
   <% end %>
 
-  <!-- Modal -->
-  <div class="modal fade" id="FolderPlusModal" tabindex="-1" role="dialog" aria-labelledby="FolderPlusModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="FolderPlusModalLabel">Add Folder</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form action="/folder/create" method="post">
-            <div class="input-group mb-2">
-              <input type="text" class="form-control" name="add_folder" value="<%= this_folder %>" >
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+  <%= erb :_folder_modals, locals: {folder: folder, this_folder: this_folder} %>
 
-  <!-- Modal -->
-  <div class="modal fade" id="FolderDeleteModal" tabindex="-1" role="dialog" aria-labelledby="FolderDeleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="FolderDeleteModalLabel">delete Folder</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form action="/folder/delete/<%= folder.md5_path %>" method="post">
-            <div class="input-group mb-2">
-              <input name="_method" type="hidden" value="delete" />
-            </div>
-            <button type="submit" class="btn btn-danger">Delete</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal -->
-  <div class="modal fade" id="FolderMoveModal" tabindex="-1" role="dialog" aria-labelledby="FolderMoveModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="FolderMoveModalLabel">Move Folder</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form action="/folder/move/<%= folder.md5_path %>" method="post" >
-            <div class="input-group mb-2">
-              <input type="text" class="form-control" name="move_folder" value="<%= this_folder %>" >
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal -->
-  <div class="modal fade" id="FolderUploadModal" tabindex="-1" role="dialog" aria-labelledby="FolderUploadModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="FolderUploadModalLabel">Upload Image</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form action='/image/upload' enctype="multipart/form-data" method='POST'>
-            <div class="input-group mb-2">
-              <input name="files[]" multiple type="file" class="form-control-file" />
-              <input type="hidden" name="file_target" value="<%= this_folder %>">
-            </div>
-            <button type="submit" class="btn btn-primary">Upload</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <% unless images.count < Settings.images_per_page %>
-  <hr />
-  <%= will_paginate images, {:previous_label => '«', :next_label => '»', :inner_window => 0, :outer_window => 0} %>
-  <% end %>
-<% end %>
+  <%= erb :_paginator, locals: {images: images} %>
+<%- end -%>
 
 <script type="text/javascript">
   function addFavorite(elem) {

@@ -1,0 +1,5 @@
+  <hr />
+  <%- unless images.count < Settings.images_per_page -%>
+  <%= will_paginate images, {:previous_label => '«', :next_label => '»', :inner_window => 0, :outer_window => 0} %>
+  <hr />
+  <%- end -%>

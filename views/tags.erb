@@ -1,5 +1,18 @@
 <div class="btn-toolbar">
-<%- Tag.find_each do |tag| -%>
-  <a class="btn btn-outline-primary btn-sm mr-1 mb-1" href="#"><%= tag.name %></a>
-<%- end -%>
+  <form method="get">
+  <%- Tag.find_each do |tag| -%>
+    <button class="btn btn-outline-primary btn-sm mr-1 mb-1" type="submit" name="tag" value="<%= tag.name %>" action="/tags"><%= tag.name %></button>
+  <%- end -%>
+  </form>
 </div>
+
+<%- unless params[:tag].nil? -%>
+<%- images = Image.where("JSON_CONTAINS(`tags`, '\"#{params[:tag]}\"')") -%>
+<%= erb :_paginator, locals: {images: images} %>
+
+<div class="row mt-1">
+  <%= erb :_image_cards, locals: {images: images} %>
+</div>
+
+<%= erb :_paginator, locals: {images: images} %>
+<%- end -%>
