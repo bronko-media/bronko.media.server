@@ -141,7 +141,7 @@ class BronkoMedia < Sinatra::Base
   end
 
   post '/image/tag/:md5' do
-    tags = params[:tags].split(',')
+    tags = params[:tags].split(',').collect(&:strip)
     tags.each { |tag| Tag.find_or_create_by(name: tag) }
 
     image = Image.find_by(md5_path: params[:md5])

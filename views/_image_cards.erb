@@ -125,7 +125,8 @@
             <div class="modal-body">
               <form action="/image/tag/<%= image.md5_path %>" method="post" >
                 <div class="input-group mb-2">
-                  <input type="text" class="form-control" name="tags" value="<%= image.tags %>" >
+                  <%- tags = image.tags.nil? ? '' : image.tags.join(',') -%>
+                  <input type="text" class="form-control" name="tags" value="<%= tags %>" >
                 </div>
                 <button type="submit "class="btn btn-primary">Submit</button>
               </form>
