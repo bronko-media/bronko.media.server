@@ -9,7 +9,7 @@
           <a href="/image/<%= image.md5_path %>" data-fancybox="gallery" data-caption="<%= image.image_name %>">
           <img src="/<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
           <div class="card-img-overlay">
-            <span class="badge badge-secondary"><%= File.extname(image.file_path).delete('.') %></span>
+            <h5><span class="badge badge-secondary"><%= File.extname(image.file_path).delete('.') %></span></h5>
           </div>
           </a>
           <small class="mt-1" align="center"><%= truncate(image.image_name, :length => 27) %></small>
