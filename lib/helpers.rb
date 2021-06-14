@@ -1,4 +1,4 @@
-def build_index(image_root, thumb_target, extensions, duplicates=true)
+def build_index(image_root, thumb_target, extensions, duplicates: true)
   remove_file(thumb_target)
   remove_folder
   remove_thumbs(thumb_target)

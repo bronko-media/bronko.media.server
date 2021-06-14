@@ -107,7 +107,7 @@ class BronkoMedia < Sinatra::Base
     folder     = Folder.find_by(md5_path: params[:md5]).folder_path.delete_suffix('/')
     extentions = Settings.image_extentions + Settings.movie_extentions
 
-    build_index(folder, Settings.thumb_target, extentions, false)
+    build_index(folder, Settings.thumb_target, extentions, duplicates: false)
 
     redirect back
   end
