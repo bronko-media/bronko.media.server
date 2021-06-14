@@ -48,6 +48,7 @@ class BronkoMedia < Sinatra::Base
   }
 
   enable :sessions
+  enable :logging
 
   get '/' do
     erb :index, locals: { message: nil }
@@ -100,6 +101,15 @@ class BronkoMedia < Sinatra::Base
     move_folder(params[:md5], params['move_folder'])
 
     redirect "/folders/#{params['move_folder']}"
+  end
+
+  post '/folder/scan/:md5' do
+    folder     = Folder.find_by(md5_path: params[:md5]).folder_path.delete_suffix('/')
+    extentions = Settings.image_extentions + Settings.movie_extentions
+
+    build_index(folder, Settings.thumb_target, extentions, false)
+
+    redirect back
   end
 
   get '/image/:md5' do
