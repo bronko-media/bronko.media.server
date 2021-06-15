@@ -1,6 +1,6 @@
 def build_index(image_root, thumb_target, extensions, duplicates: true)
-  remove_file(thumb_target)
-  remove_folder
+  remove_files(thumb_target)
+  remove_folders
   remove_thumbs(thumb_target)
   write_folders_to_db(index_folders(image_root))
   index_files_to_db(image_root, extensions)
@@ -37,6 +37,15 @@ def fix_database
     next if image.folder_path[-1] == '/'
 
     image.folder_path = "#{image.folder_path}/"
+    image.save
+  end
+end
+
+def fix_database2
+  Parallel.each(Image.all, in_threads: Settings.threads) do |image|
+    next unless image.extension.nil?
+
+    image.extension = File.extname(image.file_path).delete('.')
     image.save
   end
 end

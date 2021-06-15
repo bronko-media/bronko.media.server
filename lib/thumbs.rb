@@ -32,10 +32,9 @@ end
 def create_thumb(md5, thumb_target, size)
   image      = Image.find_or_create_by(md5_path: md5)
   image_path = "#{thumb_target}/#{md5}.png"
-  extension  = File.extname(image.file_path).delete('.')
 
-  create_vid_thumb(image.file_path, image_path, size) if Settings.movie_extentions.include?(extension)
-  create_img_thumb(image.file_path, image_path, size) if Settings.image_extentions.include?(extension)
+  create_vid_thumb(image.file_path, image_path, size) if Settings.movie_extentions.include?(image.extension)
+  create_img_thumb(image.file_path, image_path, size) if Settings.image_extentions.include?(image.extension)
 end
 
 def remove_thumbs(thumb_target)

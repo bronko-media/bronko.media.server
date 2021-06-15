@@ -2,7 +2,7 @@
 version: "3.5"
 services:
   bronko.media.server:
-    image: rwaffen/bronko.media.server:main
+    image: bronko.media:latest
     container_name: bronko.media.server
     environment:
       - PUID=1001
@@ -11,24 +11,20 @@ services:
       - USER_GID=1001
       - TZ=Europe/Berlin
     volumes:
-      # - /srv/data/bronko.media.server/db:/app/data/db
-      - /srv/data/bronko.media.server/public/images:/app/public/images
-      - /srv/media/Images:/app/data/images:ro
+      - ./data/images:/app/data/images
     ports:
       - 4567:4567
     restart: unless-stopped
 
   bronko.media.db:
-    image: linuxserver/mariadb
+    image: mysql:8.0.25
     container_name: bronko.media.db
+    command: --default-authentication-plugin=mysql_native_password
     environment:
-      - PUID=1001
-      - PGID=1001
-      - MYSQL_ROOT_PASSWORD=R00T_Pa$$w0rd
-      - TZ=Europe/Berlin
-      - MYSQL_DATABASE=BronkoMediaServer
-      - MYSQL_USER=bronko
-      - MYSQL_PASSWORD=U$3R_PWd
+      MYSQL_ROOT_PASSWORD: S3cr3t!12345
+      MYSQL_PASSWORD: password
+      MYSQL_USER: bronko
+      MYSQL_DATABASE: BronkoMediaServer
     volumes:
-      - /srv/data/bronko.media.db/config:/config
+      - ./tmp/testdb/config:/config
     restart: unless-stopped
