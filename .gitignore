@@ -4,3 +4,4 @@ public/images/*
 vendor/*
 .DS_Store
 .bundle/
+tmp/puma/state

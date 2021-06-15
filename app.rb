@@ -8,6 +8,7 @@ require 'mini_magick'
 require 'octicons'
 require 'parallel'
 require 'phashion'
+require 'rack/handler/puma'
 require 'securerandom'
 require 'sinatra/base'
 require 'sinatra/activerecord'
@@ -33,6 +34,7 @@ class BronkoMedia < Sinatra::Base
 
   Config.load_and_set_settings "#{File.dirname(__FILE__)}/config/settings.yml"
 
+  set :server, :puma
   set :method_override, true
   set :logger, Logger.new($stdout)
   set :session_secret, SecureRandom.uuid
