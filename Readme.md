@@ -23,7 +23,7 @@ It is a ruby sinatra web app bundled with bootstrap, jquery and fancybox.
 
 ### Start
 
-    bundle exec rackup
+    bundle exec puma
 
 ### Build index
 
@@ -37,7 +37,7 @@ Alternatively you can use the `helper.rb`.
 
 You can see the progress on the console or from `docker logs bronko.media.server -f`
 
-All png, jpg, jpeg, gif and several movie files will be indexed into a database. 
+All png, jpg, jpeg, gif and several movie files will be indexed into a database.
 Thumbs will be created and saved. They will be referenced only by their md5 hashed path.
 The files in the source stay untouched. Only their meta will be saved in the database.
 
@@ -48,8 +48,8 @@ The sqlite3 database will be saved in `data/db`, also mysql is supported.
 The thumbnails will be saved in `public/images/thumbs`
 The sample Config can be found in `config/settings.yml`
 
-The folders can be configured in settings. 
-But be aware that the default locations might be used somewhere in the code. 
+The folders can be configured in settings.
+But be aware that the default locations might be used somewhere in the code.
 I am in early development and might hardcode or move folders.
 
 ## Docker
@@ -59,30 +59,8 @@ I am in early development and might hardcode or move folders.
 There is a Dockerfile to build a container. This can be done with:
 
     cd bronko.media
-    docker build -t bronko.media .
+    docker build -t bronko.media.server .
 
 ### Docker Compose
 
-For docker-compose see `docker-compose.yaml` or use this example:
-
-    ---
-    version: "3.5"
-    services:
-      bronko.media:
-        image: rwaffen/bronko.media:develop
-        container_name: bronko.media
-        volumes:
-          # keep settings outside of container
-          - /srv/data/bronko.media/config:/bronko.media/config
-        
-          # keep db outside of container
-          - /srv/data/bronko.media/db:/bronko.media/data/db
-
-          # keep thumbnails outside of container
-          - /srv/data/bronko.media/public/images:/bronko.media/public/images
-
-          # add media files read only
-          - /srv/media/Images:/app/data/images
-        ports:
-          - 4567:4567
-        restart: unless-stopped
+For docker-compose see `docker-compose.yaml`
