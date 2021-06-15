@@ -25,7 +25,7 @@ db_adapter: mysql2
 db_name: BronkoMediaServer
 db_username: bronko
 db_password: password
-db_host: bronko.media.db
+db_host: localhost
 db_ecnoding: utf8mb4
 db_collation: utf8mb4_bin
 db_pool: '100'

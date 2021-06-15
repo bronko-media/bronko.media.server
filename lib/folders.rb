@@ -71,14 +71,14 @@ def delete_folder(md5)
   folder.destroy
 end
 
-def remove_folder
+def remove_folders
   Parallel.each(Folder.all, in_threads: Settings.threads) do |folder|
     folder_path = folder.folder_path
 
-    unless File.directory?(folder_path)
-      logger.info "Removing Folder from DB: #{folder.folder_path}"
-      folder.destroy
-    end
+    next if File.directory?(folder_path)
+
+    logger.info "Removing Folder from DB: #{folder_path}"
+    folder.destroy
   end
 end
 
@@ -114,6 +114,11 @@ def write_folders_to_db(folder_hash)
     if updates.sub_folders != folder_path[:sub_folders]
       updates.sub_folders = folder_path[:sub_folders]
       updates.save
+    end
+
+    unless File.directory?(folder_path[:folder_path])
+      logger.info "Removing Folder from DB: #{folder_path[:folder_path]}"
+      Folder.destroy(folder_path[:folder_path])
     end
 
     ActiveRecord::Base.clear_active_connections!

@@ -18,7 +18,6 @@ require_relative 'lib/images'
 require_relative 'lib/models'
 
 Config.load_and_set_settings("#{File.dirname(__FILE__)}/config/settings.yml")
-ActiveRecord::Base.logger = nil
 
 def logger
   @logger ||= Logger.new($stdout)
@@ -67,11 +66,17 @@ OptionParser.new do |opts|
   opts.on('--fix-database', TrueClass, 'Fix Database') do |e|
     @options[:fix_database] = e.nil? ? true : e
   end
+
+  opts.on('--ar-logger', TrueClass, 'Activate AcitveRecord Logger') do |e|
+    @options[:ar_logger] = e.nil? ? true : e
+  end
 end.parse!
+
+ActiveRecord::Base.logger = nil unless @options[:ar_logger]
 
 build_index(image_root, thumb_target, extensions) if @options[:index]
 remove_thumb(Settings.thumb_target) if @options[:clean_thumbs]
-remove_folder                       if @options[:clean_folders]
-remove_file(Settings.thumb_target)  if @options[:clean_files]
+remove_folders                      if @options[:clean_folders]
+remove_files(Settings.thumb_target) if @options[:clean_files]
 find_duplicates                     if @options[:find_duplicates]
 fix_database                        if @options[:fix_database]

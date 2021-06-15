@@ -34,8 +34,8 @@ extensions   = Settings.image_extentions + Settings.movie_extentions
 thumb_target = Settings.thumb_target
 thumb_size   = Settings.thumb_res
 
-remove_file(thumb_target)
-remove_folder
+remove_files(thumb_target)
+remove_folders
 remove_thumb(thumb_target)
 write_folders_to_db(index_folders(image_root))
 index_files_to_db(image_root, extensions)

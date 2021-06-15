@@ -122,11 +122,11 @@ def write_file_to_db(file)
   ActiveRecord::Base.clear_active_connections!
 end
 
-def remove_file(thumb_target)
+def remove_files(thumb_target)
   Parallel.each(Image.all, in_threads: Settings.threads) do |image|
-    thumb_target_path = "#{thumb_target}/#{image.md5_path}.png"
-
     next if File.file?(image.file_path)
+
+    thumb_target_path = "#{thumb_target}/#{image.md5_path}.png"
 
     logger.info "Removing Image from DB: #{image.file_path}"
     image.destroy
