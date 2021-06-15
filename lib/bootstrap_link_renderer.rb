@@ -20,7 +20,7 @@ module WillPaginate
       end
 
       def html_container(html)
-        tag :nav, tag(:ul, html, class: 'pagination justify-content-center'), "aria-label": 'Page navigation'
+        tag :nav, tag(:ul, html, class: 'pagination justify-content-center'), 'aria-label': 'Page navigation'
       end
 
       def page_number(page)

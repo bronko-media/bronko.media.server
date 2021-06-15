@@ -8,6 +8,7 @@ require 'mini_magick'
 require 'octicons'
 require 'parallel'
 require 'phashion'
+require 'rack/handler/puma'
 require 'securerandom'
 require 'sinatra/base'
 require 'sinatra/activerecord'
@@ -33,6 +34,7 @@ class BronkoMedia < Sinatra::Base
 
   Config.load_and_set_settings "#{File.dirname(__FILE__)}/config/settings.yml"
 
+  set :server, :puma
   set :method_override, true
   set :logger, Logger.new($stdout)
   set :session_secret, SecureRandom.uuid
@@ -48,6 +50,7 @@ class BronkoMedia < Sinatra::Base
   }
 
   enable :sessions
+  enable :logging
 
   get '/' do
     erb :index, locals: { message: nil }
@@ -102,6 +105,15 @@ class BronkoMedia < Sinatra::Base
     redirect "/folders/#{params['move_folder']}"
   end
 
+  post '/folder/scan/:md5' do
+    folder     = Folder.find_by(md5_path: params[:md5]).folder_path.delete_suffix('/')
+    extentions = Settings.image_extentions + Settings.movie_extentions
+
+    build_index(folder, Settings.thumb_target, extentions, duplicates: false)
+
+    redirect back
+  end
+
   get '/image/:md5' do
     image = Image.find_by(md5_path: params[:md5])
     send_file(image.file_path.to_s, disposition: 'inline')
@@ -141,7 +153,7 @@ class BronkoMedia < Sinatra::Base
   end
 
   post '/image/tag/:md5' do
-    tags = params[:tags].split(',')
+    tags = params[:tags].split(',').collect(&:strip)
     tags.each { |tag| Tag.find_or_create_by(name: tag) }
 
     image = Image.find_by(md5_path: params[:md5])

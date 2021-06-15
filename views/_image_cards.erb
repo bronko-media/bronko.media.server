@@ -1,6 +1,6 @@
 <%- images.each do |image| -%>
-  <%- fav_icon = octicon 'star-fill' if image.favorite -%>
-  <%- fav_icon = octicon 'star' unless image.favorite -%>
+  <%- fav_icon = 'bi bi-bookmark-star-fill' if image.favorite -%>
+  <%- fav_icon = 'bi bi-bookmark-star' unless image.favorite -%>
   <%- short_md5 = truncate(image.md5_path, :length => 8, :omission => '') -%>
 
     <div class="<%= Settings.col_options %>">
@@ -8,15 +8,18 @@
         <div class="card mb-1">
           <a href="/image/<%= image.md5_path %>" data-fancybox="gallery" data-caption="<%= image.image_name %>">
           <img src="/<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
+          <div class="card-img-overlay">
+            <h5><span class="badge badge-secondary"><%= File.extname(image.file_path).delete('.') %></span></h5>
+          </div>
           </a>
           <small class="mt-1" align="center"><%= truncate(image.image_name, :length => 27) %></small>
           <div class="btn-toolbar mb-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
-              <button class="btn btn-outline-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"><%= octicon 'info' %></button>
-              <button class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"><%= octicon 'git-compare' %></button>
-              <button class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Tag<%= short_md5 %>Modal"><%= octicon 'hash' %></button>
-              <button class="btn btn-outline-warning btn-sm mr-1" type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"><%= fav_icon %></button>
-              <button class="btn btn-outline-danger  btn-sm mr-1" type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"><%= octicon 'trash' %></button>
-              <button class="btn btn-outline-warning btn-sm mr-1" type="button" onclick="recreateThumb(this)" value="<%= image.md5_path %>"><%= octicon 'issue-reopened' %></button>
+              <button class="btn btn-outline-primary btn-sm mr-1 bi bi-info-lg"        type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"></button>
+              <button class="btn btn-outline-info    btn-sm mr-1 bi bi-folder-symlink" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"></button>
+              <button class="btn btn-outline-info    btn-sm mr-1 bi bi-tags"           type="button" data-toggle="modal" data-target="#Tag<%= short_md5 %>Modal"></button>
+              <button class="btn btn-outline-warning btn-sm mr-1 <%= fav_icon %>"      type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"></button>
+              <button class="btn btn-outline-warning btn-sm mr-1 bi bi-recycle"        type="button" onclick="recreateThumb(this)" value="<%= image.md5_path %>"></button>
+              <button class="btn btn-outline-danger  btn-sm mr-1 bi bi-trash"          type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"></button>
           </div>
       </div>
     <%- end -%>
@@ -25,13 +28,16 @@
       <div class="card mb-1">
         <a href="#video<%= image.md5_path %>" data-fancybox="gallery" data-caption="<%= image.image_name %>">
         <img src="/<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
+        <div class="card-img-overlay">
+            <span class="badge badge-secondary"><%= File.extname(image.file_path).delete('.') %></span>
+          </div>
         </a>
         <small class="mt-1" align="center"><%= truncate(image.image_name, :length => 27) %></small>
         <div class="btn-toolbar mb-1 ml-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
-            <button class="btn btn-outline-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"><%= octicon 'info' %></button>
-            <button class="btn btn-outline-info    btn-sm mr-1" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"><%= octicon 'git-compare' %></button>
-            <button class="btn btn-outline-warning btn-sm mr-1" type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"><%= fav_icon %></button>
-            <button class="btn btn-outline-danger  btn-sm mr-1" type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"><%= octicon 'trash' %></button>
+            <button class="btn btn-outline-primary btn-sm mr-1 bi bi-info-lg"        type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"></button>
+            <button class="btn btn-outline-info    btn-sm mr-1 bi bi-folder-symlink" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"></button>
+            <button class="btn btn-outline-warning btn-sm mr-1 <%= fav_icon %>"      type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"></button>
+            <button class="btn btn-outline-danger  btn-sm mr-1 bi bi-trash"          type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"></button>
         </div>
 
         <video controls id="video<%= image.md5_path %>" style="display:none;">
@@ -125,7 +131,8 @@
             <div class="modal-body">
               <form action="/image/tag/<%= image.md5_path %>" method="post" >
                 <div class="input-group mb-2">
-                  <input type="text" class="form-control" name="tags" value="<%= image.tags %>" >
+                  <%- tags = image.tags.nil? ? '' : image.tags.join(',') -%>
+                  <input type="text" class="form-control" name="tags" value="<%= tags %>" >
                 </div>
                 <button type="submit "class="btn btn-primary">Submit</button>
               </form>
