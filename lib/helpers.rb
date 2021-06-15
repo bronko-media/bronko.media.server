@@ -41,6 +41,15 @@ def fix_database
   end
 end
 
+def fix_database2
+  Parallel.each(Image.all, in_threads: Settings.threads) do |image|
+    next unless image.extension.nil?
+
+    image.extension = File.extname(image.file_path).delete('.')
+    image.save
+  end
+end
+
 def octicon(name)
   Octicons::Octicon.new(name).to_svg
 end

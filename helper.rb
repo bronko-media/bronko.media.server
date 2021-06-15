@@ -67,6 +67,10 @@ OptionParser.new do |opts|
     @options[:fix_database] = e.nil? ? true : e
   end
 
+  opts.on('--fix-database2', TrueClass, 'Fix Database 2') do |e|
+    @options[:fix_database2] = e.nil? ? true : e
+  end
+
   opts.on('--ar-logger', TrueClass, 'Activate AcitveRecord Logger') do |e|
     @options[:ar_logger] = e.nil? ? true : e
   end
@@ -80,3 +84,4 @@ remove_folders                      if @options[:clean_folders]
 remove_files(Settings.thumb_target) if @options[:clean_files]
 find_duplicates                     if @options[:find_duplicates]
 fix_database                        if @options[:fix_database]
+fix_database2                       if @options[:fix_database2]
