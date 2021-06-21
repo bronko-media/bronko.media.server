@@ -12,7 +12,7 @@
           </a>
           <small class="mt-1" align="center"><%= truncate(image.image_name, :length => 27) %></small>
           <%- if show_path -%>
-          <small class="mt-1" style="word-wrap: break-word;word-break: break-word;"><%= image.folder_path %></small>
+          <small class="mt-1"><%= image.folder_path.scan(/.{1,100}/).join("\n") %></small>
           <%- end -%>
           <div class="btn-toolbar mb-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
             <button class="btn btn-outline-primary btn-sm mr-1 bi bi-info-lg"        type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"></button>
