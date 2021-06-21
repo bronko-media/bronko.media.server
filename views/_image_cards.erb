@@ -11,6 +11,9 @@
             <span class="badge badge-secondary"><%= image.extension %></span>
           </a>
           <small class="mt-1" align="center"><%= truncate(image.image_name, :length => 27) %></small>
+          <%- if show_path -%>
+          <small><%= image.folder_path %><wbr></small>
+          <%- end -%>
           <div class="btn-toolbar mb-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
             <button class="btn btn-outline-primary btn-sm mr-1 bi bi-info-lg"        type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"></button>
             <button class="btn btn-outline-info    btn-sm mr-1 bi bi-folder-symlink" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"></button>
