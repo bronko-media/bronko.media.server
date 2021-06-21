@@ -1,14 +1,9 @@
 name: Publish Docker image
 
 on:
-  # workflow_run:
-  #   workflows:
-  #     - "Rubocop"
-  #   branches:
-  #     - main
-  #     - develop
-  #   types:
-  #     - completed
+  push:
+    branches:
+      - develop
   workflow_dispatch:
 
 jobs:
