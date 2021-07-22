@@ -9,13 +9,13 @@ def upload_image(files, file_target)
       is_video = true if Settings.movie_extentions.include? File.extname(file[:filename]).delete('.')
       is_image = true if Settings.image_extentions.include? File.extname(file[:filename]).delete('.')
 
-      image.file_path      = target
-      image_item.extension = File.extname(file[:filename]).delete('.')
-      image.folder_path    = file_target
-      image.image_name     = File.basename(file[:filename], '.*')
-      image.md5_path       = md5_path
-      image.is_image       = is_image
-      image.is_video       = is_video
+      image.extension   = File.extname(file[:filename]).delete('.')
+      image.file_path   = target
+      image.folder_path = file_target
+      image.image_name  = File.basename(file[:filename], '.*')
+      image.is_image    = is_image
+      image.is_video    = is_video
+      image.md5_path    = md5_path
     end
 
     create_thumb(md5_path, Settings.thumb_target, Settings.thumb_res)
