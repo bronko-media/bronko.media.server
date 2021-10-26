@@ -26,5 +26,5 @@ services:
       MYSQL_USER: bronko
       MYSQL_DATABASE: BronkoMediaServer
     volumes:
-      - ./tmp/testdb/config:/config
+      - ./tmp/testdb/config:/var/lib/mysql
     restart: unless-stopped
