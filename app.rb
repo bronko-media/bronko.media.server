@@ -28,6 +28,7 @@ require_relative 'lib/models'
 
 class BronkoMedia < Sinatra::Base
   include ActionView::Helpers::TextHelper
+  include ActionView::Helpers::NumberHelper
 
   register Sinatra::ActiveRecordExtension
   register WillPaginate::Sinatra
@@ -140,6 +141,10 @@ class BronkoMedia < Sinatra::Base
     move_image(params[:file_path], params[:md5])
 
     redirect back
+  end
+
+  get '/media/info/:md5' do
+    erb :info, locals: { md5: params[:md5] }
   end
 
   post '/thumb/recreate/:md5' do

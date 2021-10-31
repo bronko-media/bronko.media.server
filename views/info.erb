@@ -1,0 +1,103 @@
+<%
+if Image.exists?(md5_path: md5)
+  media = Image.find_by(md5_path: md5)
+else
+  media = Folder.find_by(md5_path: md5)
+end
+
+is_folder = if media.attribute_names.include? 'is_image'
+              false
+            else
+              true
+            end
+
+mini_magic      = MiniMagick::Image.open(media.file_path) unless is_folder
+short_md5       = truncate(media.md5_path, :length => 8, :omission => '')
+files_in_folder = Dir["#{media.folder_path}*"].reject { |f| File.directory? f } if is_folder
+%>
+
+<!-- nav bar & menu -->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <%- breadcrumbs = media.folder_path.split("/") -%>
+      <%- breadcrumbs.each_with_index do |breadcrump, i| -%>
+        <%- if i == 0 -%>
+        <li class="breadcrumb-item">
+          <a href="/folders" class="bi bi-collection"></a>
+        </li>
+      <%- elsif i == 1 -%>
+      <%- else -%>
+        <li class="breadcrumb-item">
+          <a href="/folders/<%= ERB::Util.url_encode breadcrumbs.take(i).join('/') %>/<%= ERB::Util.url_encode breadcrump %>/"><%= breadcrump %></a>
+        </li>
+      <%- end -%>
+    <%- end -%>
+    <%- unless is_folder -%>
+    <li class="breadcrumb-item">
+      <%= media.image_name %>.<%= media.extension %>
+    </li>
+    <%- end -%>
+  </ol>
+</nav>
+
+<div class="btn-toolbar">
+  <button class="btn btn-outline-primary btn-sm mr-1"                      type="button" onclick="history.back()"><%= octicon 'arrow-up' %></button>
+  <button class="btn btn-outline-info    btn-sm mr-1 bi bi-folder-symlink" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"></button>
+  <button class="btn btn-outline-info    btn-sm mr-1 bi bi-tags"           type="button" data-toggle="modal" data-target="#Tag<%= short_md5 %>Modal"></button>
+  <button class="btn btn-outline-warning btn-sm mr-1 bi bi-bookmark-star"  type="button" onclick="addFavorite(this)" value="<%= media.md5_path %>"></button>
+  <button class="btn btn-outline-warning btn-sm mr-1 bi bi-recycle"        type="button" onclick="recreateThumb(this)" value="<%= media.md5_path %>"></button>
+  <button class="btn btn-outline-danger  btn-sm mr-1 bi bi-trash"          type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"></button>
+</div>
+<hr />
+
+<%- if is_folder -%>
+<div class="container">
+  ID: <small><%= media.id %></small><br>
+  Folder: <small><%= media.folder_path %></small><br>
+  MD5 Path: <small><%= media.md5_path %></small><br>
+  <br />
+  Parent Folder: <small><%= media.parent_folder %></small><br>
+  Sub Folder: <small><%= media.sub_folders %></small><br>
+  Files in Folder: <small><%= files_in_folder.count %></small><br>
+  <br />
+  Created: <small><%= media.created_at %></small><br>
+  Updated: <small><%= media.updated_at %></small><br>
+</div>
+<%- else -%>
+  <%- if media.is_image -%>
+
+  <div class="container">
+    <img class="img-fluid" src="/image/<%= media.md5_path %>" >
+  </div>
+  <%- end -%>
+
+  <%- if media.is_video -%>
+  <div class="container">
+    <video controls src="/image/<%= media.md5_path %>" ></video>
+  </div>
+  <%- end -%>
+
+<hr />
+<div class="container">
+  ID: <small><%= media.id %></small><br>
+  Name: <small><%= media.image_name %></small><br>
+  Folder: <small><%= media.folder_path %></small><br>
+  Path: <small><%= media.file_path %></small><br>
+  MD5 Path: <small><%= media.md5_path %></small><br>
+  <br/>
+  Mime: <small><%= mini_magic.mime_type %></small><br>
+  Resolution: <small><%= mini_magic.dimensions %></small><br>
+  Size: <small><%= number_to_human_size(mini_magic.size, precision: 2) %></small><br>
+  <br/>
+  Signature: <small><%= mini_magic.signature %></small><br>
+  Fingerprint: <small><%= media.fingerprint %></small><br>
+  <br/>
+  Duplicate: <small><%= media.duplicate %></small><br>
+  Duplicates: <small><%= media.duplicate_of %></small><br>
+  <br/>
+  Created: <small><%= media.created_at %></small><br>
+  Updated: <small><%= media.updated_at %></small><br>
+  <br/>
+  Tags: <small><%= media.tags %></small><br>
+</div>
+<%- end -%>

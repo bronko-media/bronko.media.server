@@ -44,14 +44,11 @@
   <button class="btn btn-outline-secondary btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderPlusModal"><%= octicon "plus" %></button>
   <button class="btn btn-outline-primary   btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderUploadModal"><%= octicon 'repo-push' %></button>
   <button class="btn btn-outline-info      btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderMoveModal"><%= octicon 'git-compare' %></button>
-  <button class="btn btn-outline-info      btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderScanModal">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-file-earmark-break" viewBox="0 0 16 16">
-      <path d="M14 4.5V9h-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v7H2V2a2 2 0 0 1 2-2h5.5L14 4.5zM13 12h1v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2h1v2a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-2zM.5 10a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1H.5z"/>
-    </svg>
-  </button>
+  <button class="btn btn-outline-info      btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderScanModal"> <i style="color:black;" class="bi bi-file-earmark-break"></i></button>
   <button class="btn btn-outline-danger    btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderDeleteModal"><%= octicon 'trash' %></button>
-  <button class="btn btn-outline-primary   btn-sm mr-1 mb-1 disabled" type="button"><i class="bi bi-film"></i></button>
-  <button class="btn btn-outline-primary   btn-sm mr-1 mb-1 disabled" type="button"><i class="bi bi-image"></i></button>
+  <button class="btn btn-outline-primary   btn-sm mr-1 mb-1 disabled" type="button"><i style="color:grey;" class="bi bi-film"></i></button>
+  <button class="btn btn-outline-primary   btn-sm mr-1 mb-1 disabled" type="button"><i style="color:grey;" class="bi bi-image"></i></button>
+  <a      class="btn btn-outline-primary   btn-sm mr-1 mb-1" href="/media/info/<%= folder.md5_path %>" type="button"><i style="color:black;" class="bi bi-arrow-up-right"></i></a>
 </div>
 
   <%- unless images.empty? -%>
