@@ -5,10 +5,13 @@ def upload_image(files, file_target)
 
     File.open(target, 'wb') { |f| f.write file[:tempfile].read }
 
+    mini_magic = MiniMagick::Image.open(target)
+
     Image.find_or_create_by(md5_path: md5_path) do |image|
       is_video = true if Settings.movie_extentions.include? File.extname(file[:filename]).delete('.')
       is_image = true if Settings.image_extentions.include? File.extname(file[:filename]).delete('.')
 
+      image.dimensions  = mini_magic.dimensions
       image.extension   = File.extname(file[:filename]).delete('.')
       image.file_path   = target
       image.folder_path = file_target
@@ -16,6 +19,9 @@ def upload_image(files, file_target)
       image.is_image    = is_image
       image.is_video    = is_video
       image.md5_path    = md5_path
+      image.mime_type   = mini_magic.mime_type
+      image.signature   = mini_magic.signature
+      image.size        = mini_magic.size
     end
 
     create_thumb(md5_path, Settings.thumb_target, Settings.thumb_res)
@@ -29,18 +35,23 @@ def move_image(new_file_path, md5)
   new_md5_path  = Digest::MD5.hexdigest(new_file_path)
 
   FileUtils.mv image.file_path, new_file_path
+  mini_magic = MiniMagick::Image.open(new_file_path)
 
   Image.find_or_create_by(md5_path: new_md5_path) do |image_item|
     is_video = true if Settings.movie_extentions.include? File.extname(new_file_path).delete('.')
     is_image = true if Settings.image_extentions.include? File.extname(new_file_path).delete('.')
 
-    image_item.file_path   = new_file_path
+    image_item.dimensions  = mini_magic.dimensions
     image_item.extension   = File.extname(new_file_path).delete('.')
+    image_item.file_path   = new_file_path
     image_item.folder_path = "#{File.dirname(new_file_path)}/"
     image_item.image_name  = File.basename(new_file_path, '.*')
-    image_item.md5_path    = new_md5_path
     image_item.is_image    = is_image
     image_item.is_video    = is_video
+    image_item.md5_path    = new_md5_path
+    image_item.mime_type   = mini_magic.mime_type
+    image_item.signature   = mini_magic.signature
+    image_item.size        = mini_magic.size
   end
 
   create_thumb(new_md5_path, Settings.thumb_target, Settings.thumb_res)
@@ -62,11 +73,14 @@ def index_files_to_db(path, extensions)
 
     Parallel.each(files, in_threads: Settings.threads) do |file|
       extension = File.extname(file).delete('.')
+      next unless extensions.include?(extension)
+
       file_path = "#{folder}#{file}"
       md5_path  = Digest::MD5.hexdigest(file_path)
 
-      next unless extensions.include?(extension)
       next if File.exist? "#{Settings.thumb_target}/#{md5_path}.png"
+
+      mini_magic = MiniMagick::Image.open(file_path)
 
       logger.info "Indexing Image: #{file_path}"
       if Settings.movie_extentions.include?(extension)
@@ -85,14 +99,18 @@ def index_files_to_db(path, extensions)
       end
 
       file_meta_hash = {
+        dimensions: mini_magic.dimensions,
+        extension: extension,
         file_path: file_path,
+        fingerprint: fingerprint || false,
         folder_path: folder,
         image_name: File.basename(file, '.*'),
-        extension: extension,
-        md5_path: md5_path,
-        fingerprint: fingerprint || false,
+        is_image: is_image || false,
         is_video: is_video || false,
-        is_image: is_image || false
+        md5_path: md5_path,
+        mime_type: mini_magic.mime_type,
+        signature: mini_magic.signature,
+        size: mini_magic.size,
       }
 
       write_file_to_db(file_meta_hash)
@@ -112,14 +130,19 @@ end
 
 def write_file_to_db(file)
   Image.find_or_create_by(md5_path: file[:md5_path]) do |image|
+    image.dimensions  = file[:dimensions]
+    image.extension   = file[:extension]
     image.file_path   = file[:file_path]
     image.fingerprint = file[:fingerprint]
     image.folder_path = file[:folder_path]
     image.image_name  = file[:image_name]
-    image.extension   = file[:extension]
     image.is_image    = file[:is_image]
     image.is_video    = file[:is_video]
     image.md5_path    = file[:md5_path]
+    image.mime_type   = file[:mime_type]
+    image.signature   = file[:signature]
+    image.size        = file[:size]
+
     image.save
   end
 

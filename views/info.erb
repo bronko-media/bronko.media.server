@@ -11,7 +11,6 @@ is_folder = if media.attribute_names.include? 'is_image'
               true
             end
 
-mini_magic      = MiniMagick::Image.open(media.file_path) unless is_folder
 short_md5       = truncate(media.md5_path, :length => 8, :omission => '')
 files_in_folder = Dir["#{media.folder_path}*"].reject { |f| File.directory? f } if is_folder
 %>
@@ -85,11 +84,11 @@ files_in_folder = Dir["#{media.folder_path}*"].reject { |f| File.directory? f } 
   Path: <small><%= media.file_path %></small><br>
   MD5 Path: <small><%= media.md5_path %></small><br>
   <br/>
-  Mime: <small><%= mini_magic.mime_type %></small><br>
-  Resolution: <small><%= mini_magic.dimensions %></small><br>
-  Size: <small><%= number_to_human_size(mini_magic.size, precision: 2) %></small><br>
+  Mime: <small><%= media.mime_type %></small><br>
+  Resolution: <small><%= media.dimensions %></small><br>
+  Size: <small><%= number_to_human_size(media.size, precision: 2) %></small><br>
   <br/>
-  Signature: <small><%= mini_magic.signature %></small><br>
+  Signature: <small><%= media.signature %></small><br>
   Fingerprint: <small><%= media.fingerprint %></small><br>
   <br/>
   Duplicate: <small><%= media.duplicate %></small><br>

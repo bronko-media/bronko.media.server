@@ -74,6 +74,10 @@ OptionParser.new do |opts|
   opts.on('--ar-logger', TrueClass, 'Activate AcitveRecord Logger') do |e|
     @options[:ar_logger] = e.nil? ? true : e
   end
+
+  opts.on('--add_new_fields', TrueClass, 'add new fields') do |e|
+    @options[:add_new_fields] = e.nil? ? true : e
+  end
 end.parse!
 
 ActiveRecord::Base.logger = nil unless @options[:ar_logger]
@@ -83,5 +87,8 @@ remove_thumb(Settings.thumb_target) if @options[:clean_thumbs]
 remove_folders                      if @options[:clean_folders]
 remove_files(Settings.thumb_target) if @options[:clean_files]
 find_duplicates                     if @options[:find_duplicates]
+
+# temporary actions
 fix_database                        if @options[:fix_database]
 fix_database2                       if @options[:fix_database2]
+add_new_fields                      if @options[:add_new_fields]

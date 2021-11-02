@@ -3,6 +3,7 @@ end
 
 class Folder < ActiveRecord::Base
   serialize :sub_folders, Array
+  serialize :dimensions, Array
 end
 
 class Tag < ActiveRecord::Base

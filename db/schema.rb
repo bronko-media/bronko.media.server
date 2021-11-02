@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_15_180920) do
+ActiveRecord::Schema.define(version: 2021_11_02_202000) do
 
   create_table "folders", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
     t.string "md5_path"
@@ -36,6 +36,10 @@ ActiveRecord::Schema.define(version: 2021_06_15_180920) do
     t.boolean "is_image"
     t.json "tags"
     t.string "extension"
+    t.text "signature"
+    t.text "mime_type"
+    t.text "dimensions"
+    t.integer "size"
   end
 
   create_table "tags", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|

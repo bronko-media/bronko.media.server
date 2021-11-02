@@ -53,3 +53,14 @@ end
 def octicon(name)
   Octicons::Octicon.new(name).to_svg
 end
+
+def add_new_fields
+  Parallel.each(Image.all, in_threads: Settings.threads) do |image|
+    mini_magic = MiniMagick::Image.open(image.file_path)
+
+    image.update_attribute(:dimensions, mini_magic.dimensions) if image.dimensions.nil?
+    image.update_attribute(:mime_type, mini_magic.mime_type) if image.mime_type.nil?
+    image.update_attribute(:signature, mini_magic.signature) if image.signature.nil?
+    image.update_attribute(:size, mini_magic.size) if image.size.nil?
+  end
+end
