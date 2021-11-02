@@ -10,25 +10,13 @@ end
 def find_duplicates
   logger.info 'finding duplicates ...'
 
-  Parallel.each(Image.all, in_threads: Settings.threads) do |image|
-    next unless image.is_image
+  Image.select(:fingerprint).group(:fingerprint).having("count(*) > 1").each do |dupe|
+    next if dupe.fingerprint == "0"
+    Image.where(fingerprint: dupe.fingerprint).update(duplicate: true)
+  end
 
-    if image.fingerprint.nil?
-      logger.info "generating image fingerprint for #{image.file_path}"
-      fingerprint       = Phashion::Image.new(image.file_path).fingerprint
-      image.fingerprint = fingerprint
-    end
-
-    duplicates = Image.where(fingerprint: image.fingerprint)
-
-    if duplicates.size > 1
-      image.duplicate = true
-      duplicates.each { |dupe| image.duplicate_of = dupe.file_path }
-    else
-      image.duplicate = false
-    end
-
-    image.save
+  Image.select(:signature).group(:signature).having("count(*) > 1").each do |dupe|
+    Image.where(signature: dupe.signature).update(duplicate: true)
   end
 end
 

@@ -5,7 +5,8 @@ def upload_image(files, file_target)
 
     File.open(target, 'wb') { |f| f.write file[:tempfile].read }
 
-    mini_magic = MiniMagick::Image.open(target)
+    mini_magic  = MiniMagick::Image.open(target)
+    fingerprint = Phashion::Image.new(target).fingerprint
 
     Image.find_or_create_by(md5_path: md5_path) do |image|
       is_video = true if Settings.movie_extentions.include? File.extname(file[:filename]).delete('.')
@@ -14,6 +15,7 @@ def upload_image(files, file_target)
       image.dimensions  = mini_magic.dimensions
       image.extension   = File.extname(file[:filename]).delete('.')
       image.file_path   = target
+      image.fingerprint = fingerprint
       image.folder_path = file_target
       image.image_name  = File.basename(file[:filename], '.*')
       image.is_image    = is_image
@@ -35,7 +37,8 @@ def move_image(new_file_path, md5)
   new_md5_path  = Digest::MD5.hexdigest(new_file_path)
 
   FileUtils.mv image.file_path, new_file_path
-  mini_magic = MiniMagick::Image.open(new_file_path)
+  mini_magic  = MiniMagick::Image.open(new_file_path)
+  fingerprint = Phashion::Image.new(new_file_path).fingerprint
 
   Image.find_or_create_by(md5_path: new_md5_path) do |image_item|
     is_video = true if Settings.movie_extentions.include? File.extname(new_file_path).delete('.')
@@ -44,6 +47,7 @@ def move_image(new_file_path, md5)
     image_item.dimensions  = mini_magic.dimensions
     image_item.extension   = File.extname(new_file_path).delete('.')
     image_item.file_path   = new_file_path
+    image_item.fingerprint = fingerprint
     image_item.folder_path = "#{File.dirname(new_file_path)}/"
     image_item.image_name  = File.basename(new_file_path, '.*')
     image_item.is_image    = is_image
@@ -94,6 +98,7 @@ def index_files_to_db(path, extensions)
         rescue StandardError => e
           logger.error "Error: #{e.message}"
         end
+
         is_video = false
         is_image = true
       end
@@ -110,7 +115,7 @@ def index_files_to_db(path, extensions)
         md5_path: md5_path,
         mime_type: mini_magic.mime_type,
         signature: mini_magic.signature,
-        size: mini_magic.size,
+        size: mini_magic.size
       }
 
       write_file_to_db(file_meta_hash)
