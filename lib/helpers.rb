@@ -1,10 +1,10 @@
-def build_index(image_root, thumb_target, extensions, duplicates: true)
+def build_index(image_root, thumb_target, extensions)
   remove_files(thumb_target)
   remove_folders
   remove_thumbs(thumb_target)
   write_folders_to_db(index_folders(image_root))
   index_files_to_db(image_root, extensions)
-  find_duplicates if duplicates
+  find_duplicates
 end
 
 def find_duplicates
