@@ -27,14 +27,15 @@ end
 
 def add_new_fields
   Parallel.each(Image.all, in_threads: Settings.threads) do |image|
-    mini_magic = MiniMagick::Image.new(image.file_path)
-    image.update_attribute(:dimensions, mini_magic.dimensions) if image.dimensions.nil?
-    image.update_attribute(:mime_type, mini_magic.mime_type) if image.mime_type.nil?
-    image.update_attribute(:size, mini_magic.size) if image.size.nil?
-    image.update_attribute(:signature, mini_magic.signature) if image.signature.nil?
+    if image.dimensions.nil? || image.mime_type.nil? || image.size.nil? || image.signature.nil?
+      mini_magic = MiniMagick::Image.new(image.file_path)
+      image.update_attribute(:dimensions, mini_magic.dimensions)
+      image.update_attribute(:mime_type, mini_magic.mime_type)
+      image.update_attribute(:size, mini_magic.size)
+      image.update_attribute(:signature, mini_magic.signature)
+      mini_magic.destroy!
+    end
   rescue StandardError => e
     logger.error "Error: #{e.message}"
-  ensure
-    mini_magic.destroy!
   end
 end

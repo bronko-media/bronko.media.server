@@ -84,8 +84,6 @@ def index_files_to_db(path, extensions)
 
       next if File.exist? "#{Settings.thumb_target}/#{md5_path}.png"
 
-      mini_magic = MiniMagick::Image.new(file_path)
-
       logger.info "Indexing Image: #{file_path}"
       if Settings.movie_extentions.include?(extension)
         is_video = true
@@ -94,6 +92,7 @@ def index_files_to_db(path, extensions)
 
       if Settings.image_extentions.include?(extension)
         begin
+          mini_magic  = MiniMagick::Image.new(file_path)
           fingerprint = Phashion::Image.new(file_path).fingerprint
           signature   = mini_magic.signature
           size        = mini_magic.size
@@ -101,6 +100,8 @@ def index_files_to_db(path, extensions)
           dimensions  = mini_magic.dimensions
         rescue StandardError => e
           logger.error "Error: #{e.message}"
+        ensure
+          mini_magic.destroy!
         end
 
         is_video = false
@@ -121,8 +122,6 @@ def index_files_to_db(path, extensions)
         signature: signature,
         size: size
       }
-
-      mini_magic.destroy!
 
       write_file_to_db(file_meta_hash)
 
