@@ -95,6 +95,10 @@ def index_files_to_db(path, extensions)
       if Settings.image_extentions.include?(extension)
         begin
           fingerprint = Phashion::Image.new(file_path).fingerprint
+          signature   = mini_magic.signature
+          size        = mini_magic.size
+          mime_type   = mini_magic.mime_type
+          dimensions  = mini_magic.dimensions
         rescue StandardError => e
           logger.error "Error: #{e.message}"
         end
@@ -104,7 +108,7 @@ def index_files_to_db(path, extensions)
       end
 
       file_meta_hash = {
-        dimensions: mini_magic.dimensions,
+        dimensions: dimensions,
         extension: extension,
         file_path: file_path,
         fingerprint: fingerprint || false,
@@ -113,9 +117,9 @@ def index_files_to_db(path, extensions)
         is_image: is_image || false,
         is_video: is_video || false,
         md5_path: md5_path,
-        mime_type: mini_magic.mime_type,
-        signature: mini_magic.signature,
-        size: mini_magic.size
+        mime_type: mime_type,
+        signature: signature,
+        size: size
       }
 
       mini_magic.destroy!
