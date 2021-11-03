@@ -6,26 +6,21 @@ def move_folder(md5, new_folder_path)
 
   FileUtils.mv folder.folder_path, new_folder_path
 
-  Folder.find_or_create_by(md5_path: new_md5_path) do |folder_item|
-    folder_item.folder_path   = new_folder_path
-    folder_item.parent_folder = new_parent_folder
-    folder_item.sub_folders   = Dir.glob("#{new_folder_path}*/")
-    folder_item.md5_path      = new_md5_path
-  end
+  folder.update_attribute(:folder_path, new_folder_path)
+  folder.update_attribute(:parent_folder, new_parent_folder)
+  folder.update_attribute(:sub_folders, Dir.glob("#{new_folder_path}*/"))
+  folder.update_attribute(:md5_path, new_md5_path)
 
-  update_old_parent = Folder.find_by(folder_path: old_parent_folder)
-  if update_old_parent.sub_folders != Dir.glob("#{old_parent_folder}*/")
-    update_old_parent.sub_folders = Dir.glob("#{old_parent_folder}*/")
-    update_old_parent.save
-  end
+  old_parent = Folder.find_by(folder_path: old_parent_folder)
+  old_parent.update_attribute(:sub_folders, Dir.glob("#{old_parent_folder}*/"))
 
-  update_new_parent = Folder.find_by(folder_path: new_parent_folder)
-  if update_new_parent.sub_folders != Dir.glob("#{new_parent_folder}*/")
-    update_new_parent.sub_folders = Dir.glob("#{new_parent_folder}*/")
-    update_new_parent.save
-  end
+  new_parent = Folder.find_by(folder_path: new_parent_folder)
+  new_parent.update_attribute(:sub_folders, Dir.glob("#{new_parent_folder}*/"))
 
-  folder.destroy
+  # re-index moved folder
+  new_folder_path_wo_suffix = new_folder_path.delete_suffix('/')
+  write_folders_to_db(index_folders(new_folder_path_wo_suffix))
+  index_files_to_db(new_folder_path_wo_suffix, Settings.image_extentions + Settings.movie_extentions)
 end
 
 def create_folder(add_folder)

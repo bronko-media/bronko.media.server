@@ -37,31 +37,15 @@ def move_image(new_file_path, md5)
   new_md5_path  = Digest::MD5.hexdigest(new_file_path)
 
   FileUtils.mv image.file_path, new_file_path
-  mini_magic  = MiniMagick::Image.open(new_file_path)
-  fingerprint = Phashion::Image.new(new_file_path).fingerprint
 
-  Image.find_or_create_by(md5_path: new_md5_path) do |image_item|
-    is_video = true if Settings.movie_extentions.include? File.extname(new_file_path).delete('.')
-    is_image = true if Settings.image_extentions.include? File.extname(new_file_path).delete('.')
+  image.update_attribute(:file_path, new_file_path)
+  image.update_attribute(:folder_path, "#{File.dirname(new_file_path)}/")
+  image.update_attribute(:image_name, File.basename(new_file_path, '.*'))
+  image.update_attribute(:md5_path, new_md5_path)
 
-    image_item.dimensions  = mini_magic.dimensions
-    image_item.extension   = File.extname(new_file_path).delete('.')
-    image_item.file_path   = new_file_path
-    image_item.fingerprint = fingerprint
-    image_item.folder_path = "#{File.dirname(new_file_path)}/"
-    image_item.image_name  = File.basename(new_file_path, '.*')
-    image_item.is_image    = is_image
-    image_item.is_video    = is_video
-    image_item.md5_path    = new_md5_path
-    image_item.mime_type   = mini_magic.mime_type
-    image_item.signature   = mini_magic.signature
-    image_item.size        = mini_magic.size
-  end
-
+  # update thumb
+  FileUtils.rm "#{Settings.thumb_target}/#{md5}.png"
   create_thumb(new_md5_path, Settings.thumb_target, Settings.thumb_res)
-
-  image.destroy
-  ActiveRecord::Base.clear_active_connections!
 end
 
 def index_files_to_db(path, extensions)
