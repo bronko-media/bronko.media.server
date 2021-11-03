@@ -95,7 +95,15 @@ class BronkoMedia < Sinatra::Base
   end
 
   delete '/folder/delete/:md5' do
-    delete_folder(params[:md5])
+    folder        = Folder.find_by(md5_path: params[:md5])
+    parent_folder = folder.parent_folder
+
+    FileUtils.rm_r folder.folder_path if File.directory?(folder.folder_path)
+
+    updates = Folder.find_by(folder_path: parent_folder)
+    updates.update_attribute(:sub_folders, Dir.glob("#{parent_folder}*/"))
+
+    folder.destroy
 
     redirect "/folders/#{parent_folder}"
   end

@@ -42,28 +42,8 @@ def create_folder(add_folder)
     folder.md5_path      = md5_path
   end
 
-  # rubocop:disable Style/GuardClause
   updates = Folder.find_by(md5_path: parent_md5)
-  if updates.sub_folders != Dir.glob("#{parent_folder}*/")
-    updates.sub_folders = Dir.glob("#{parent_folder}*/")
-    updates.save
-  end
-  # rubocop:enable Style/GuardClause
-end
-
-def delete_folder(md5)
-  folder        = Folder.find_by(md5_path: md5)
-  parent_folder = folder.parent_folder.to_s
-
-  FileUtils.rm_r folder.folder_path if File.directory?(folder.folder_path)
-
-  updates = Folder.find_by(folder_path: parent_folder)
-  if updates.sub_folders != Dir.glob("#{parent_folder}*/")
-    updates.sub_folders = Dir.glob("#{parent_folder}*/")
-    updates.save
-  end
-
-  folder.destroy
+  updates.update_attribute(:sub_folders, Dir.glob("#{parent_folder}*/"))
 end
 
 def remove_folders
