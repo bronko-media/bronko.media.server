@@ -64,9 +64,8 @@ files_in_folder = Dir["#{media.folder_path}*"].reject { |f| File.directory? f } 
 </div>
 <%- else -%>
   <%- if media.is_image -%>
-
-  <div class="container">
-    <img class="img-fluid" src="/image/<%= media.md5_path %>" >
+  <div class="container" >
+    <img class="img-fluid d-block" src="/image/<%= media.md5_path %>" >
   </div>
   <%- end -%>
 

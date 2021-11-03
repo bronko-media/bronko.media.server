@@ -7,9 +7,13 @@
     entry_point   = folder.sub_folders
     parent_folder = folder.parent_folder
     this_folder   = folder.folder_path
-    images        = Image.where(
-                      folder_path: folder_root
-                    ).order("created_at #{Settings.sort_order}, image_name").paginate(
+    media_type    = params[:media]
+
+    filter = { folder_path: folder_root }
+    filter = { folder_path: folder_root, is_video: true } if media_type == 'videos'
+    filter = { folder_path: folder_root, is_image: true } if media_type == 'images'
+
+    images        = Image.where(filter).order("created_at #{Settings.sort_order}, image_name").paginate(
                       page: params[:page],
                       per_page: Settings.images_per_page
                     )
@@ -37,7 +41,7 @@
 <%- unless current_folder.nil? -%>
 <div class="btn-toolbar">
 <%- state = 'disabled' if folder_root == "#{Settings.originals_path}/" -%>
-  <a class="btn btn-outline-primary btn-sm mr-1 mb-1 <%= state %>" href="/folders/<%= parent_folder %>/"><%= octicon 'arrow-up' %></a>
+  <a class="btn btn-outline-primary btn-sm mr-1 mb-1 <%= state %>" href="/folders/<%= parent_folder %>"><%= octicon 'arrow-up' %></a>
 <%- entry_point.sort.each do |entry| -%>
   <a class="btn btn-outline-primary btn-sm mr-1 mb-1" href="/folders/<%= ERB::Util.url_encode entry %>"><%= entry.split('/').last %></a>
 <%- end -%>
@@ -46,9 +50,9 @@
   <button class="btn btn-outline-info      btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderMoveModal"><%= octicon 'git-compare' %></button>
   <button class="btn btn-outline-info      btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderScanModal"> <i style="color:black;" class="bi bi-file-earmark-break"></i></button>
   <button class="btn btn-outline-danger    btn-sm mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderDeleteModal"><%= octicon 'trash' %></button>
-  <button class="btn btn-outline-primary   btn-sm mr-1 mb-1 disabled" type="button"><i style="color:grey;" class="bi bi-film"></i></button>
-  <button class="btn btn-outline-primary   btn-sm mr-1 mb-1 disabled" type="button"><i style="color:grey;" class="bi bi-image"></i></button>
-  <a      class="btn btn-outline-primary   btn-sm mr-1 mb-1" href="/media/info/<%= folder.md5_path %>" type="button"><i style="color:black;" class="bi bi-arrow-up-right"></i></a>
+  <a      class="btn btn-outline-primary   btn-sm mr-1 mb-1" type="button" href="/folders/<%= this_folder %>?media=images"><i style="color:black;" class="bi bi-film"></i></a>
+  <a      class="btn btn-outline-primary   btn-sm mr-1 mb-1" type="button" href="/folders/<%= this_folder %>?media=videos"><i style="color:black;" class="bi bi-image"></i></a>
+  <a      class="btn btn-outline-primary   btn-sm mr-1 mb-1" type="button" href="/media/info/<%= folder.md5_path %>"><i style="color:black;" class="bi bi-arrow-up-right"></i></a>
 </div>
 
   <%- unless images.empty? -%>
