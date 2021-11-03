@@ -49,7 +49,12 @@ def add_new_fields
 
     image.update_attribute(:dimensions, mini_magic.dimensions) if image.dimensions.nil?
     image.update_attribute(:mime_type, mini_magic.mime_type) if image.mime_type.nil?
-    image.update_attribute(:signature, mini_magic.signature) if image.signature.nil?
     image.update_attribute(:size, mini_magic.size) if image.size.nil?
+
+    begin
+      image.update_attribute(:signature, mini_magic.signature) if image.signature.nil?
+    rescue StandardError => e
+      logger.error "Error: #{e.message}"
+    end
   end
 end
