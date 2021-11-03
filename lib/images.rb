@@ -84,7 +84,7 @@ def index_files_to_db(path, extensions)
 
       next if File.exist? "#{Settings.thumb_target}/#{md5_path}.png"
 
-      mini_magic = MiniMagick::Image.open(file_path)
+      mini_magic = MiniMagick::Image.new(file_path)
 
       logger.info "Indexing Image: #{file_path}"
       if Settings.movie_extentions.include?(extension)
@@ -117,6 +117,8 @@ def index_files_to_db(path, extensions)
         signature: mini_magic.signature,
         size: mini_magic.size
       }
+
+      mini_magic.destroy!
 
       write_file_to_db(file_meta_hash)
 

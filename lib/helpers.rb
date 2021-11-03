@@ -21,24 +21,6 @@ def find_duplicates
   end
 end
 
-def fix_database
-  Parallel.each(Image.all, in_threads: Settings.threads) do |image|
-    next if image.folder_path[-1] == '/'
-
-    image.folder_path = "#{image.folder_path}/"
-    image.save
-  end
-end
-
-def fix_database2
-  Parallel.each(Image.all, in_threads: Settings.threads) do |image|
-    next unless image.extension.nil?
-
-    image.extension = File.extname(image.file_path).delete('.')
-    image.save
-  end
-end
-
 def octicon(name)
   Octicons::Octicon.new(name).to_svg
 end
@@ -55,6 +37,8 @@ def add_new_fields
       image.update_attribute(:signature, mini_magic.signature) if image.signature.nil?
     rescue StandardError => e
       logger.error "Error: #{e.message}"
+    ensure
+      mini_magic.destroy!
     end
   end
 end
