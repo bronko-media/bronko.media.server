@@ -178,6 +178,10 @@ class BronkoMedia < Sinatra::Base
     redirect back
   end
 
+  post '/debug' do
+    pp params
+  end
+
   get '/indexer' do
     build_index(
       Settings.originals_path,
