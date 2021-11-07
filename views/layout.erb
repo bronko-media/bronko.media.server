@@ -44,19 +44,10 @@
     </div>
 
     <script type="text/javascript">
-      $('[data-fancybox]').fancybox({
-      	// Options will go here
-        buttons: [
-          "zoom",
-          "slideShow",
-          "fullScreen",
-          "download",
-          "close"
-        ],
-        animationEffect: "fade",
-        animationDuration: 400,
-        transitionEffect: "fade",
-        transitionDuration: 400,
+      Fancybox.bind("[data-fancybox]", {
+        Thumbs: {
+          autoStart: false,
+        },
       });
     </script>
   </body>
