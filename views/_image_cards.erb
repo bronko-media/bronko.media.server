@@ -30,7 +30,7 @@
 
     <%- if image.is_video -%>
       <div class="card mb-1">
-        <a href="#video<%= image.md5_path %>" data-fancybox="gallery" data-caption="<%= image.image_name %>">
+        <a data-fancybox="gallery" data-type="html5video" data-src="/image/<%= image.md5_path %>" data-caption="<%= image.image_name %>">
           <img src="/<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
           <span class="badge badge-secondary"><%= image.extension %></span>
         </a>
@@ -45,10 +45,7 @@
             <a class="btn btn-outline-primary btn-sm mr-1 bi bi-arrow-up-right" href="/media/info/<%= image.md5_path %>" type="button"></a>
           </div>
         </div>
-
-        <video controls id="video<%= image.md5_path %>" style="display:none;">
-          <source src="/image/<%= image.md5_path %>">
-        </video>
+        <input type="checkbox" aria-label="Checkbox for following text input">
       </div>
     <%- end -%>
     </div>
