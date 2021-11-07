@@ -5,7 +5,7 @@
           )
 -%>
 <%- unless images.empty? -%>
- <%= erb :_paginator, locals: {images: images} %>
+<%= erb :_paginator, locals: {images: images} %>
 
 <div class="row mt-1">
   <%= erb :_image_cards, locals: {images: images, show_path: true} %>

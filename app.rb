@@ -57,9 +57,7 @@ class BronkoMedia < Sinatra::Base
     erb :index, locals: { message: nil }
   end
 
-  get '/config' do
-    erb :config
-  end
+  ### /duplicate
 
   get '/duplicates' do
     erb :duplicates
@@ -71,6 +69,8 @@ class BronkoMedia < Sinatra::Base
     erb :index, locals: { message: 'Duplicate Scan ready' }
   end
 
+  ### /favorite
+
   get '/favorites' do
     erb :favorites
   end
@@ -79,6 +79,8 @@ class BronkoMedia < Sinatra::Base
     image = Image.find_by(md5_path: params[:md5])
     image.update_attribute(:favorite, params[:favorite])
   end
+
+  ### /folder
 
   get '/folders' do
     erb :folders, locals: { folder_root: "#{Settings.originals_path}/" }
@@ -126,6 +128,8 @@ class BronkoMedia < Sinatra::Base
     redirect back
   end
 
+  ### /image
+
   get '/image/:md5' do
     image = Image.find_by(md5_path: params[:md5])
     send_file(image.file_path.to_s, disposition: 'inline')
@@ -151,6 +155,26 @@ class BronkoMedia < Sinatra::Base
     redirect back
   end
 
+  post '/image/tag/:md5' do
+    tags = params[:tags].split(',').collect(&:strip)
+    tags.each { |tag| Tag.find_or_create_by(name: tag) }
+
+    image = Image.find_by(md5_path: params[:md5])
+    image.update_attribute(:tags, tags)
+
+    redirect back
+  end
+
+  ### sonstiges
+
+  get '/search' do
+    erb :search
+  end
+
+  get '/config' do
+    erb :config
+  end
+
   get '/media/info/:md5' do
     erb :info, locals: { md5: params[:md5] }
   end
@@ -166,16 +190,6 @@ class BronkoMedia < Sinatra::Base
 
   get '/tags' do
     erb :tags
-  end
-
-  post '/image/tag/:md5' do
-    tags = params[:tags].split(',').collect(&:strip)
-    tags.each { |tag| Tag.find_or_create_by(name: tag) }
-
-    image = Image.find_by(md5_path: params[:md5])
-    image.update_attribute(:tags, tags)
-
-    redirect back
   end
 
   post '/debug' do

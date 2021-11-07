@@ -1,0 +1,34 @@
+<%-
+if params[:search].nil?
+  search = nil
+else
+  search = Image.where("file_path LIKE ?", "%#{params[:search]}%").paginate(
+            page: params[:page],
+            per_page: Settings.images_per_page
+          )
+end
+-%>
+<h3>Search</h3>
+<div class="row ml-1">
+  <form action="/search" method="get" >
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <div class="input-group-text fixed-width">Name</div>
+      </div>
+      <input type="text" class="form-control" name="search">
+      <button type="submit" class="btn btn-outline-primary ml-2">Search</button>
+    </div>
+  </form>
+</div>
+
+<br \>
+
+<%- unless search.nil? -%>
+<%= erb :_paginator, locals: {images: search} %>
+
+<div class="row mt-1">
+  <%= erb :_image_cards, locals: {images: search, show_path: true} %>
+</div>
+
+<%= erb :_paginator, locals: {images: search} %>
+<%- end -%>
