@@ -16,7 +16,7 @@
           <%- end -%>
           <div class="btn-toolbar mb-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
             <button class="btn btn-outline-primary btn-sm mr-1 bi bi-info-lg"        type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"></button>
-            <a class="btn btn-outline-primary btn-sm mr-1 bi bi-arrow-up-right" href="/media/info/<%= image.md5_path %>" type="button"></a>
+            <a      class="btn btn-outline-primary btn-sm mr-1 bi bi-arrow-up-right" type="button" href="/media/info/<%= image.md5_path %>"></a>
             <button class="btn btn-outline-info    btn-sm mr-1 bi bi-folder-symlink" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"></button>
             <button class="btn btn-outline-info    btn-sm mr-1 bi bi-tags"           type="button" data-toggle="modal" data-target="#Tag<%= short_md5 %>Modal"></button>
             <button class="btn btn-outline-warning btn-sm mr-1 <%= fav_icon %>"      type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"></button>
@@ -59,19 +59,7 @@
               </button>
             </div>
             <div class="modal-body">
-              ID: <small><%= image.id %></small><br>
-              Name: <small><%= image.image_name %></small><br>
-              MD5 Path: <small><%= image.md5_path %></small><br>
-              Fingerprint: <small><%= image.fingerprint %></small><br>
-              Duplicate: <small><%= image.duplicate %></small><br>
-              Duplicates: <small><%= image.duplicate_of %></small><br>
-              Path: <small><%= image.file_path %></small><br>
-              Folder: <small><%= image.folder_path %></small><br>
-              Image?: <small><%= image.is_image %></small><br>
-              Video?: <small><%= image.is_video %></small><br>
-              Created: <small><%= image.created_at %></small><br>
-              Updated: <small><%= image.updated_at %></small><br>
-              Tags: <small><%= image.tags %></small><br>
+              <%= erb :_image_info, locals: { media: image } %>
             </div>
           </div>
         </div>

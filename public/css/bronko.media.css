@@ -1,8 +1,5 @@
-.button {
-    -webkit-transform: rotate(-90deg);
-    -moz-transform: rotate(-90deg);
-}
-
-.fixed-width {
-  width:160px;
+.btn {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  color: black;
 }

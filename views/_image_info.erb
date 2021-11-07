@@ -1,0 +1,22 @@
+<div class="container">
+  ID: <small><%= media.id %></small><br>
+  Name: <small><%= media.image_name %></small><br>
+  Folder: <small><%= media.folder_path %></small><br>
+  Path: <small><%= media.file_path %></small><br>
+  MD5 Path: <small><%= media.md5_path %></small><br>
+  <br/>
+  Mime: <small><%= media.mime_type %></small><br>
+  Resolution: <small><%= media.dimensions %></small><br>
+  Size: <small><%= number_to_human_size(media.size, precision: 2) %></small><br>
+  <br/>
+  Signature: <small><%= media.signature %></small><br>
+  Fingerprint: <small><%= media.fingerprint %></small><br>
+  <br/>
+  Duplicate: <small><%= media.duplicate %></small><br>
+  Duplicates: <small><%= media.duplicate_of %></small><br>
+  <br/>
+  Created: <small><%= media.created_at %></small><br>
+  Updated: <small><%= media.updated_at %></small><br>
+  <br/>
+  Tags: <small><%= media.tags %></small><br>
+</div>
