@@ -40,7 +40,7 @@ files_in_folder = Dir["#{media.folder_path}*"].reject { |f| File.directory? f } 
 </nav>
 
 <div class="btn-toolbar">
-  <button class="btn btn-outline-primary btn-sm mr-1"                      type="button" onclick="history.back()"><%= octicon 'arrow-up' %></button>
+  <button class="btn btn-outline-primary btn-sm mr-1 bi bi-arrow-up"       type="button" onclick="history.back()"></button>
   <button class="btn btn-outline-info    btn-sm mr-1 bi bi-folder-symlink" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"></button>
   <button class="btn btn-outline-info    btn-sm mr-1 bi bi-tags"           type="button" data-toggle="modal" data-target="#Tag<%= short_md5 %>Modal"></button>
   <button class="btn btn-outline-warning btn-sm mr-1 bi bi-bookmark-star"  type="button" onclick="addFavorite(this)" value="<%= media.md5_path %>"></button>

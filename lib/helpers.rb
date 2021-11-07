@@ -21,10 +21,6 @@ def find_duplicates
   end
 end
 
-def octicon(name)
-  Octicons::Octicon.new(name).to_svg
-end
-
 def add_new_fields
   Parallel.each(Image.all, in_threads: Settings.threads) do |image|
     if image.dimensions.nil? || image.mime_type.nil? || image.size.nil? || image.signature.nil?

@@ -99,7 +99,6 @@ GEM
       racc (~> 1.4)
     nokogiri (1.12.5-x86_64-linux)
       racc (~> 1.4)
-    octicons (14.2.2)
     parallel (1.20.1)
     parser (3.0.1.1)
       ast (~> 2.4.1)
@@ -175,7 +174,6 @@ DEPENDENCIES
   faraday
   mini_magick
   mysql2
-  octicons
   parallel
   phashion
   puma
