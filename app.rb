@@ -154,6 +154,13 @@ class BronkoMedia < Sinatra::Base
     redirect back
   end
 
+  post '/images/move' do
+    md5s = params[:md5s].split(',').uniq
+    multi_move_images(params[:path], md5s)
+
+    redirect back
+  end
+
   post '/image/tag/:md5' do
     tags = params[:tags].split(',').collect(&:strip)
     tags.each { |tag| Tag.find_or_create_by(name: tag) }
@@ -192,7 +199,7 @@ class BronkoMedia < Sinatra::Base
   end
 
   post '/debug' do
-    pp params
+    erb :debug, locals: { message: params }
   end
 
   get '/indexer' do

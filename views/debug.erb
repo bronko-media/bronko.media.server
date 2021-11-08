@@ -1,0 +1,14 @@
+<% unless message.nil? %>
+Message: <%= message %>
+<% end %>
+<hr />
+
+<%-params[:md5s].split(',').uniq.each do |md5| -%>
+  <%= md5 %> <br />
+
+  <%- images = Image.where(md5_path: md5) -%>
+  <%- images.each do |image| -%>
+    <%= image.attributes %>
+  <%- end -%>
+  <hr />
+<%- end -%>

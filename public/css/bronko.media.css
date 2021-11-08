@@ -1,6 +1,9 @@
 .btn {
   -webkit-appearance: none;
   -moz-appearance: none;
+}
+
+.btn_black {
   color: black;
 }
 
