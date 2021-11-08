@@ -24,7 +24,7 @@
               <a class="btn btn_black btn-outline-primary btn-sm mr-1 bi bi-arrow-up-right" type="button" href="/media/info/<%= image.md5_path %>"></a>
             </div>
           </div>
-          <input type="checkbox" aria-label="Checkbox for following text input">
+          <input class="image_checkbox" id="<%= image.md5_path %>" name="<%= image.md5_path %>" type="checkbox" value="<%= image.md5_path %>" >
       </div>
     <%- end -%>
 

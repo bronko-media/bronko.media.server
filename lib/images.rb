@@ -48,6 +48,24 @@ def move_image(new_file_path, md5)
   create_thumb(new_md5_path, Settings.thumb_target, Settings.thumb_res)
 end
 
+def multi_move_images(path, md5s)
+  md5s.each do |md5|
+    image         = Image.find_by(md5_path: md5)
+    new_file_path = "#{path}/#{image.image_name}.#{image.extension}"
+    new_md5_path  = Digest::MD5.hexdigest(new_file_path)
+
+    FileUtils.mv image.file_path, new_file_path
+
+    image.update_attribute(:file_path, new_file_path)
+    image.update_attribute(:folder_path, "#{path}/")
+    image.update_attribute(:md5_path, new_md5_path)
+
+    # update thumb
+    FileUtils.rm "#{Settings.thumb_target}/#{md5}.png"
+    create_thumb(new_md5_path, Settings.thumb_target, Settings.thumb_res)
+  end
+end
+
 def index_files_to_db(path, extensions)
   time = Time.now
   FileUtils.mkdir_p Settings.thumb_target

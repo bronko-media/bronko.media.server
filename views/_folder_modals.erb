@@ -120,9 +120,10 @@
           </button>
         </div>
         <div class="modal-body">
-          <form action="/debug" method="post" >
+          <form action="/images/move" method="post">
             <div class="input-group mb-2">
-              <input type="text" class="form-control" name="move_images" value="<%= this_folder %>" >
+              <input type="text" class="form-control" name="path" value="<%= this_folder %>">
+              <input type="hidden" name="md5s" id="md5s" value="">
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>
