@@ -131,7 +131,7 @@ class BronkoMedia < Sinatra::Base
 
   get '/image/:md5' do
     image = Image.find_by(md5_path: params[:md5])
-    send_file(image.file_path.to_s, disposition: 'inline')
+    send_file(image.file_path, disposition: 'inline')
   end
 
   delete '/image/:md5' do
@@ -157,6 +157,13 @@ class BronkoMedia < Sinatra::Base
   post '/images/move' do
     md5s = params[:md5s].split(',').uniq
     multi_move_images(params[:path], md5s)
+
+    redirect back
+  end
+
+  post '/images/delete' do
+    md5s = params[:md5s].split(',').uniq
+    multi_delete_images(md5s)
 
     redirect back
   end

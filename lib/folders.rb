@@ -1,6 +1,6 @@
 def move_folder(md5, new_folder_path)
   folder            = Folder.find_by(md5_path: md5)
-  old_parent_folder = folder.parent_folder.to_s
+  old_parent_folder = folder.parent_folder
   new_md5_path      = Digest::MD5.hexdigest(new_folder_path)
   new_parent_folder = "#{File.dirname(new_folder_path.delete_suffix('/'))}/"
 

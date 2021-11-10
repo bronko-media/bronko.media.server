@@ -57,7 +57,11 @@
     });
 
     $('#ImagesMoveModal').on('show.bs.modal', function () {
-      document.getElementById('md5s').value = selectedImages;
+      document.getElementById('mv_md5s').value = selectedImages;
+    })
+
+    $('#ImagesDeleteModal').on('show.bs.modal', function () {
+      document.getElementById('del_md5s').value = selectedImages;
     })
     </script>
 

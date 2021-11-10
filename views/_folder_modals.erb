@@ -25,7 +25,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="FolderDeleteModalLabel">delete Folder</h5>
+          <h5 class="modal-title" id="FolderDeleteModalLabel">Delete Folder</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -123,9 +123,31 @@
           <form action="/images/move" method="post">
             <div class="input-group mb-2">
               <input type="text" class="form-control" name="path" value="<%= this_folder %>">
-              <input type="hidden" name="md5s" id="md5s" value="">
+              <input type="hidden" name="md5s" id="mv_md5s" value="">
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Delete Iamges -->
+  <div class="modal fade" id="ImagesDeleteModal" tabindex="-1" role="dialog" aria-labelledby="ImagesDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ImagesDeleteModalLabel">Delete Images</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="/images/delete" method="post">
+            <div class="input-group mb-2">
+              <input type="hidden" name="md5s" id="del_md5s" value="">
+            </div>
+            <button type="submit" class="btn btn-danger">Delete</button>
           </form>
         </div>
       </div>

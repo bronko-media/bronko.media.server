@@ -49,7 +49,7 @@ def move_image(new_file_path, md5)
 end
 
 def multi_move_images(path, md5s)
-  md5s.each do |md5|
+  Parallel.each(md5s, in_threads: Settings.threads) do |md5|
     image         = Image.find_by(md5_path: md5)
     new_file_path = "#{path}/#{image.image_name}.#{image.extension}"
     new_md5_path  = Digest::MD5.hexdigest(new_file_path)
@@ -63,6 +63,19 @@ def multi_move_images(path, md5s)
     # update thumb
     FileUtils.rm "#{Settings.thumb_target}/#{md5}.png"
     create_thumb(new_md5_path, Settings.thumb_target, Settings.thumb_res)
+
+    ActiveRecord::Base.clear_active_connections!
+  end
+end
+
+def multi_delete_images(md5s)
+  Parallel.each(md5s, in_threads: Settings.threads) do |md5|
+    image = Image.find_by(md5_path: md5)
+    File.delete(image.file_path) if File.exist?(image.file_path)
+    File.delete("#{Settings.thumb_target}/#{md5}.png") if File.exist?("#{Settings.thumb_target}/#{md5}.png")
+    image.destroy
+
+    ActiveRecord::Base.clear_active_connections!
   end
 end
 
