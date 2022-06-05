@@ -1,6 +1,6 @@
 def move_folder(md5, new_folder_path)
   folder            = Folder.find_by(md5_path: md5)
-  old_parent_folder = folder.parent_folder.to_s
+  old_parent_folder = folder.parent_folder
   new_md5_path      = Digest::MD5.hexdigest(new_folder_path)
   new_parent_folder = "#{File.dirname(new_folder_path.delete_suffix('/'))}/"
 
@@ -35,7 +35,7 @@ def create_folder(add_folder)
 
   FileUtils.mkdir_p folder_path
 
-  Folder.find_or_create_by(md5_path: md5_path) do |folder|
+  Folder.find_or_create_by(md5_path:) do |folder|
     folder.folder_path   = folder_path
     folder.parent_folder = parent_folder
     folder.sub_folders   = Dir.glob("#{folder_path}*/")

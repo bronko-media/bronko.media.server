@@ -41,25 +41,26 @@
 <%- unless current_folder.nil? -%>
 <div class="btn-toolbar">
 <%- state = 'disabled' if folder_root == "#{Settings.originals_path}/" -%>
-  <a class="btn btn-outline-primary btn-sm bi bi-arrow-up mr-1 mb-1 <%= state %>" href="/folders/<%= parent_folder %>"></a>
+  <a class="btn btn-outline-primary btn-sm mr-1 mb-1 bi bi-arrow-up <%= state %>" href="/folders/<%= parent_folder %>"></a>
 <%- entry_point.sort.each do |entry| -%>
   <a class="btn btn_bc btn-outline-primary btn-sm mr-1 mb-1" href="/folders/<%= ERB::Util.url_encode entry %>"><%= entry.split('/').last %></a>
 <%- end -%>
-  <button class="btn btn_black btn-outline-secondary btn-sm bi bi-plus-lg mr-1 mb-1"            type="button" data-toggle="modal" data-target="#FolderPlusModal"></button>
-  <button class="btn btn_black btn-outline-primary   btn-sm bi bi-cloud-arrow-up mr-1 mb-1"     type="button" data-toggle="modal" data-target="#FolderUploadModal"></button>
-  <button class="btn btn_black btn-outline-info      btn-sm bi bi-arrow-left-right mr-1 mb-1"   type="button" data-toggle="modal" data-target="#FolderMoveModal"></button>
-  <button class="btn btn_black btn-outline-info      btn-sm bi bi-file-earmark-break mr-1 mb-1" type="button" data-toggle="modal" data-target="#FolderScanModal"></button>
-  <button class="btn btn_black btn-outline-danger    btn-sm bi bi-trash mr-1 mb-1"              type="button" data-toggle="modal" data-target="#FolderDeleteModal"></button>
-  <div class="border-left pl-1">
-    <a class="btn btn_black btn-outline-primary btn-sm bi bi-film mb-1"       type="button" href="/folders/<%= this_folder %>?media=videos"></a>
-    <a class="btn btn_black btn-outline-primary btn-sm bi bi-image mr-1 mb-1" type="button" href="/folders/<%= this_folder %>?media=images"></a>
-  </div>
-  <div class="border-left pl-1">
-    <a class="btn btn_black btn-outline-primary btn-sm bi bi-arrow-up-right mr-1 mb-1" type="button" href="/media/info/<%= folder.md5_path %>"></a>
-  </div>
-  <div class="border-left pl-1">
-    <button class="btn btn_black btn-outline-primary btn-sm bi bi-lightning mr-1 mb-1" type="button" data-toggle="modal" data-target="#ImagesMoveModal" ></button>
-  </div>
+<div class="btn-group mr-1 mb-1" role="group">
+  <button class="btn btn_black btn-outline-secondary btn-sm bi bi-plus-lg"            type="button" data-toggle="modal" data-target="#FolderPlusModal"></button>
+  <button class="btn btn_black btn-outline-info      btn-sm bi bi-cloud-arrow-up"     type="button" data-toggle="modal" data-target="#FolderUploadModal"></button>
+  <button class="btn btn_black btn-outline-info      btn-sm bi bi-arrow-left-right"   type="button" data-toggle="modal" data-target="#FolderMoveModal"></button>
+  <button class="btn btn_black btn-outline-info      btn-sm bi bi-file-earmark-break" type="button" data-toggle="modal" data-target="#FolderScanModal"></button>
+  <a      class="btn btn_black btn-outline-info      btn-sm bi bi-film"               type="button" href="/folders/<%= this_folder %>?media=videos"></a>
+  <a      class="btn btn_black btn-outline-info      btn-sm bi bi-image"              type="button" href="/folders/<%= this_folder %>?media=images"></a>
+  <button class="btn btn_black btn-outline-danger    btn-sm bi bi-trash"              type="button" data-toggle="modal" data-target="#FolderDeleteModal"></button>
+</div>
+<div class="btn-group mb-1" role="group">
+    <a class="btn btn_black btn-outline-primary btn-sm bi bi-arrow-up-right mr-1" type="button" href="/media/info/<%= folder.md5_path %>"></a>
+</div>
+<div class="btn-group mb-1" role="group">
+    <button class="btn btn_black btn-outline-warning btn-sm bi bi-arrow-left-right" type="button" data-toggle="modal" data-target="#ImagesMoveModal" ></button>
+    <button class="btn btn_black btn-outline-warning btn-sm bi bi-trash"            type="button" data-toggle="modal" data-target="#ImagesDeleteModal" ></button>
+</div>
 </div>
 
   <%- unless images.empty? -%>

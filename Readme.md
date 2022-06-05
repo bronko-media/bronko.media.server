@@ -1,11 +1,5 @@
 # bronko.media.server
 
-[![Docker Hub package][dockerhub-badge]][dockerhub-link]
-
-[dockerhub-badge]: https://img.shields.io/badge/images%20on-Docker%20Hub-blue.svg
-
-[dockerhub-link]: https://hub.docker.com/r/rwaffen/bronko.media.server
-
 ## General
 
 This is an app to handle your image collection.
@@ -13,7 +7,7 @@ It is a ruby sinatra web app bundled with bootstrap, jquery and fancybox.
 
 ## Install
 
-    bundle config set --local path 'vendor/gems'
+    bundle config set --local path 'vendor/bundle'
     bundle install
 
 ### DB

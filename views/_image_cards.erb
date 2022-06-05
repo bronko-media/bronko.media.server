@@ -14,14 +14,16 @@
           <%- if show_path -%>
           <small class="mt-1"><%= image.folder_path.scan(/.{1,100}/).join("\n") %></small>
           <%- end -%>
-          <div class="btn-toolbar mb-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
-            <button class="btn btn_black btn-outline-primary btn-sm mr-1 bi bi-info-lg"        type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"></button>
-            <button class="btn btn_black btn-outline-info    btn-sm mr-1 bi bi-arrow-left-right" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"></button>
-            <button class="btn btn_black btn-outline-info    btn-sm mr-1 bi bi-tags"           type="button" data-toggle="modal" data-target="#Tag<%= short_md5 %>Modal"></button>
-            <button class="btn btn_black btn-outline-warning btn-sm mr-1 <%= fav_icon %>"      type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"></button>
-            <button class="btn btn_black btn-outline-danger  btn-sm mr-1 bi bi-trash"          type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"></button>
-            <div class="border-left pl-1">
-              <a class="btn btn_black btn-outline-primary btn-sm mr-1 bi bi-arrow-up-right" type="button" href="/media/info/<%= image.md5_path %>"></a>
+          <div class="btn-toolbar justify-content-center" role="toolbar">
+            <div class="btn-group mr-1" role="group">
+              <button class="btn btn_black btn-outline-primary btn-sm bi bi-info-lg"        type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"></button>
+              <button class="btn btn_black btn-outline-info    btn-sm bi bi-arrow-left-right" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"></button>
+              <button class="btn btn_black btn-outline-info    btn-sm bi bi-tags"           type="button" data-toggle="modal" data-target="#Tag<%= short_md5 %>Modal"></button>
+              <button class="btn btn_black btn-outline-warning btn-sm <%= fav_icon %>"      type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"></button>
+              <button class="btn btn_black btn-outline-danger  btn-sm bi bi-trash"          type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"></button>
+            </div>
+            <div class="btn-group" role="group">
+              <a class="btn btn_black btn-outline-primary btn-sm bi bi-arrow-up-right" type="button" href="/media/info/<%= image.md5_path %>"></a>
             </div>
           </div>
           <input class="image_checkbox" id="<%= image.md5_path %>" name="<%= image.md5_path %>" type="checkbox" value="<%= image.md5_path %>" >
@@ -35,17 +37,19 @@
           <span class="badge badge-secondary"><%= image.extension %></span>
         </a>
         <small class="mt-1" align="center"><%= truncate(image.image_name, :length => 27) %></small>
-        <div class="btn-toolbar mb-1 ml-1 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
-          <button class="btn btn_black btn-outline-primary btn-sm mr-1 bi bi-info-lg"        type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"></button>
-          <button class="btn btn_black btn-outline-info    btn-sm mr-1 bi bi-arrow-left-right" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"></button>
-          <button class="btn btn_black btn-outline-info    btn-sm mr-1 bi bi-tags"           type="button" data-toggle="modal" data-target="#Tag<%= short_md5 %>Modal"></button>
-          <button class="btn btn_black btn-outline-warning btn-sm mr-1 <%= fav_icon %>"      type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"></button>
-          <button class="btn btn_black btn-outline-danger  btn-sm mr-1 bi bi-trash"          type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"></button>
-          <div class="border-left pl-1">
-            <a class="btn btn-outline-primary btn-sm mr-1 bi bi-arrow-up-right" href="/media/info/<%= image.md5_path %>" type="button"></a>
+        <div class="btn-toolbar mb-1 ml-1 justify-content-center" role="toolbar">
+          <div class="btn-group mr-1" role="group">
+            <button class="btn btn_black btn-outline-primary btn-sm bi bi-info-lg"        type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"></button>
+            <button class="btn btn_black btn-outline-info    btn-sm bi bi-arrow-left-right" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"></button>
+            <button class="btn btn_black btn-outline-info    btn-sm bi bi-tags"           type="button" data-toggle="modal" data-target="#Tag<%= short_md5 %>Modal"></button>
+            <button class="btn btn_black btn-outline-warning btn-sm <%= fav_icon %>"      type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"></button>
+            <button class="btn btn_black btn-outline-danger  btn-sm bi bi-trash"          type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"></button>
+          </div>
+          <div class="btn-group" role="group">
+            <a class="btn btn-outline-primary btn-sm bi bi-arrow-up-right" href="/media/info/<%= image.md5_path %>" type="button"></a>
           </div>
         </div>
-        <input type="checkbox" aria-label="Checkbox for following text input">
+        <input class="image_checkbox" id="<%= image.md5_path %>" name="<%= image.md5_path %>" type="checkbox" value="<%= image.md5_path %>" >
       </div>
     <%- end -%>
     </div>

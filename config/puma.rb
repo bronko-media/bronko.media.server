@@ -1,4 +1,4 @@
-root = Dir.getwd.to_s
+root = Dir.getwd
 
 pidfile "#{root}/tmp/puma/pid"
 state_path "#{root}/tmp/puma/state"

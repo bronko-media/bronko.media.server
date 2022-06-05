@@ -4,5 +4,6 @@ public/images/*
 vendor/*
 .DS_Store
 .bundle/
+.vagrant/
 tmp/puma/state
 tmp/puma/pid

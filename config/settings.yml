@@ -18,7 +18,7 @@ movie_extentions:
 - mpeg
 - ts
 images_per_page: 30
-col_options: col-md-auto
+col_options: col-md-3
 sort_order: DESC
 threads: 10
 db_adapter: mysql2

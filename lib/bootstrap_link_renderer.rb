@@ -3,7 +3,7 @@ module WillPaginate
     module Helpers
       include ViewHelpers
 
-      def will_paginate(collection, options = {}) #:nodoc:
+      def will_paginate(collection, options = {}) # :nodoc:
         options = options.merge(renderer: Bootstrap4LinkRenderer) unless options[:renderer]
         super(collection, options)
       end

@@ -10,26 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_02_202000) do
-
+ActiveRecord::Schema[7.0].define(version: 2022_06_05_093614) do
   create_table "folders", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
     t.string "md5_path"
     t.text "folder_path"
     t.text "parent_folder"
     t.text "sub_folders"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "images", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
     t.string "md5_path"
     t.text "file_path"
     t.text "folder_path"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "image_name"
     t.boolean "favorite", default: false
-    t.string "fingerprint"
     t.boolean "duplicate", default: false
     t.string "duplicate_of"
     t.boolean "is_video"
@@ -44,8 +42,8 @@ ActiveRecord::Schema.define(version: 2021_11_02_202000) do
 
   create_table "tags", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
 end
