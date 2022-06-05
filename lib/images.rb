@@ -3,11 +3,11 @@ def upload_image(files, file_target)
     target   = "#{file_target}#{file[:filename]}"
     md5_path = Digest::MD5.hexdigest(target)
 
-    File.open(target, 'wb') { |f| f.write file[:tempfile].read }
+    File.binwrite(target, file[:tempfile].read)
 
-    mini_magic  = MiniMagick::Image.open(target)
+    mini_magic = MiniMagick::Image.open(target)
 
-    Image.find_or_create_by(md5_path: md5_path) do |image|
+    Image.find_or_create_by(md5_path:) do |image|
       is_video = true if Settings.movie_extentions.include? File.extname(file[:filename]).delete('.')
       is_image = true if Settings.image_extentions.include? File.extname(file[:filename]).delete('.')
 
@@ -121,17 +121,17 @@ def index_files_to_db(path, extensions)
       end
 
       file_meta_hash = {
-        dimensions: dimensions,
-        extension: extension,
-        file_path: file_path,
+        dimensions:,
+        extension:,
+        file_path:,
         folder_path: folder,
         image_name: File.basename(file, '.*'),
         is_image: is_image || false,
         is_video: is_video || false,
-        md5_path: md5_path,
-        mime_type: mime_type,
-        signature: signature,
-        size: size
+        md5_path:,
+        mime_type:,
+        signature:,
+        size:
       }
 
       write_file_to_db(file_meta_hash)
