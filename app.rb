@@ -115,14 +115,15 @@ class BronkoMedia < Sinatra::Base
   end
 
   post '/folder/scan/:md5' do
-    folder     = Folder.find_by(md5_path: params[:md5]).folder_path.delete_suffix('/')
-    extensions = Settings.image_extentions + Settings.movie_extentions
+    folder_path = Folder.find_by(md5_path: params[:md5]).folder_path
+    folder      = folder_path.delete_suffix('/')
+    extensions  = Settings.image_extentions + Settings.movie_extentions
 
     logger.info "Starting Folder Scan of: #{folder}"
 
     write_folders_to_db(index_folders(folder))
     index_files_to_db(folder, extensions)
-
+    remove_files(Settings.thumb_target, Image.where(folder_path: folder_path))
     redirect back
   end
 
