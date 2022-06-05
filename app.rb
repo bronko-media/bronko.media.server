@@ -123,7 +123,7 @@ class BronkoMedia < Sinatra::Base
 
     write_folders_to_db(index_folders(folder))
     index_files_to_db(folder, extensions)
-    remove_files(Settings.thumb_target, Image.where(folder_path: folder_path))
+    remove_files(Settings.thumb_target, Image.where(folder_path:))
     redirect back
   end
 
