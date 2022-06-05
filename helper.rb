@@ -69,6 +69,10 @@ OptionParser.new do |opts|
   opts.on('--add_new_fields', TrueClass, 'add new fields') do |e|
     @options[:add_new_fields] = e.nil? ? true : e
   end
+
+  opts.on('--add_mtime_and_ctime', TrueClass, 'add mtime and ctime') do |e|
+    @options[:add_mtime_and_ctime] = e.nil? ? true : e
+  end
 end.parse!
 
 ActiveRecord::Base.logger = nil unless @options[:ar_logger]
@@ -81,3 +85,4 @@ find_duplicates                     if @options[:find_duplicates]
 
 # temporary actions
 add_new_fields                      if @options[:add_new_fields]
+add_mtime_and_ctime                 if @options[:add_mtime_and_ctime]

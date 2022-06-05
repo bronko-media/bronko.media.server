@@ -22,6 +22,8 @@ def upload_image(files, file_target)
       image.mime_type   = mini_magic.mime_type
       image.signature   = mini_magic.signature
       image.size        = mini_magic.size
+      image.file_mtime  = File.mtime(target)
+      image.file_ctime  = File.ctime(target)
     end
 
     create_thumb(md5_path, Settings.thumb_target, Settings.thumb_res)
@@ -131,7 +133,9 @@ def index_files_to_db(path, extensions)
         md5_path:,
         mime_type:,
         signature:,
-        size:
+        size:,
+        file_mtime: File.mtime(file_path),
+        file_ctime: File.ctime(file_path)
       }
 
       write_file_to_db(file_meta_hash)
@@ -162,6 +166,8 @@ def write_file_to_db(file)
     image.mime_type   = file[:mime_type]
     image.signature   = file[:signature]
     image.size        = file[:size]
+    image.file_mtime  = file[:file_mtime]
+    image.file_ctime  = file[:file_ctime]
 
     image.save
   end

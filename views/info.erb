@@ -61,6 +61,9 @@ files_in_folder = Dir["#{media.folder_path}*"].reject { |f| File.directory? f } 
   <br />
   Created: <small><%= media.created_at %></small><br>
   Updated: <small><%= media.updated_at %></small><br>
+  <br />
+  File Modified: <small><%= media.file_mtime %></small><br>
+  File Created: <small><%= media.file_ctime %></small><br>
 </div>
 <%- else -%>
   <%- if media.is_image -%>

@@ -31,3 +31,10 @@ def add_new_fields
     logger.error "Error: #{e.message}"
   end
 end
+
+def add_mtime_and_ctime
+  Parallel.each(Image.all, in_threads: Settings.threads) do |image|
+    image.update_attribute(:file_mtime, File.mtime(image.file_path))
+    image.update_attribute(:file_ctime, File.ctime(image.file_path))
+  end
+end
