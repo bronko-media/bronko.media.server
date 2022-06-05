@@ -10,14 +10,7 @@ end
 def find_duplicates
   logger.info 'finding duplicates ...'
 
-  image_fingerprints = Image.select(:fingerprint).group(:fingerprint).having('count(*) > 1')
   image_signatures   = Image.select(:signature).group(:signature).having('count(*) > 1')
-
-  Parallel.each(image_fingerprints, in_threads: Settings.threads) do |dupe|
-    next if dupe.fingerprint == '0'
-
-    Image.where(fingerprint: dupe.fingerprint).update(duplicate: true)
-  end
 
   Parallel.each(image_signatures, in_threads: Settings.threads) do |dupe|
     Image.where(signature: dupe.signature).update(duplicate: true)

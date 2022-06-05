@@ -6,7 +6,6 @@ def upload_image(files, file_target)
     File.open(target, 'wb') { |f| f.write file[:tempfile].read }
 
     mini_magic  = MiniMagick::Image.open(target)
-    fingerprint = Phashion::Image.new(target).fingerprint
 
     Image.find_or_create_by(md5_path: md5_path) do |image|
       is_video = true if Settings.movie_extentions.include? File.extname(file[:filename]).delete('.')
@@ -15,7 +14,6 @@ def upload_image(files, file_target)
       image.dimensions  = mini_magic.dimensions
       image.extension   = File.extname(file[:filename]).delete('.')
       image.file_path   = target
-      image.fingerprint = fingerprint
       image.folder_path = file_target
       image.image_name  = File.basename(file[:filename], '.*')
       image.is_image    = is_image
@@ -108,7 +106,6 @@ def index_files_to_db(path, extensions)
       if Settings.image_extentions.include?(extension)
         begin
           mini_magic  = MiniMagick::Image.new(file_path)
-          fingerprint = Phashion::Image.new(file_path).fingerprint
           signature   = mini_magic.signature
           size        = mini_magic.size
           mime_type   = mini_magic.mime_type
@@ -127,7 +124,6 @@ def index_files_to_db(path, extensions)
         dimensions: dimensions,
         extension: extension,
         file_path: file_path,
-        fingerprint: fingerprint || false,
         folder_path: folder,
         image_name: File.basename(file, '.*'),
         is_image: is_image || false,
@@ -158,7 +154,6 @@ def write_file_to_db(file)
     image.dimensions  = file[:dimensions]
     image.extension   = file[:extension]
     image.file_path   = file[:file_path]
-    image.fingerprint = file[:fingerprint]
     image.folder_path = file[:folder_path]
     image.image_name  = file[:image_name]
     image.is_image    = file[:is_image]

@@ -1,5 +1,5 @@
 <%-
-  images = Image.where(duplicate: true).order(fingerprint: :asc).paginate(
+  images = Image.where(duplicate: true).paginate(
             page: params[:page],
             per_page: Settings.images_per_page
           )
