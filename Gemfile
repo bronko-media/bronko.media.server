@@ -15,7 +15,7 @@ gem 'sinatra-contrib'
 gem 'sqlite3'
 gem 'streamio-ffmpeg'
 gem 'wikipedia-client'
-gem 'will_paginate'
+gem 'pagy', '~> 5.10'
 
 gem 'rubocop', require: false
 gem 'rubocop-rake', require: false

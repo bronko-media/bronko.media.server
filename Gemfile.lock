@@ -78,6 +78,8 @@ GEM
     nio4r (2.5.8)
     nokogiri (1.13.6-x86_64-darwin)
       racc (~> 1.4)
+    pagy (5.10.1)
+      activesupport
     parallel (1.22.1)
     parser (3.1.2.0)
       ast (~> 2.4.1)
@@ -137,7 +139,6 @@ GEM
     unicode-display_width (2.1.0)
     wikipedia-client (1.16.0)
       addressable (~> 2.7)
-    will_paginate (3.3.1)
 
 PLATFORMS
   x86_64-darwin-21
@@ -149,6 +150,7 @@ DEPENDENCIES
   faraday
   mini_magick
   mysql2
+  pagy (~> 5.10)
   parallel
   puma
   rake
@@ -161,7 +163,6 @@ DEPENDENCIES
   sqlite3
   streamio-ffmpeg
   wikipedia-client
-  will_paginate
 
 BUNDLED WITH
    2.3.7

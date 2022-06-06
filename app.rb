@@ -13,11 +13,11 @@ require 'sinatra/activerecord'
 require 'sinatra/custom_logger'
 require 'streamio-ffmpeg'
 require 'timeout'
-require 'will_paginate'
-require 'will_paginate/active_record'
+require 'pagy'
+require 'pagy/extras/bootstrap'
+require 'pagy/extras/support'
 require 'yaml'
 
-require_relative 'lib/bootstrap_link_renderer'
 require_relative 'lib/helpers'
 require_relative 'lib/folders'
 require_relative 'lib/thumbs'
@@ -27,9 +27,10 @@ require_relative 'lib/models'
 class BronkoMedia < Sinatra::Base
   include ActionView::Helpers::TextHelper
   include ActionView::Helpers::NumberHelper
+  include Pagy::Backend
+  include Pagy::Frontend
 
   register Sinatra::ActiveRecordExtension
-  register WillPaginate::Sinatra
 
   Config.load_and_set_settings "#{File.dirname(__FILE__)}/config/settings.yml"
 
