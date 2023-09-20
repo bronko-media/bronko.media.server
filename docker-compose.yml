@@ -2,7 +2,7 @@
 version: "3.5"
 services:
   bronko.media.server:
-    image: ghcr.io/bronko-media/bronko.media.server:development
+    image: ghcr.io/bronko-media/bronko.media.server:v0.1.0
     container_name: bronko.media.server
     environment:
       - PUID=1001
