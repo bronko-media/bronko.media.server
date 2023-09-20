@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 root = Dir.getwd
 
 pidfile "#{root}/tmp/puma/pid"

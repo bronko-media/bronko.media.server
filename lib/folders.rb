@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def move_folder(md5, new_folder_path)
   folder            = Folder.find_by(md5_path: md5)
   old_parent_folder = folder.parent_folder

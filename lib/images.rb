@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def upload_image(files, file_target)
   files.each do |file|
     target   = "#{file_target}#{file[:filename]}"

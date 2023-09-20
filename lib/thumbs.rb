@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def create_img_thumb(input_path, output_path, size)
   convert = MiniMagick::Tool::Convert.new
   convert << if File.extname(input_path).delete('.') == 'gif'

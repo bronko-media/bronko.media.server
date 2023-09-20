@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sinatra/activerecord/rake'
 require 'rubocop/rake_task'
 require './app'

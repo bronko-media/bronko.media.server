@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def build_index(image_root, thumb_target, extensions)
   remove_files(thumb_target)
   remove_folders

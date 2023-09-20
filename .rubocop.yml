@@ -40,7 +40,7 @@ Style/DocumentDynamicEvalDefinition:
 Style/EndlessMethod:
   Enabled: true
 Style/FrozenStringLiteralComment:
-  Enabled: false
+  Enabled: true
 Style/HashExcept:
   Enabled: true
 Style/NegatedIfElseCondition:
