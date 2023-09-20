@@ -36,7 +36,7 @@ class BronkoMedia < Sinatra::Base
   set :server, :puma
   set :method_override, true
   set :logger, Logger.new($stdout)
-  set :session_secret, SecureRandom.uuid
+  set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
   set :database, {
     adapter: Settings.db_adapter,
     database: Settings.db_name,
