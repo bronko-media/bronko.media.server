@@ -1,4 +1,4 @@
-name: Rubocop
+name: 🤖 Rubocop
 
 on:
   push:
