@@ -1,5 +1,7 @@
 # bronko.media.server
 
+[![🤖 Rubocop](https://github.com/bronko-media/bronko.media.server/actions/workflows/rubocop.yml/badge.svg)](https://github.com/bronko-media/bronko.media.server/actions/workflows/rubocop.yml)
+
 ## General
 
 This is an app to handle your image collection.
