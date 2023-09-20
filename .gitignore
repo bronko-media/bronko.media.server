@@ -1,6 +1,7 @@
 data/images/*
 data/db/*.sqlite3
 public/images/*
+!public/images/favicon.ico
 vendor/*
 .DS_Store
 .bundle/
