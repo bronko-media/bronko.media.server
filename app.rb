@@ -136,7 +136,7 @@ class BronkoMedia < Sinatra::Base
 
   delete '/image/:md5' do
     image = Image.find_by(md5_path: params[:md5])
-    File.delete(image.file_path) if File.exist?(image.file_path)
+    FileUtils.rm_f image.file_path
     image.destroy
 
     redirect back

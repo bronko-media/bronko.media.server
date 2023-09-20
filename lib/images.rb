@@ -71,8 +71,8 @@ end
 def multi_delete_images(md5s)
   Parallel.each(md5s, in_threads: Settings.threads) do |md5|
     image = Image.find_by(md5_path: md5)
-    File.delete(image.file_path) if File.exist?(image.file_path)
-    File.delete("#{Settings.thumb_target}/#{md5}.png") if File.exist?("#{Settings.thumb_target}/#{md5}.png")
+    FileUtils.rm_f image.file_path
+    FileUtils.rm_f "#{Settings.thumb_target}/#{md5}.png"
     image.destroy
 
     ActiveRecord::Base.clear_active_connections!
