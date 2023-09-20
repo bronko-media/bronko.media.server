@@ -2,7 +2,7 @@
 version: "3.5"
 services:
   bronko.media.server:
-    image: ghcr.io/bronko-media/bronko.media.server:develop
+    image: ghcr.io/bronko-media/bronko.media.server:development
     container_name: bronko.media.server
     environment:
       - PUID=1001
@@ -17,7 +17,7 @@ services:
     restart: unless-stopped
 
   bronko.media.db:
-    image: mysql:8.0.25
+    image: mysql:8.0.34
     container_name: bronko.media.db
     command: --default-authentication-plugin=mysql_native_password
     environment:
