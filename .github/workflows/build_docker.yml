@@ -4,8 +4,8 @@ on:
   push:
     paths-ignore:
       - '.github/**'
-    branches:
-      - 'main'
+    # branches:
+    #   - 'main'
     tags:
       - '*'
   workflow_dispatch:
