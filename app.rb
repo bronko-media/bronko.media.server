@@ -26,7 +26,11 @@ require_relative 'lib/thumbs'
 require_relative 'lib/images'
 require_relative 'lib/models'
 
-class BronkoMedia < Sinatra::Base
+module BronkoMedia
+  VERSION = 'v0.1.0'
+end
+
+class BronkoMediaServer < Sinatra::Base
   include ActionView::Helpers::TextHelper
   include ActionView::Helpers::NumberHelper
 
