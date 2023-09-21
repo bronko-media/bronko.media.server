@@ -14,6 +14,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
     steps:
     - name: checkout code
       uses: actions/checkout@v4
@@ -26,3 +29,10 @@ jobs:
 
     - name: Run Rubocop
       run: bundle exec rake rubocop
+
+    - uses: rwaffen/gha-build-and-publish-a-container@main
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        build_arch: linux/amd64
+        dockerfile: Dockerfile.debian
+        publish: 'false'
