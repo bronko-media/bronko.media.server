@@ -1,5 +1,5 @@
 ---
-version: "3.5"
+version: "3.9"
 services:
   bronko.media.server:
     image: ghcr.io/bronko-media/bronko.media.server:development
@@ -16,8 +16,9 @@ services:
     ports:
       - 4567:4567
     restart: unless-stopped
-    depends_on: 
-      - bronko.media.db
+    depends_on:
+      bronko.media.db:
+        condition: service_healthy
 
   bronko.media.db:
     image: mysql:8.0.34
@@ -31,3 +32,9 @@ services:
     volumes:
       - ./tmp/testdb/config:/var/lib/mysql
     restart: unless-stopped
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      start_period: 5s
+      interval: 60s
+      timeout: 5s
+      retries: 5
