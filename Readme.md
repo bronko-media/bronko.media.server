@@ -1,27 +1,17 @@
 # bronko.media.server
-
-[![🤖 Rubocop](https://github.com/bronko-media/bronko.media.server/actions/workflows/rubocop.yml/badge.svg)](https://github.com/bronko-media/bronko.media.server/actions/workflows/rubocop.yml)
+[![License](https://img.shields.io/github/license/bronko-media/bronko.media.server.svg)](https://github.com/bronko-media/bronko.media.server/blob/master/LICENSE)
+[![CI](https://github.com/bronko-media/bronko.media.server/actions/workflows/rubocop.yml/badge.svg)](https://github.com/bronko-media/bronko.media.server/actions/workflows/rubocop.yml)
 
 ## General
 
 This is an app to handle your image collection.
 It is a ruby sinatra web app bundled with bootstrap, jquery and fancybox.
 
-## Install
+## Installation
 
-    bundle config set --local path 'vendor/bundle'
-    bundle install
+see [`docker-compose.yaml`](docker-compose.yml)
 
-### DB
-
-    bundle exec rake db:create
-    bundle exec rake db:migrate
-
-### Start
-
-    bundle exec puma
-
-### Build index
+## Build the index
 
 To index your images run `curl -v http://localhost:4567/indexer` or use the `/indexer` path from inside the app.
 The `/indexer` path will get no output at the moment, but will report when finished.
@@ -29,7 +19,9 @@ This could take a while, depending on the size of your collection.
 
 Alternatively you can use the `helper.rb`.
 
-    bundle exec ruby helper.rb --index
+```bash
+bundle exec ruby helper.rb --index
+```
 
 You can see the progress on the console or from `docker logs bronko.media.server -f`
 
@@ -48,15 +40,6 @@ The folders can be configured in settings.
 But be aware that the default locations might be used somewhere in the code.
 I am in early development and might hardcode or move folders.
 
-## Docker
+## Development
 
-### Build
-
-There is a Dockerfile to build a container. This can be done with:
-
-    cd bronko.media
-    docker build -t bronko.media.server .
-
-### Docker Compose
-
-For docker-compose see `docker-compose.yaml`
+see [DEVELOPMENT.md](DEVELOPMENT.md)
