@@ -8,3 +8,4 @@ vendor/*
 .vagrant/
 tmp/puma/state
 tmp/puma/pid
+tmp/testdb
