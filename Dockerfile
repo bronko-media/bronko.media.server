@@ -1,25 +1,27 @@
-FROM ruby:3.2-alpine
+FROM ruby:3.2.2-alpine
 
 RUN apk add --update --no-cache \
       binutils-gold \
       build-base \
+      ffmpeg \
       g++ \
       gcc \
-      libstdc++ \
-      libffi-dev \
+      graphicsmagick \
+      imagemagick \
+      jpeg-dev \
       libc-dev \
+      libffi-dev \
+      libgcrypt-dev \
+      libjpeg-turbo-dev \
+      libpng-dev \
+      libstdc++ \
       libxml2-dev \
       libxslt-dev \
-      libgcrypt-dev \
+      linux-headers \
       make \
-      ffmpeg \
-      graphicsmagick \
+      mysql-dev \
       sqlite \
       sqlite-dev \
-      linux-headers \
-      libpng-dev \
-      jpeg-dev \
-      mysql-dev \
       tzdata
 
 ENV APP_HOME /bronko.media
