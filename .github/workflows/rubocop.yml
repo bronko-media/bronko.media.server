@@ -26,8 +26,8 @@ jobs:
     - name: Run Rubocop
       run: bundle exec rake rubocop
 
-    - uses: voxpupuli/gha-build-and-publish-a-container@v1
+    - uses: voxpupuli/gha-build-and-publish-a-container@v2
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        registry_password: ${{ secrets.GITHUB_TOKEN }}
         buildfile: Dockerfile.debian
         publish: 'false'
