@@ -31,3 +31,4 @@ jobs:
         registry_password: ${{ secrets.GITHUB_TOKEN }}
         buildfile: Dockerfile.debian
         publish: 'false'
+        tags: 'ci/dummy:test'
