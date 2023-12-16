@@ -4,8 +4,8 @@ class Image < ActiveRecord::Base
 end
 
 class Folder < ActiveRecord::Base
-  serialize :sub_folders, Array
-  serialize :dimensions, Array
+  serialize :sub_folders, type: Array
+  serialize :dimensions, type: Array
 end
 
 class Tag < ActiveRecord::Base
