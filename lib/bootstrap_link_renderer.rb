@@ -33,9 +33,9 @@ module WillPaginate
         end
       end
 
-      def previous_or_next_page(page, text, _classname)
+      def previous_or_next_page(page, text, _classname, _something)
         if page
-          tag(:li, link(text, page, class: 'page-link'), class: 'page-item')
+          tag(:li, link(text, page, class: 'page-link'), { class: 'page-item' })
         else
           tag(:li, link(text, page, class: 'page-link'), { class: 'page-item disabled', tabindex: '-1' })
         end
