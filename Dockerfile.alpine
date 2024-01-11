@@ -22,7 +22,8 @@ RUN apk add --update --no-cache \
       mysql-dev \
       sqlite \
       sqlite-dev \
-      tzdata
+      tzdata \
+      xz
 
 ENV APP_HOME /bronko.media
 RUN mkdir $APP_HOME
