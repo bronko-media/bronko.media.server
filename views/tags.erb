@@ -7,7 +7,11 @@
 </div>
 
 <%- unless params[:tag].nil? -%>
-<%- images = Image.where("JSON_CONTAINS(`tags`, '\"#{params[:tag]}\"')") -%>
+<%-
+query  = "SELECT * FROM images WHERE JSON_CONTAINS(tags, ?)"
+tag    = ActiveRecord::Base.sanitize_sql(params[:tag])
+images = Image.find_by_sql([query, "[\"#{tag}\"]"])
+-%>
 <%= erb :_paginator, locals: {images: images} %>
 
 <div class="row mt-1">
