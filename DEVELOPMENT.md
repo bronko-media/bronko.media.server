@@ -1,30 +1,32 @@
-# Install
+# Development
+
+## Install
 
 ```bash
 bundle config set --local path 'vendor/bundle'
 bundle install
 ```
 
-## Initialize DB
+### Initialize DB
 
 ```bash
 bundle exec rake db:create
 bundle exec rake db:migrate
 ```
 
-## Start App
+### Start App
 
 ```bash
 bundle exec puma
 ```
 
-# Create Migrations
+## Create Migrations
 
 ```bash
 bundle exec rake db:create_migration NAME=something_else
 ```
 
-# Install MySQL on macOS
+## Install MySQL on macOS
 
 ```bash
 brew install mysql
@@ -36,7 +38,7 @@ mysql -u root
 > GRANT ALL PRIVILEGES ON BronkoMediaServer.* TO 'bronko'@'localhost';
 ```
 
-# Docker Build
+## Docker Build
 
 ```bash
 cd bronko.media.server
