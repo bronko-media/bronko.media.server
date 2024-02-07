@@ -112,6 +112,9 @@ GEM
       rack (>= 3.0.0, < 4)
     rack-session (2.0.0)
       rack (>= 3.0.0)
+    rackup (2.1.0)
+      rack (>= 3)
+      webrick (~> 1.8)
     rails-dom-testing (2.2.0)
       activesupport (>= 5.0.0)
       minitest
@@ -177,6 +180,7 @@ GEM
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.5.0)
     uri (0.13.0)
+    webrick (1.8.1)
     wikipedia-client (1.17.0)
       addressable (~> 2.7)
     will_paginate (4.0.0)
@@ -196,6 +200,7 @@ DEPENDENCIES
   mysql2
   parallel
   puma
+  rackup
   rake
   rubocop
   rubocop-performance
