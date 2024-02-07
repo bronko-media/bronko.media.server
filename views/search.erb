@@ -2,10 +2,7 @@
 if params[:search].nil?
   search = nil
 else
-  search = Image.where("file_path LIKE ?", "%#{params[:search]}%").paginate(
-            page: params[:page],
-            per_page: Settings.images_per_page
-          )
+  pagy, search = pagy(Image.where("file_path LIKE ?", "%#{params[:search]}%"), items: Settings.images_per_page, page: params[:page])
 end
 -%>
 <h3>Search</h3>
@@ -24,11 +21,11 @@ end
 <br \>
 
 <%- unless search.nil? -%>
-<%= erb :_paginator, locals: {images: search} %>
+<%= erb :_paginator, locals: {images: search, pagy: pagy} %>
 
 <div class="row mt-1">
   <%= erb :_image_cards, locals: {images: search, show_path: true} %>
 </div>
 
-<%= erb :_paginator, locals: {images: search} %>
+<%= erb :_paginator, locals: {images: search, pagy: pagy} %>
 <%- end -%>

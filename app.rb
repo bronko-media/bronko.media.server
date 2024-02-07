@@ -7,6 +7,8 @@ require 'fileutils'
 require 'json'
 require 'logger'
 require 'mini_magick'
+require 'pagy'
+require 'pagy/extras/bootstrap'
 require 'parallel'
 require 'rackup'
 require 'rack/handler/puma'
@@ -16,11 +18,8 @@ require 'sinatra/activerecord'
 require 'sinatra/custom_logger'
 require 'streamio-ffmpeg'
 require 'timeout'
-require 'will_paginate'
-require 'will_paginate/active_record'
 require 'yaml'
 
-require_relative 'lib/bootstrap_link_renderer'
 require_relative 'lib/helpers'
 require_relative 'lib/folders'
 require_relative 'lib/thumbs'
@@ -28,15 +27,16 @@ require_relative 'lib/images'
 require_relative 'lib/models'
 
 module BronkoMedia
-  VERSION = 'v0.1.0'
+  VERSION = 'v0.4.0'
 end
 
 class BronkoMediaServer < Sinatra::Base
   include ActionView::Helpers::TextHelper
   include ActionView::Helpers::NumberHelper
+  include Pagy::Backend
+  include Pagy::Frontend
 
   register Sinatra::ActiveRecordExtension
-  register WillPaginate::Sinatra
 
   Config.load_and_set_settings "#{File.dirname(__FILE__)}/config/settings.yml"
 

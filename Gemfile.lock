@@ -98,6 +98,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.16.2-x86_64-linux)
       racc (~> 1.4)
+    pagy (6.4.3)
     parallel (1.24.0)
     parser (3.3.0.5)
       ast (~> 2.4.1)
@@ -183,7 +184,6 @@ GEM
     webrick (1.8.1)
     wikipedia-client (1.17.0)
       addressable (~> 2.7)
-    will_paginate (4.0.0)
     zeitwerk (2.6.12)
 
 PLATFORMS
@@ -198,6 +198,7 @@ DEPENDENCIES
   faraday
   mini_magick
   mysql2
+  pagy
   parallel
   puma
   rackup
@@ -212,7 +213,6 @@ DEPENDENCIES
   sqlite3
   streamio-ffmpeg
   wikipedia-client
-  will_paginate
 
 BUNDLED WITH
    2.3.7
