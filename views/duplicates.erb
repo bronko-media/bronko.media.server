@@ -1,15 +1,12 @@
 <%-
-  images = Image.where(duplicate: true).paginate(
-            page: params[:page],
-            per_page: Settings.images_per_page
-          )
+  pagy, images = pagy(Image.where(duplicate: true), items: Settings.images_per_page, page: params[:page])
 -%>
 <%- unless images.empty? -%>
-<%= erb :_paginator, locals: {images: images} %>
+<%= erb :_paginator, locals: {images: images, pagy: pagy} %>
 
 <div class="row mt-1">
   <%= erb :_image_cards, locals: {images: images, show_path: true} %>
 </div>
 
-<%= erb :_paginator, locals: {images: images} %>
+<%= erb :_paginator, locals: {images: images, pagy: pagy} %>
 <%- end -%>

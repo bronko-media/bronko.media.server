@@ -8,15 +8,18 @@
 
 <%- unless params[:tag].nil? -%>
 <%-
-query  = "SELECT * FROM images WHERE JSON_CONTAINS(tags, ?)"
-tag    = ActiveRecord::Base.sanitize_sql(params[:tag])
-images = Image.find_by_sql([query, "[\"#{tag}\"]"])
+require "pagy/extras/array"
+
+query = "SELECT * FROM images WHERE JSON_CONTAINS(tags, ?)"
+tag   = ActiveRecord::Base.sanitize_sql(params[:tag])
+pagy, images = pagy_array(Image.find_by_sql([query, "[\"#{tag}\"]"]), items: Settings.images_per_page, page: params[:page])
+
 -%>
-<%= erb :_paginator, locals: {images: images} %>
+<%= erb :_paginator, locals: {images: images, pagy: pagy} %>
 
 <div class="row mt-1">
   <%= erb :_image_cards, locals: {images: images, show_path: false} %>
 </div>
 
-<%= erb :_paginator, locals: {images: images} %>
+<%= erb :_paginator, locals: {images: images, pagy: pagy} %>
 <%- end -%>

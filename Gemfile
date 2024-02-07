@@ -8,6 +8,7 @@ gem 'config'
 gem 'faraday'
 gem 'mini_magick'
 gem 'mysql2'
+gem 'pagy'
 gem 'parallel'
 gem 'puma'
 gem 'rackup'
@@ -18,7 +19,6 @@ gem 'sinatra-contrib'
 gem 'sqlite3'
 gem 'streamio-ffmpeg'
 gem 'wikipedia-client'
-gem 'will_paginate'
 
 gem 'rubocop', require: false
 gem 'rubocop-performance', require: false
