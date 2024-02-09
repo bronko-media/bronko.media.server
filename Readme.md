@@ -1,6 +1,6 @@
 # bronko.media.server
 [![License](https://img.shields.io/github/license/bronko-media/bronko.media.server.svg)](https://github.com/bronko-media/bronko.media.server/blob/master/LICENSE)
-[![CI](https://github.com/bronko-media/bronko.media.server/actions/workflows/rubocop.yml/badge.svg)](https://github.com/bronko-media/bronko.media.server/actions/workflows/rubocop.yml)
+[![CI](https://github.com/bronko-media/bronko.media.server/actions/workflows/ci.yml/badge.svg)](https://github.com/bronko-media/bronko.media.server/actions/workflows/ci.yml)
 
 ## General
 
