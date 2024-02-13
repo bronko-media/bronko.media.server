@@ -61,17 +61,11 @@
 </div>
 
   <%- unless images.empty? -%>
-
-  <%= erb :_paginator, locals: {images: images, pagy: pagy} %>
-
-  <div class="row mt-1">
-    <%= erb :_image_cards, locals: {images: images, show_path: false} %>
-  </div>
+    <%= erb :_paginator, locals: {images: images, pagy: pagy} %>
+    <div class="row mt-1"><%= erb :_image_cards, locals: {images: images, show_path: false} %></div>
   <% end %>
 
   <%= erb :_folder_modals, locals: {folder: folder, this_folder: this_folder} %>
-
-  <%= erb :_paginator, locals: {images: images, pagy: pagy} %>
 <%- end -%>
 
 <script type="text/javascript">
