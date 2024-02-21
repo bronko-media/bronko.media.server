@@ -21,7 +21,10 @@ jobs:
       uses: ruby/setup-ruby@v1
 
     - name: Install dependencies
-      run: bundle install
+      run: |
+        bundle config set --local path vendor/bundle
+        bundle config set --local with 'development test'
+        bundle install
 
     - name: Run Rubocop
       run: bundle exec rake rubocop
