@@ -27,7 +27,7 @@ GEM
       public_suffix (>= 2.0.2, < 6.0)
     ast (2.4.2)
     base64 (0.2.0)
-    bigdecimal (3.1.6)
+    bigdecimal (3.1.7)
     builder (3.2.4)
     concurrent-ruby (1.2.3)
     config (5.4.0)
@@ -35,14 +35,13 @@ GEM
     connection_pool (2.4.1)
     crass (1.0.6)
     deep_merge (1.2.2)
-    drb (2.2.0)
-      ruby2_keywords
+    drb (2.2.1)
     erubi (1.12.0)
     faraday (2.9.0)
       faraday-net_http (>= 2.0, < 3.2)
     faraday-net_http (3.1.0)
       net-http
-    i18n (1.14.1)
+    i18n (1.14.4)
       concurrent-ruby (~> 1.0)
     json (2.7.2)
     language_server-protocol (3.17.0.3)
@@ -50,7 +49,7 @@ GEM
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
     mini_magick (4.12.0)
-    minitest (5.22.2)
+    minitest (5.22.3)
     multi_json (1.15.0)
     mustermann (3.0.0)
       ruby2_keywords (~> 0.0.1)
@@ -58,24 +57,30 @@ GEM
     mysql2 (0.5.6)
     net-http (0.4.1)
       uri
-    nio4r (2.7.0)
-    nokogiri (1.16.2-arm64-darwin)
+    nio4r (2.7.1)
+    nokogiri (1.16.4-aarch64-linux)
       racc (~> 1.4)
-    nokogiri (1.16.2-x86_64-darwin)
+    nokogiri (1.16.4-arm-linux)
       racc (~> 1.4)
-    nokogiri (1.16.2-x86_64-linux)
+    nokogiri (1.16.4-arm64-darwin)
       racc (~> 1.4)
-    pagy (8.0.1)
+    nokogiri (1.16.4-x86-linux)
+      racc (~> 1.4)
+    nokogiri (1.16.4-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.16.4-x86_64-linux)
+      racc (~> 1.4)
+    pagy (8.2.2)
     parallel (1.24.0)
     parser (3.3.0.5)
       ast (~> 2.4.1)
       racc
     prism (0.24.0)
-    public_suffix (5.0.4)
+    public_suffix (5.0.5)
     puma (6.4.2)
       nio4r (~> 2.0)
     racc (1.7.3)
-    rack (3.0.9.1)
+    rack (3.0.10)
     rack-protection (4.0.0)
       base64 (>= 0.1.0)
       rack (>= 3.0.0, < 4)
@@ -95,7 +100,7 @@ GEM
     rake (13.2.1)
     regexp_parser (2.9.0)
     rexml (3.2.6)
-    rubocop (1.62.1)
+    rubocop (1.63.2)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -122,9 +127,9 @@ GEM
       rubocop-capybara (~> 2.17)
       rubocop-factory_bot (~> 2.22)
       rubocop-rspec_rails (~> 2.28)
-    rubocop-rspec_rails (2.28.2)
+    rubocop-rspec_rails (2.28.3)
       rubocop (~> 1.40)
-    ruby-lsp (0.16.1)
+    ruby-lsp (0.16.4)
       language_server-protocol (~> 3.17.0)
       prism (>= 0.22.0, < 0.25)
       sorbet-runtime (>= 0.5.10782)
@@ -145,10 +150,17 @@ GEM
       rack-protection (= 4.0.0)
       sinatra (= 4.0.0)
       tilt (~> 2.0)
-    sorbet-runtime (0.5.11332)
-    sqlite3 (1.7.3-arm64-darwin)
-    sqlite3 (1.7.3-x86_64-darwin)
-    sqlite3 (1.7.3-x86_64-linux)
+    sorbet-runtime (0.5.11351)
+    sqlite3 (2.0.0-aarch64-linux-gnu)
+    sqlite3 (2.0.0-aarch64-linux-musl)
+    sqlite3 (2.0.0-arm-linux-gnu)
+    sqlite3 (2.0.0-arm-linux-musl)
+    sqlite3 (2.0.0-arm64-darwin)
+    sqlite3 (2.0.0-x86-linux-gnu)
+    sqlite3 (2.0.0-x86-linux-musl)
+    sqlite3 (2.0.0-x86_64-darwin)
+    sqlite3 (2.0.0-x86_64-linux-gnu)
+    sqlite3 (2.0.0-x86_64-linux-musl)
     streamio-ffmpeg (3.0.2)
       multi_json (~> 1.8)
     tilt (2.3.0)
@@ -162,9 +174,20 @@ GEM
       addressable (~> 2.7)
 
 PLATFORMS
-  arm64-darwin-22
-  x86_64-darwin-21
+  aarch64-linux
+  aarch64-linux-gnu
+  aarch64-linux-musl
+  arm-linux
+  arm-linux-gnu
+  arm-linux-musl
+  arm64-darwin
+  x86-linux
+  x86-linux-gnu
+  x86-linux-musl
+  x86_64-darwin
   x86_64-linux
+  x86_64-linux-gnu
+  x86_64-linux-musl
 
 DEPENDENCIES
   actionview
@@ -191,4 +214,4 @@ DEPENDENCIES
   wikipedia-client
 
 BUNDLED WITH
-   2.3.7
+   2.5.6
