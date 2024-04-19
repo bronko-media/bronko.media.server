@@ -60,18 +60,14 @@ def remove_folders
 end
 
 def index_folders(path)
-  folder_list = []
-
-  Dir.glob("#{path}/**/").each do |folder|
-    folder_list << {
+  Dir.glob("#{path}/**/").map do |folder|
+    {
       md5_path: Digest::MD5.hexdigest(folder),
       folder_path: folder,
       parent_folder: "#{File.dirname(folder)}/",
       sub_folders: Dir.glob("#{folder}*/")
     }
   end
-
-  folder_list
 end
 
 def write_folders_to_db(folder_hash)
