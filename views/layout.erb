@@ -72,9 +72,19 @@
     })
     </script>
 
+  <% if Settings.video_do_loop == 'true'
+       loop_attribute = 'loop'
+      else
+       loop_attribute = ''
+  end %>
+
+
     <script type="text/javascript">
-      Fancybox.bind('[data-fancybox="gallery"]', {
-        // Your options here
+      Fancybox.bind('[data-fancybox]', {
+        Html : {
+          videoTpl : `<video class="fancybox__html5video" <%= loop_attribute %> playsinline controls poster="{{poster}}">
+  <source src="{{src}}" type="{{format}}" />Sorry, your browser doesn't support embedded videos.</video>`
+        }
       });
     </script>
   </body>
