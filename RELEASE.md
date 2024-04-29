@@ -11,9 +11,10 @@ config.future_release = `git rev-parse --abbrev-ref HEAD`.strip.split('-', 2).la
 Generate Changelog
 
 ```shell
+export RELEASE_VERSION="X.Y.Z"
 git switch main
 git pull -r
-git switch -c release-vX.Y.Z
+git switch -c release-v$RELEASE_VERSION
 
 bundle config set --local path vendor/bundle
 bundle config set --local with 'development'
@@ -33,8 +34,8 @@ end
 Commit & Push
 
 ```shell
-git commit -am 'Release vX.Y.Z'
-git push origin release-vX.Y.Z
+git commit -am "Release v${RELEASE_VERSION}"
+git push origin release-v$RELEASE_VERSION
 ```
 
 After the merge do:
@@ -43,5 +44,5 @@ After the merge do:
 git switch main
 git pull -r
 git tag vX.Y.Z
-git push --tags
+git tag v$RELEASE_VERSION
 ```
