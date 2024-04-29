@@ -40,6 +40,12 @@ class BronkoMediaServer < Sinatra::Base
 
   Config.load_and_set_settings "#{File.dirname(__FILE__)}/config/settings.yml"
 
+  db_host = if ENV['RACK_ENV'] == 'development'
+              'localhost'
+            else
+              Settings.db_host
+            end
+
   set :server, :puma
   set :method_override, true
   set :logger, Logger.new($stdout)
@@ -49,7 +55,7 @@ class BronkoMediaServer < Sinatra::Base
     database: Settings.db_name,
     password: Settings.db_password,
     username: Settings.db_username,
-    host: Settings.db_host,
+    host: db_host,
     encoding: Settings.db_ecnoding,
     collation: Settings.db_collation,
     pool: Settings.db_pool
