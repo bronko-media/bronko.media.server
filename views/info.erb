@@ -72,9 +72,15 @@ files_in_folder = Dir["#{media.folder_path}*"].reject { |f| File.directory? f } 
   </div>
   <%- end -%>
 
+  <% if Settings.video_do_loop == 'true'
+       loop_attribute = 'loop'
+      else
+       loop_attribute = ''
+  end %>
+
   <%- if media.is_video -%>
   <div class="container">
-    <video controls src="/image/<%= media.md5_path %>" ></video>
+    <video controls <%= loop_attribute %> src="/image/<%= media.md5_path %>" ></video>
   </div>
   <%- end -%>
 
