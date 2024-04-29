@@ -49,3 +49,7 @@ see [DEVELOPMENT.md](DEVELOPMENT.md)
 ## Release
 
 see [RELEASE.md](RELEASE.md)
+
+## Change Log
+
+see [CHANGELOG.md](CHANGELOG.md)
