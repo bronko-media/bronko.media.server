@@ -53,3 +53,7 @@ see [RELEASE.md](RELEASE.md)
 ## Change Log
 
 see [CHANGELOG.md](CHANGELOG.md)
+
+## How to contribute
+
+see [CONTRIBUTING.md](CONTRIBUTING.md)
