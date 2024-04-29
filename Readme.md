@@ -1,4 +1,6 @@
 # bronko.media.server
+
+[![GitHub Release](https://img.shields.io/github/v/release/bronko-media/bronko.media.server.svg)](https://github.com/bronko-media/bronko.media.server/releases)
 [![License](https://img.shields.io/github/license/bronko-media/bronko.media.server.svg)](https://github.com/bronko-media/bronko.media.server/blob/master/LICENSE)
 [![CI](https://github.com/bronko-media/bronko.media.server/actions/workflows/ci.yml/badge.svg)](https://github.com/bronko-media/bronko.media.server/actions/workflows/ci.yml)
 
@@ -43,3 +45,7 @@ I am in early development and might hardcode or move folders.
 ## Development
 
 see [DEVELOPMENT.md](DEVELOPMENT.md)
+
+## Release
+
+see [RELEASE.md](RELEASE.md)
