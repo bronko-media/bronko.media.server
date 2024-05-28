@@ -32,6 +32,5 @@ jobs:
     - uses: voxpupuli/gha-build-and-publish-a-container@v2
       with:
         registry_password: ${{ secrets.GITHUB_TOKEN }}
-        buildfile: Dockerfile.debian
         publish: 'false'
         tags: 'ci/dummy:test'
