@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.6.0](https://github.com/bronko-media/bronko.media.server/tree/v0.6.0) (2024-06-11)
+
+[Full Changelog](https://github.com/bronko-media/bronko.media.server/compare/v0.5.0...v0.6.0)
+
+**Merged pull requests:**
+
+- Bump parallel from 1.24.0 to 1.25.1 in the dependencies group [\#209](https://github.com/bronko-media/bronko.media.server/pull/209) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump rubocop-rspec from 2.30.0 to 2.31.0 in the dependencies group [\#208](https://github.com/bronko-media/bronko.media.server/pull/208) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the dependencies group with 3 updates [\#207](https://github.com/bronko-media/bronko.media.server/pull/207) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump activerecord from 7.1.3.3 to 7.1.3.4 [\#206](https://github.com/bronko-media/bronko.media.server/pull/206) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump pagy from 8.4.2 to 8.4.3 in the dependencies group [\#204](https://github.com/bronko-media/bronko.media.server/pull/204) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump pagy from 8.4.1 to 8.4.2 in the dependencies group [\#203](https://github.com/bronko-media/bronko.media.server/pull/203) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the dependencies group with 2 updates [\#202](https://github.com/bronko-media/bronko.media.server/pull/202) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the dependencies group across 1 directory with 2 updates [\#201](https://github.com/bronko-media/bronko.media.server/pull/201) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump ruby from 3.3.1-slim-bookworm to 3.3.2-slim-bookworm [\#200](https://github.com/bronko-media/bronko.media.server/pull/200) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump config from 5.5.0 to 5.5.1 in the dependencies group [\#198](https://github.com/bronko-media/bronko.media.server/pull/198) ([dependabot[bot]](https://github.com/apps/dependabot))
+- feat: add editorconfig [\#197](https://github.com/bronko-media/bronko.media.server/pull/197) ([rwaffen](https://github.com/rwaffen))
+- remove alpine [\#196](https://github.com/bronko-media/bronko.media.server/pull/196) ([rwaffen](https://github.com/rwaffen))
+- chore: remove unused code [\#195](https://github.com/bronko-media/bronko.media.server/pull/195) ([rwaffen](https://github.com/rwaffen))
+- Bump the dependencies group across 1 directory with 4 updates [\#194](https://github.com/bronko-media/bronko.media.server/pull/194) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump activerecord and actionview [\#191](https://github.com/bronko-media/bronko.media.server/pull/191) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump rexml from 3.2.6 to 3.2.8 [\#190](https://github.com/bronko-media/bronko.media.server/pull/190) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump nokogiri from 1.16.4 to 1.16.5 [\#189](https://github.com/bronko-media/bronko.media.server/pull/189) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump rubocop from 1.63.4 to 1.63.5 in the dependencies group [\#188](https://github.com/bronko-media/bronko.media.server/pull/188) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump pagy from 8.3.0 to 8.4.0 in the dependencies group [\#187](https://github.com/bronko-media/bronko.media.server/pull/187) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump rubocop-rspec from 2.29.1 to 2.29.2 in the dependencies group [\#186](https://github.com/bronko-media/bronko.media.server/pull/186) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the dependencies group with 2 updates [\#185](https://github.com/bronko-media/bronko.media.server/pull/185) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.5.0](https://github.com/bronko-media/bronko.media.server/tree/v0.5.0) (2024-04-29)
 
 [Full Changelog](https://github.com/bronko-media/bronko.media.server/compare/v0.4.1...v0.5.0)

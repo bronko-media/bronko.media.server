@@ -43,6 +43,5 @@ After the merge do:
 ```shell
 git switch main
 git pull -r
-git tag vX.Y.Z
 git tag v$RELEASE_VERSION
 ```
