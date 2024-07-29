@@ -30,4 +30,4 @@ db_ecnoding: utf8mb4
 db_collation: utf8mb4_bin
 db_pool: '100'
 bootstrap_version: '4'
-video_do_loop: 'false'
+video_do_loop: 'true'
