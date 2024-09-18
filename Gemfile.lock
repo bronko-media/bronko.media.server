@@ -60,8 +60,9 @@ GEM
     deep_merge (1.2.2)
     drb (2.2.1)
     erubi (1.13.0)
-    faraday (2.11.0)
+    faraday (2.12.0)
       faraday-net_http (>= 2.0, < 3.4)
+      json
       logger
     faraday-http-cache (2.5.1)
       faraday (>= 0.8)
@@ -217,7 +218,7 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.6.0)
-    uri (0.13.0)
+    uri (0.13.1)
     webrick (1.8.1)
     wikipedia-client (1.17.0)
       addressable (~> 2.7)
