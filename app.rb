@@ -8,7 +8,9 @@ require 'json'
 require 'logger'
 require 'mini_magick'
 require 'pagy'
+require 'pagy/extras/countless'
 require 'pagy/extras/bootstrap'
+require 'pagy/extras/pagy'
 require 'parallel'
 require 'rackup'
 require 'rack/handler/puma'
@@ -230,5 +232,10 @@ class BronkoMediaServer < Sinatra::Base
     )
 
     erb :index, locals: { message: 'Index ready' }
+  end
+
+  get '/js/pagy.min.js' do
+    content_type 'application/javascript'
+    send_file Pagy.root.join('javascripts', 'pagy.min.js')
   end
 end
