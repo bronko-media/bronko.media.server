@@ -13,7 +13,7 @@
     filter = { folder_path: folder_root, is_video: true } if media_type == 'videos'
     filter = { folder_path: folder_root, is_image: true } if media_type == 'images'
 
-    pagy, images = pagy(Image.where(filter).order("created_at #{Settings.sort_order}, image_name"), items: Settings.images_per_page, page: params[:page])
+    pagy, images = pagy_countless(Image.where(filter).order("created_at #{Settings.sort_order}, image_name"))
   end
 -%>
 
@@ -61,11 +61,15 @@
 </div>
 
   <%- unless images.empty? -%>
-    <%= erb :_paginator, locals: {images: images, pagy: pagy} %>
-    <div class="row mt-1"><%= erb :_image_cards, locals: {images: images, show_path: false} %></div>
-    <% if pagy.pages > 1 %>
-      <%= erb :_paginator, locals: {images: images, pagy: pagy} %>
-    <% end %>
+    <span id="prev_link">
+      <%= pagy_prev_a(pagy, text: 'Less...', anchor_string: 'data-remote="true"') %>
+    <span>
+
+    <div class="row mt-1" id="media"><%= erb :_image_cards, locals: {images: images, show_path: false} %></div>
+
+    <span id="next_link">
+      <%= pagy_next_a(pagy, text: 'More...', anchor_string: 'data-remote="true"') %>
+    <span>
   <% end %>
 
   <%= erb :_folder_modals, locals: {folder: folder, this_folder: this_folder} %>
