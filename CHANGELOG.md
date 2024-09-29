@@ -2,9 +2,72 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.7.0](https://github.com/bronko-media/bronko.media.server/tree/v0.7.0) (2024-09-29)
+
+[Full Changelog](https://github.com/bronko-media/bronko.media.server/compare/v0.6.0...v0.7.0)
+
+**Implemented enhancements:**
+
+- Add file timestamp to metadata [\#178](https://github.com/bronko-media/bronko.media.server/issues/178)
+- Update fancybox settings [\#239](https://github.com/bronko-media/bronko.media.server/pull/239) ([rwaffen](https://github.com/rwaffen))
+
+**Merged pull requests:**
+
+- Bump sqlite3 from 2.0.4 to 2.1.0 in the dependencies group [\#270](https://github.com/bronko-media/bronko.media.server/pull/270) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump webrick from 1.8.1 to 1.8.2 [\#269](https://github.com/bronko-media/bronko.media.server/pull/269) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the dependencies group with 2 updates [\#268](https://github.com/bronko-media/bronko.media.server/pull/268) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump ruby-lsp from 0.18.0 to 0.18.1 in the dependencies group [\#267](https://github.com/bronko-media/bronko.media.server/pull/267) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump ruby-lsp from 0.17.17 to 0.18.0 in the dependencies group [\#266](https://github.com/bronko-media/bronko.media.server/pull/266) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump puma from 6.4.2 to 6.4.3 in the dependencies group [\#265](https://github.com/bronko-media/bronko.media.server/pull/265) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump faraday from 2.11.0 to 2.12.0 in the dependencies group [\#264](https://github.com/bronko-media/bronko.media.server/pull/264) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump rubocop-performance from 1.22.0 to 1.22.1 in the dependencies group [\#263](https://github.com/bronko-media/bronko.media.server/pull/263) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump rubocop-performance from 1.21.1 to 1.22.0 in the dependencies group [\#262](https://github.com/bronko-media/bronko.media.server/pull/262) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the dependencies group with 2 updates [\#261](https://github.com/bronko-media/bronko.media.server/pull/261) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump ruby from 3.3.4-slim-bookworm to 3.3.5-slim-bookworm [\#260](https://github.com/bronko-media/bronko.media.server/pull/260) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump rubocop from 1.66.0 to 1.66.1 in the dependencies group [\#259](https://github.com/bronko-media/bronko.media.server/pull/259) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the dependencies group across 1 directory with 3 updates [\#258](https://github.com/bronko-media/bronko.media.server/pull/258) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the dependencies group with 2 updates [\#255](https://github.com/bronko-media/bronko.media.server/pull/255) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the dependencies group with 2 updates [\#254](https://github.com/bronko-media/bronko.media.server/pull/254) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump rexml from 3.3.4 to 3.3.6 [\#253](https://github.com/bronko-media/bronko.media.server/pull/253) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump ruby-lsp from 0.17.14 to 0.17.15 in the dependencies group [\#252](https://github.com/bronko-media/bronko.media.server/pull/252) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the dependencies group across 1 directory with 2 updates [\#251](https://github.com/bronko-media/bronko.media.server/pull/251) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the dependencies group across 1 directory with 5 updates [\#249](https://github.com/bronko-media/bronko.media.server/pull/249) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the dependencies group with 2 updates [\#246](https://github.com/bronko-media/bronko.media.server/pull/246) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump rubocop-rspec from 3.0.3 to 3.0.4 in the dependencies group [\#245](https://github.com/bronko-media/bronko.media.server/pull/245) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump ruby-lsp from 0.17.10 to 0.17.11 in the dependencies group [\#244](https://github.com/bronko-media/bronko.media.server/pull/244) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump pagy from 9.0.4 to 9.0.5 in the dependencies group [\#243](https://github.com/bronko-media/bronko.media.server/pull/243) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump rubocop from 1.65.0 to 1.65.1 in the dependencies group [\#242](https://github.com/bronko-media/bronko.media.server/pull/242) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the dependencies group with 2 updates [\#241](https://github.com/bronko-media/bronko.media.server/pull/241) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump pagy from 9.0.3 to 9.0.4 in the dependencies group [\#240](https://github.com/bronko-media/bronko.media.server/pull/240) ([dependabot[bot]](https://github.com/apps/dependabot))
+- update gem versions [\#238](https://github.com/bronko-media/bronko.media.server/pull/238) ([rwaffen](https://github.com/rwaffen))
+- Bump the dependencies group with 2 updates [\#236](https://github.com/bronko-media/bronko.media.server/pull/236) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump rexml from 3.3.1 to 3.3.2 [\#235](https://github.com/bronko-media/bronko.media.server/pull/235) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the dependencies group across 1 directory with 2 updates [\#234](https://github.com/bronko-media/bronko.media.server/pull/234) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump pagy from 8.6.3 to 9.0.0 in the dependencies group [\#232](https://github.com/bronko-media/bronko.media.server/pull/232) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the dependencies group with 2 updates [\#231](https://github.com/bronko-media/bronko.media.server/pull/231) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump ruby from 3.3.3-slim-bookworm to 3.3.4-slim-bookworm [\#230](https://github.com/bronko-media/bronko.media.server/pull/230) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the dependencies group with 2 updates [\#229](https://github.com/bronko-media/bronko.media.server/pull/229) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump mini\_magick from 4.13.2 to 5.0.0 in the dependencies group [\#228](https://github.com/bronko-media/bronko.media.server/pull/228) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump dependabot/fetch-metadata from 1.3.1 to 2.2.0 [\#227](https://github.com/bronko-media/bronko.media.server/pull/227) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the dependencies group with 2 updates [\#226](https://github.com/bronko-media/bronko.media.server/pull/226) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump pagy from 8.6.2 to 8.6.3 in the dependencies group [\#225](https://github.com/bronko-media/bronko.media.server/pull/225) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the dependencies group across 1 directory with 2 updates [\#224](https://github.com/bronko-media/bronko.media.server/pull/224) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump pagy from 8.4.5 to 8.6.1 in the dependencies group across 1 directory [\#222](https://github.com/bronko-media/bronko.media.server/pull/222) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the dependencies group across 1 directory with 5 updates [\#219](https://github.com/bronko-media/bronko.media.server/pull/219) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump docker/build-push-action from 5 to 6 [\#216](https://github.com/bronko-media/bronko.media.server/pull/216) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump ruby from 3.3.2-slim-bookworm to 3.3.3-slim-bookworm [\#214](https://github.com/bronko-media/bronko.media.server/pull/214) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the dependencies group with 2 updates [\#213](https://github.com/bronko-media/bronko.media.server/pull/213) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump rubocop-rspec from 2.31.0 to 3.0.0 in the dependencies group [\#211](https://github.com/bronko-media/bronko.media.server/pull/211) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.6.0](https://github.com/bronko-media/bronko.media.server/tree/v0.6.0) (2024-06-11)
 
 [Full Changelog](https://github.com/bronko-media/bronko.media.server/compare/v0.5.0...v0.6.0)
+
+**Implemented enhancements:**
+
+- feat: add editorconfig [\#197](https://github.com/bronko-media/bronko.media.server/pull/197) ([rwaffen](https://github.com/rwaffen))
+- remove alpine [\#196](https://github.com/bronko-media/bronko.media.server/pull/196) ([rwaffen](https://github.com/rwaffen))
+- chore: remove unused code [\#195](https://github.com/bronko-media/bronko.media.server/pull/195) ([rwaffen](https://github.com/rwaffen))
 
 **Merged pull requests:**
 
@@ -18,9 +81,6 @@ All notable changes to this project will be documented in this file.
 - Bump the dependencies group across 1 directory with 2 updates [\#201](https://github.com/bronko-media/bronko.media.server/pull/201) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump ruby from 3.3.1-slim-bookworm to 3.3.2-slim-bookworm [\#200](https://github.com/bronko-media/bronko.media.server/pull/200) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump config from 5.5.0 to 5.5.1 in the dependencies group [\#198](https://github.com/bronko-media/bronko.media.server/pull/198) ([dependabot[bot]](https://github.com/apps/dependabot))
-- feat: add editorconfig [\#197](https://github.com/bronko-media/bronko.media.server/pull/197) ([rwaffen](https://github.com/rwaffen))
-- remove alpine [\#196](https://github.com/bronko-media/bronko.media.server/pull/196) ([rwaffen](https://github.com/rwaffen))
-- chore: remove unused code [\#195](https://github.com/bronko-media/bronko.media.server/pull/195) ([rwaffen](https://github.com/rwaffen))
 - Bump the dependencies group across 1 directory with 4 updates [\#194](https://github.com/bronko-media/bronko.media.server/pull/194) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump activerecord and actionview [\#191](https://github.com/bronko-media/bronko.media.server/pull/191) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump rexml from 3.2.6 to 3.2.8 [\#190](https://github.com/bronko-media/bronko.media.server/pull/190) ([dependabot[bot]](https://github.com/apps/dependabot))
