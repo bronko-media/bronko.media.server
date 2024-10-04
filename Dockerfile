@@ -17,6 +17,7 @@ RUN apt update && apt install -y \
       xz-utils
 
 COPY Gemfile /
+COPY Gemfile.lock /
 
 RUN bundle config set path.system true \
     && bundle config set jobs $(nproc) \
