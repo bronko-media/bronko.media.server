@@ -93,7 +93,5 @@ def write_folders_to_db(folder_hash)
       logger.info "Removing Folder from DB: #{folder_path[:folder_path]}"
       Folder.destroy(folder_path[:folder_path])
     end
-
-    ActiveRecord::Base.connection_pool.disconnect!
   end
 end
