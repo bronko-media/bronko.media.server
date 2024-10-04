@@ -38,7 +38,7 @@ LABEL org.label-schema.maintainer="bronko.media" \
       org.label-schema.dockerfile="/Dockerfile"
 
 RUN apt update && apt upgrade -y \
-    && apt install -y ffmpeg imagemagick tzdata xz-utils \
+    && apt install -y ffmpeg imagemagick tzdata xz-utils libmariadb3 \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /usr/local/lib/ruby/gems/*/cache/*
 
