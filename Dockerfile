@@ -45,8 +45,8 @@ RUN apt update && apt upgrade -y \
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY Dockerfile /
 
-ENV RACK_ENV production
-ENV APP_HOME /bronko.media
+ENV RACK_ENV=production
+ENV APP_HOME=/bronko.media
 
 RUN mkdir $APP_HOME
 WORKDIR $APP_HOME
