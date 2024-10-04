@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.8.0](https://github.com/bronko-media/bronko.media.server/tree/v0.8.0) (2024-10-04)
+
+[Full Changelog](https://github.com/bronko-media/bronko.media.server/compare/v0.7.0...v0.8.0)
+
+**Implemented enhancements:**
+
+- ci: update ci.yaml [\#276](https://github.com/bronko-media/bronko.media.server/issues/276)
+- ci: update release workflow [\#275](https://github.com/bronko-media/bronko.media.server/issues/275)
+- build: update Dockerfile to do multi stage build [\#274](https://github.com/bronko-media/bronko.media.server/issues/274)
+- ci: switch container scanning to grype [\#272](https://github.com/bronko-media/bronko.media.server/issues/272)
+- feat: add infinite scrolling [\#42](https://github.com/bronko-media/bronko.media.server/issues/42)
+- feat: do multi stage builds [\#287](https://github.com/bronko-media/bronko.media.server/pull/287) ([rwaffen](https://github.com/rwaffen))
+- fix: remove connection clean up and hope for the best [\#285](https://github.com/bronko-media/bronko.media.server/pull/285) ([rwaffen](https://github.com/rwaffen))
+- fix: update depreacted clear\_active\_connections [\#283](https://github.com/bronko-media/bronko.media.server/pull/283) ([rwaffen](https://github.com/rwaffen))
+- feat: update gemset [\#282](https://github.com/bronko-media/bronko.media.server/pull/282) ([rwaffen](https://github.com/rwaffen))
+- feat: add incremental page loding/scrolling [\#271](https://github.com/bronko-media/bronko.media.server/pull/271) ([rwaffen](https://github.com/rwaffen))
+
+**Fixed bugs:**
+
+- Folder scanning results in Internal Server Error [\#281](https://github.com/bronko-media/bronko.media.server/issues/281)
+
+**Merged pull requests:**
+
+- feat: update github actions, switch to grype, enhance release page [\#284](https://github.com/bronko-media/bronko.media.server/pull/284) ([rwaffen](https://github.com/rwaffen))
+- Bump pagy from 9.0.9 to 9.1.0 in the dependencies group [\#280](https://github.com/bronko-media/bronko.media.server/pull/280) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump ruby-lsp from 0.18.4 to 0.19.0 in the dependencies group [\#279](https://github.com/bronko-media/bronko.media.server/pull/279) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump the dependencies group with 2 updates [\#278](https://github.com/bronko-media/bronko.media.server/pull/278) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.7.0](https://github.com/bronko-media/bronko.media.server/tree/v0.7.0) (2024-09-29)
 
 [Full Changelog](https://github.com/bronko-media/bronko.media.server/compare/v0.6.0...v0.7.0)
@@ -157,6 +185,7 @@ All notable changes to this project will be documented in this file.
 
 **Implemented enhancements:**
 
+- switch to pagy [\#121](https://github.com/bronko-media/bronko.media.server/issues/121)
 - Switch to pagy pagination [\#122](https://github.com/bronko-media/bronko.media.server/pull/122) ([rwaffen](https://github.com/rwaffen))
 
 **Fixed bugs:**
@@ -165,7 +194,6 @@ All notable changes to this project will be documented in this file.
 
 **Closed issues:**
 
-- switch to pagy [\#121](https://github.com/bronko-media/bronko.media.server/issues/121)
 - Fix code scanning alert - SQL query built from user-controlled sources [\#45](https://github.com/bronko-media/bronko.media.server/issues/45)
 
 **Merged pull requests:**
@@ -216,7 +244,7 @@ All notable changes to this project will be documented in this file.
 
 [Full Changelog](https://github.com/bronko-media/bronko.media.server/compare/v0.1.0...v0.2.0)
 
-**Closed issues:**
+**Fixed bugs:**
 
 - video upload does not work [\#76](https://github.com/bronko-media/bronko.media.server/issues/76)
 

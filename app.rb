@@ -29,7 +29,7 @@ require_relative 'lib/images'
 require_relative 'lib/models'
 
 module BronkoMedia
-  VERSION = 'v0.7.0'
+  VERSION = 'v0.8.0'
 end
 
 class BronkoMediaServer < Sinatra::Base
