@@ -29,8 +29,6 @@ def upload_image(files, file_target)
     end
 
     create_thumb(md5_path, Settings.thumb_target, Settings.thumb_res)
-
-    ActiveRecord::Base.connection_pool.disconnect!
   end
 end
 
@@ -65,8 +63,6 @@ def multi_move_images(path, md5s)
     # update thumb
     FileUtils.rm "#{Settings.thumb_target}/#{md5}.png"
     create_thumb(new_md5_path, Settings.thumb_target, Settings.thumb_res)
-
-    ActiveRecord::Base.connection_pool.disconnect!
   end
 end
 
@@ -76,8 +72,6 @@ def multi_delete_images(md5s)
     FileUtils.rm_f image.file_path
     FileUtils.rm_f "#{Settings.thumb_target}/#{md5}.png"
     image.destroy
-
-    ActiveRecord::Base.connection_pool.disconnect!
   end
 end
 
@@ -173,8 +167,6 @@ def write_file_to_db(file)
 
     image.save
   end
-
-  ActiveRecord::Base.connection_pool.disconnect!
 end
 
 def remove_files(thumb_target, image_set = Image.all)
@@ -190,7 +182,5 @@ def remove_files(thumb_target, image_set = Image.all)
       logger.info "Removing Thumb from FS: #{thumb_target_path}"
       File.delete(thumb_target_path)
     end
-
-    ActiveRecord::Base.connection_pool.disconnect!
   end
 end
