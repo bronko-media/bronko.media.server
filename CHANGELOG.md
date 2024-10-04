@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.8.1](https://github.com/bronko-media/bronko.media.server/tree/v0.8.1) (2024-10-04)
+
+[Full Changelog](https://github.com/bronko-media/bronko.media.server/compare/v0.8.0...v0.8.1)
+
+**Fixed bugs:**
+
+- fix: add mariadb client libs [\#289](https://github.com/bronko-media/bronko.media.server/pull/289) ([rwaffen](https://github.com/rwaffen))
+
+**Closed issues:**
+
+- doc: update RELEASE.md [\#277](https://github.com/bronko-media/bronko.media.server/issues/277)
+
 ## [v0.8.0](https://github.com/bronko-media/bronko.media.server/tree/v0.8.0) (2024-10-04)
 
 [Full Changelog](https://github.com/bronko-media/bronko.media.server/compare/v0.7.0...v0.8.0)
