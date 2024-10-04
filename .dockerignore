@@ -4,5 +4,4 @@
 .dockerignore
 vendor/
 docker-compose.yml
-Gemfile.lock
 reset.sh
