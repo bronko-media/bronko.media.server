@@ -94,6 +94,6 @@ def write_folders_to_db(folder_hash)
       Folder.destroy(folder_path[:folder_path])
     end
 
-    ActiveRecord::Base.clear_active_connections!
+    ActiveRecord::Base.connection_pool.disconnect!
   end
 end
