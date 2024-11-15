@@ -21,6 +21,7 @@ gem 'streamio-ffmpeg'
 gem 'wikipedia-client'
 
 group :development, :test do
+  gem 'faraday-retry', require: false
   gem 'github_changelog_generator', require: false
   gem 'rubocop',             require: false
   gem 'rubocop-performance', require: false
