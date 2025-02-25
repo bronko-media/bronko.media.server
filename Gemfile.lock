@@ -100,7 +100,7 @@ GEM
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
     metrics (0.10.2)
-    mini_magick (5.1.2)
+    mini_magick (5.2.0)
       benchmark
       logger
     mini_portile2 (2.8.8)
