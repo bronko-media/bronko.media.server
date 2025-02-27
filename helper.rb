@@ -45,35 +45,39 @@ OptionParser.new do |opts|
   opts.banner = 'Usage: helper.rb [options]'
 
   opts.on('--clean-thumbs', TrueClass, 'Clean obsolete Thumbs') do |e|
-    @options[:clean_thumbs] = e.nil? ? true : e
+    @options[:clean_thumbs] = e.nil? || e
   end
 
   opts.on('--clean-files', TrueClass, 'Clean obsolete Files') do |e|
-    @options[:clean_files] = e.nil? ? true : e
+    @options[:clean_files] = e.nil? || e
+  end
+
+  opts.on('--clean-files', TrueClass, 'Clean obsolete Files') do |e|
+    @options[:clean_files] = e.nil? || e
   end
 
   opts.on('--clean-folders', TrueClass, 'Clean obsolete Folders') do |e|
-    @options[:clean_folders] = e.nil? ? true : e
+    @options[:clean_folders] = e.nil? || e
   end
 
   opts.on('--index', TrueClass, 'Start Indexing') do |e|
-    @options[:index] = e.nil? ? true : e
+    @options[:index] = e.nil? || e
   end
 
   opts.on('--find-duplicates', TrueClass, 'Find Duplicates') do |e|
-    @options[:find_duplicates] = e.nil? ? true : e
+    @options[:find_duplicates] = e.nil? || e
   end
 
   opts.on('--ar-logger', TrueClass, 'Activate AcitveRecord Logger') do |e|
-    @options[:ar_logger] = e.nil? ? true : e
+    @options[:ar_logger] = e.nil? || e
   end
 
   opts.on('--add_new_fields', TrueClass, 'add new fields') do |e|
-    @options[:add_new_fields] = e.nil? ? true : e
+    @options[:add_new_fields] = e.nil? || e
   end
 
   opts.on('--add_mtime_and_ctime', TrueClass, 'add mtime and ctime') do |e|
-    @options[:add_mtime_and_ctime] = e.nil? ? true : e
+    @options[:add_mtime_and_ctime] = e.nil? || e
   end
 end.parse!
 

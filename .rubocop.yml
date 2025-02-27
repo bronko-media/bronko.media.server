@@ -64,4 +64,4 @@ Metrics/CyclomaticComplexity:
 Metrics/PerceivedComplexity:
   Enabled: false
 
-require: rubocop-rake
+plugins: rubocop-rake
