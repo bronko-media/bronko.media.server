@@ -1,4 +1,4 @@
-FROM docker.io/library/ruby:3.4.2-slim-bookworm AS build
+FROM docker.io/library/ruby:3.4.3-slim-bookworm AS build
 
 RUN apt update && apt install -y \
       ffmpeg \
@@ -26,7 +26,7 @@ RUN bundle config set path.system true \
 
 ###############################################################################
 
-FROM docker.io/library/ruby:3.4.2-slim-bookworm AS final
+FROM docker.io/library/ruby:3.4.3-slim-bookworm AS final
 
 LABEL org.label-schema.maintainer="bronko.media" \
       org.label-schema.vendor="bronko.media" \
