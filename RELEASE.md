@@ -26,6 +26,7 @@ module BronkoMedia
   VERSION = 'v0.4.0'
 end
 ```
+
 Then open a PR, discuss and merge.
 
 ## After the merge, as a maintainer on upstream
