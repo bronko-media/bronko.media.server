@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2022_06_05_105612) do
+ActiveRecord::Schema[8.0].define(version: 2022_06_05_105612) do
   create_table "folders", charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
     t.string "md5_path"
     t.text "folder_path"
@@ -47,5 +47,4 @@ ActiveRecord::Schema[7.1].define(version: 2022_06_05_105612) do
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
   end
-
 end

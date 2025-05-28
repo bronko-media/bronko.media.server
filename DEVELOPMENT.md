@@ -4,6 +4,7 @@
 
 ```bash
 bundle config set --local path 'vendor/bundle'
+bundle config --local build.mysql2 "--with-ldflags=-L/opt/homebrew/Cellar/zstd/1.5.7/lib"
 bundle install
 ```
 
