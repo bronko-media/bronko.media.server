@@ -1,20 +1,20 @@
-FROM docker.io/library/ruby:3.4.4-slim-bookworm AS build
+FROM ruby:3.4.4-alpine AS build
 
-RUN apt update && apt install -y \
+RUN apk add --no-cache \
       ffmpeg \
       g++ \
       gcc \
       imagemagick \
       libc-dev \
       libffi-dev \
-      libgcrypt-dev \
-      libmariadb-dev \
-      libstdc++-12-dev \
+      libgcrypt \
+      mariadb-connector-c-dev \
+      libstdc++ \
       libxml2-dev \
       libxslt-dev \
       make \
       tzdata \
-      xz-utils
+      xz
 
 COPY Gemfile /
 COPY Gemfile.lock /
@@ -26,7 +26,7 @@ RUN bundle config set path.system true \
 
 ###############################################################################
 
-FROM docker.io/library/ruby:3.4.4-slim-bookworm AS final
+FROM ruby:3.4.4-alpine AS final
 
 LABEL org.label-schema.maintainer="bronko.media" \
       org.label-schema.vendor="bronko.media" \
@@ -37,10 +37,8 @@ LABEL org.label-schema.maintainer="bronko.media" \
       org.label-schema.schema-version="1.0" \
       org.label-schema.dockerfile="/Dockerfile"
 
-RUN apt update && apt upgrade -y \
-    && apt install -y ffmpeg imagemagick tzdata xz-utils libmariadb3 \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /usr/local/lib/ruby/gems/*/cache/*
+RUN apk add --no-cache ffmpeg imagemagick tzdata xz mariadb-connector-c \
+    && rm -rf /usr/local/bundle/cache/*
 
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY Dockerfile /
