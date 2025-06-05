@@ -12,7 +12,7 @@ def create_img_thumb(input_path, output_path, size)
     convert << output_path
   end
   logger.info "Generated image thumb: #{output_path}"
-rescue => e
+rescue StandardError => e
   logger.error "Image thumb error (#{input_path}): #{e.class} - #{e.message}"
 end
 
@@ -24,13 +24,13 @@ def create_vid_thumb(input_path, output_path, size)
     preserve_aspect_ratio: :height # fixed typo
   )
   logger.info "Generated video thumb: #{output_path}"
-rescue => e
+rescue StandardError => e
   logger.error "Video thumb error (#{input_path}): #{e.class} - #{e.message}"
 end
 
 def create_thumb(md5, thumb_target, size)
   image = Image.find_or_create_by(md5_path: md5)
-  return unless image && image.file_path && image.extension
+  return unless image&.file_path && image.extension
 
   image_path = File.join(thumb_target, "#{md5}.png")
   ext = image.extension.downcase
@@ -56,6 +56,6 @@ def remove_thumbs(thumb_target)
   Parallel.each(unused_thumbs, in_threads: Settings.threads) do |t|
     path = File.join(thumb_target, t)
     logger.info "Removing unused thumb: #{path}"
-    File.delete(path) if File.exist?(path)
+    FileUtils.rm_f(path)
   end
 end

@@ -11,7 +11,7 @@ def move_folder(md5, new_folder_path)
 
   begin
     FileUtils.mv folder.folder_path, new_folder_path
-  rescue => e
+  rescue StandardError => e
     logger.error "Failed to move folder: #{e.class} - #{e.message}"
     return
   end
@@ -40,7 +40,7 @@ def create_folder(add_folder)
 
   begin
     FileUtils.mkdir_p folder_path
-  rescue => e
+  rescue StandardError => e
     logger.error "Failed to create folder: #{e.class} - #{e.message}"
     return
   end
@@ -52,8 +52,7 @@ def create_folder(add_folder)
     folder.md5_path      = md5_path
   end
 
-  Folder.find_by(md5_path: parent_md5)&.
-    update(sub_folders: Dir.glob("#{parent_folder}*/"))
+  Folder.find_by(md5_path: parent_md5)&.update(sub_folders: Dir.glob("#{parent_folder}*/"))
 end
 
 def remove_folders

@@ -14,22 +14,22 @@ def upload_image(files, file_target)
 
       Image.find_or_create_by(md5_path: md5_path) do |image|
         image.attributes = {
-          dimensions:  mini_magic.dimensions,
-          extension:   extension,
-          file_path:   target,
+          dimensions: mini_magic.dimensions,
+          extension: extension,
+          file_path: target,
           folder_path: file_target,
-          image_name:  File.basename(file[:filename], '.*'),
-          is_image:    is_image,
-          is_video:    is_video,
-          signature:   mini_magic.signature,
-          size:        mini_magic.size,
-          file_mtime:  File.mtime(target),
-          file_ctime:  File.ctime(target)
+          image_name: File.basename(file[:filename], '.*'),
+          is_image: is_image,
+          is_video: is_video,
+          signature: mini_magic.signature,
+          size: mini_magic.size,
+          file_mtime: File.mtime(target),
+          file_ctime: File.ctime(target)
         }
       end
 
       create_thumb(md5_path, Settings.thumb_target, Settings.thumb_res)
-    rescue => e
+    rescue StandardError => e
       logger.error "Upload image error (#{file[:filename]}): #{e.class} - #{e.message}"
     ensure
       mini_magic&.destroy!
@@ -54,7 +54,7 @@ def move_image(new_file_path, md5)
     # update thumb
     FileUtils.rm_f "#{Settings.thumb_target}/#{md5}.png"
     create_thumb(new_md5_path, Settings.thumb_target, Settings.thumb_res)
-  rescue => e
+  rescue StandardError => e
     logger.error "Move image error (#{image.file_path}): #{e.class} - #{e.message}"
   end
 end
@@ -76,7 +76,7 @@ def multi_move_images(path, md5s)
       )
       FileUtils.rm_f "#{Settings.thumb_target}/#{md5}.png"
       create_thumb(new_md5_path, Settings.thumb_target, Settings.thumb_res)
-    rescue => e
+    rescue StandardError => e
       logger.error "Multi-move image error (#{image.file_path}): #{e.class} - #{e.message}"
     end
   end
@@ -91,7 +91,7 @@ def multi_delete_images(md5s)
       FileUtils.rm_f image.file_path
       FileUtils.rm_f "#{Settings.thumb_target}/#{md5}.png"
       image.destroy
-    rescue => e
+    rescue StandardError => e
       logger.error "Multi-delete image error (#{image&.file_path}): #{e.class} - #{e.message}"
     end
   end
@@ -129,7 +129,7 @@ def index_files_to_db(path, extensions)
           signature   = mini_magic.signature
           size        = mini_magic.size
           dimensions  = mini_magic.dimensions
-        rescue => e
+        rescue StandardError => e
           logger.error "MiniMagick error (#{file_path}): #{e.class} - #{e.message}"
         ensure
           mini_magic&.destroy!
@@ -167,17 +167,17 @@ end
 def write_file_to_db(file)
   Image.find_or_create_by(md5_path: file[:md5_path]) do |image|
     image.attributes = {
-      dimensions:  file[:dimensions],
-      extension:   file[:extension],
-      file_path:   file[:file_path],
+      dimensions: file[:dimensions],
+      extension: file[:extension],
+      file_path: file[:file_path],
       folder_path: file[:folder_path],
-      image_name:  file[:image_name],
-      is_image:    file[:is_image],
-      is_video:    file[:is_video],
-      signature:   file[:signature],
-      size:        file[:size],
-      file_mtime:  file[:file_mtime],
-      file_ctime:  file[:file_ctime]
+      image_name: file[:image_name],
+      is_image: file[:is_image],
+      is_video: file[:is_video],
+      signature: file[:signature],
+      size: file[:size],
+      file_mtime: file[:file_mtime],
+      file_ctime: file[:file_ctime]
     }
     image.save
   end
