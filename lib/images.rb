@@ -21,7 +21,6 @@ def upload_image(files, file_target)
       image.is_image    = is_image
       image.is_video    = is_video
       image.md5_path    = md5_path
-      image.mime_type   = mini_magic.mime_type
       image.signature   = mini_magic.signature
       image.size        = mini_magic.size
       image.file_mtime  = File.mtime(target)
@@ -106,7 +105,6 @@ def index_files_to_db(path, extensions)
           mini_magic  = MiniMagick::Image.new(file_path)
           signature   = mini_magic.signature
           size        = mini_magic.size
-          mime_type   = mini_magic.mime_type
           dimensions  = mini_magic.dimensions
         rescue StandardError => e
           logger.error "Error: #{e.message}"
@@ -127,7 +125,6 @@ def index_files_to_db(path, extensions)
         is_image: is_image || false,
         is_video: is_video || false,
         md5_path:,
-        mime_type:,
         signature:,
         size:,
         file_mtime: File.mtime(file_path),
@@ -159,7 +156,6 @@ def write_file_to_db(file)
     image.is_image    = file[:is_image]
     image.is_video    = file[:is_video]
     image.md5_path    = file[:md5_path]
-    image.mime_type   = file[:mime_type]
     image.signature   = file[:signature]
     image.size        = file[:size]
     image.file_mtime  = file[:file_mtime]
