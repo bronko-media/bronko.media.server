@@ -1,12 +1,16 @@
 # frozen_string_literal: true
 
 require 'sinatra/activerecord/rake'
-require 'rubocop/rake_task'
 require './app'
 
-RuboCop::RakeTask.new(:rubocop) do |t|
-  t.formatters = ['simple']
-  t.options = ['--display-cop-names']
+begin
+  require 'rubocop/rake_task'
+  RuboCop::RakeTask.new(:rubocop) do |t|
+    t.formatters = ['simple']
+    t.options = ['--display-cop-names']
+  end
+rescue LoadError
+  # rubocop isn't available, so we won't define a rake task with it
 end
 
 begin
