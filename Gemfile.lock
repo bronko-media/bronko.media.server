@@ -67,7 +67,7 @@ GEM
     deep_merge (1.2.2)
     drb (2.2.3)
     erubi (1.13.1)
-    faraday (2.13.4)
+    faraday (2.14.0)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
@@ -95,7 +95,7 @@ GEM
     io-endpoint (0.15.2)
     io-event (1.10.1)
     io-stream (0.6.1)
-    json (2.15.0)
+    json (2.15.1)
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
     logger (1.7.0)
@@ -171,7 +171,7 @@ GEM
     rainbow (3.1.1)
     rake (13.3.0)
     regexp_parser (2.11.3)
-    rubocop (1.81.0)
+    rubocop (1.81.1)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -235,7 +235,7 @@ GEM
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
     unicode-emoji (4.1.0)
-    uri (1.0.3)
+    uri (1.0.4)
     wikipedia-client (1.17.0)
       addressable (~> 2.7)
 
