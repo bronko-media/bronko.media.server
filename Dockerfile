@@ -1,4 +1,4 @@
-FROM ruby:3.4.6-alpine AS build
+FROM ruby:3.4.7-alpine AS build
 
 RUN apk add --no-cache \
       ffmpeg \
@@ -26,7 +26,7 @@ RUN bundle config set path.system true \
 
 ###############################################################################
 
-FROM ruby:3.4.6-alpine AS final
+FROM ruby:3.4.7-alpine AS final
 
 LABEL org.label-schema.maintainer="bronko.media" \
       org.label-schema.vendor="bronko.media" \
