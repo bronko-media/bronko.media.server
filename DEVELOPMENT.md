@@ -66,6 +66,7 @@ This recovery is not an atomic transaction across the filesystem and database.
 bundle exec ruby test.rb
 bundle exec rake test
 bundle exec rake rubocop
+node --test test/*_test.js
 ```
 
 Tests use a separate in-memory SQLite database and temporary media files.
@@ -73,3 +74,10 @@ They cover HTTP responses, template rendering, file cleanup, indexing, and faile
 Tag filtering is tested with SQLite; the MySQL implementation and actual ImageMagick/FFmpeg thumbnail generation
 require separate integration checks.
 Indexing and duplicate scans still run synchronously through their existing GET endpoints.
+
+## Frontend
+
+The application uses Bootstrap 5.3.3 with its bundled Popper dependency.
+Bootstrap 4 and the `bootstrap_version` setting have been removed.
+Remove `bootstrap_version` from existing custom settings files; it no longer selects frontend assets.
+JavaScript uses native DOM events and fetch; jQuery is not required.

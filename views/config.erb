@@ -20,21 +20,17 @@ end -%>
   <%- unless params.empty? -%>
   <div class="alert alert-success alert-dismissible fade show" role="alert">
     All settings have been saved!
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" data-tooltip title="Dismiss notification" aria-label="Dismiss notification"></button>
   </div>
   <%- end -%>
 
-<div class="row ml-1">
+<div class="row ms-1">
   <div class="col-4">
     <form action="/config" method="get" >
 
   <%- Settings.each do |setting| -%>
     <div class="input-group mb-1">
-        <div class="input-group-prepend">
-          <div class="input-group-text"><%= setting.first %></div>
-        </div>
+        <div class="input-group-text"><%= setting.first %></div>
         <%- if setting.last.is_a? Array -%>
         <input type="text" class="form-control" name="<%= setting.first %>" value="<%= setting.last.join(',') %>" >
         <%- else -%>
@@ -43,19 +39,19 @@ end -%>
       </div>
   <%- end -%>
 
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="submit" class="btn btn-primary" data-tooltip title="Save settings" aria-label="Save settings">Submit</button>
     </form>
   </div>
 </div>
 
 <br>
 This may take a while...
-<div class="row ml-1">
-  <a class="btn btn-danger" href="/indexer">Online Indexer</a>
+<div class="row ms-1">
+  <a class="btn btn-danger" href="/indexer" data-tooltip title="Index media files" aria-label="Index media files">Online Indexer</a>
 </div>
 
 <br>
 This may take a while...
-<div class="row ml-1">
-  <a class="btn btn-outline-danger" href="/duplicate/scan">Online Duplicate Scan</a>
+<div class="row ms-1">
+  <a class="btn btn-outline-danger" href="/duplicate/scan" data-tooltip title="Scan for duplicate media" aria-label="Scan for duplicate media">Online Duplicate Scan</a>
 </div>

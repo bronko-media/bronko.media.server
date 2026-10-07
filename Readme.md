@@ -7,7 +7,7 @@
 ## General
 
 This is an app to handle your image collection.
-It is a ruby sinatra web app bundled with bootstrap, jquery and fancybox.
+It is a ruby sinatra web app bundled with Bootstrap 5 and Fancybox.
 
 ## Installation
 

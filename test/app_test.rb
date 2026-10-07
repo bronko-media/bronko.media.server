@@ -153,6 +153,52 @@ class AppTest < Minitest::Test
     end
   end
 
+  def test_media_buttons_have_tooltips_without_replacing_modal_triggers
+    image = create_image
+    image.update!(is_image: true)
+    response = @request.get('/search?search=original')
+    assert_equal 200, response.status
+    buttons = response.body.scan(/<(?:button|a)\b[^>]*>/).select do |tag|
+      tag.start_with?('<button') || tag.match?(/class="[^"]*\bbtn\b/)
+    end
+    refute_empty buttons
+    buttons.each do |button|
+      assert_includes button, 'data-tooltip'
+      assert_match(/title="[^"]+"/, button)
+      assert_match(/aria-label="[^"]+"/, button)
+    end
+    assert_match(/data-bs-toggle="modal"[^>]*data-bs-target="#Tag[^>]*title="Edit tags"/, response.body)
+    assert_includes response.body, 'title="Add to favorites"'
+    image.update!(favorite: true)
+    assert_includes @request.get('/favorites').body, 'title="Remove from favorites"'
+  end
+
+  def test_layout_uses_bootstrap5_and_matching_navigation_target
+    body = @request.get('/search').body
+    assert_includes body, '/css/bootstrap5.min.css'
+    assert_includes body, '/js/bootstrap5.bundle.min.js'
+    assert_includes body, '/js/tooltips.js'
+    assert_includes body, 'data-bs-target="#mainNavigation"'
+    assert_includes body, 'id="mainNavigation"'
+    refute_includes body, 'jquery'
+    refute_includes body, 'input-group-prepend'
+    refute Settings.key?(:bootstrap_version)
+  end
+
+  def test_folder_controls_use_bootstrap5_modal_and_close_buttons
+    Folder.create!(folder_path: "#{@directory}/", parent_folder: '/', sub_folders: [], md5_path: 'folder')
+    original_root = Settings.originals_path
+    Settings.originals_path = @directory
+    body = @request.get('/folders').body
+    assert_includes body, 'data-bs-toggle="modal" data-bs-target="#ImagesMoveModal"'
+    assert_includes body, 'class="btn-close" data-bs-dismiss="modal"'
+    assert_includes body, 'type="file" class="form-control"'
+    refute_includes body, 'data-toggle='
+    refute_includes body, '&times;'
+  ensure
+    Settings.originals_path = original_root
+  end
+
   def test_search_and_info_render_existing_image
     image = create_image
     assert_equal 200, @request.get('/search?search=original').status

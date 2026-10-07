@@ -7,7 +7,7 @@
       <%- breadcrumbs.each_with_index do |breadcrump, i| -%>
         <%- if i == 0 -%>
         <li class="breadcrumb-item">
-          <a href="/folders" class="bi bi-collection"></a>
+          <a href="/folders" class="bi bi-collection" data-tooltip title="Open folders" aria-label="Open folders"></a>
         </li>
       <%- elsif i == 1 -%>
       <%- else -%>
@@ -25,12 +25,14 @@
 </nav>
 
 <div class="btn-toolbar">
-  <button class="btn btn-outline-primary btn-sm mr-1 bi bi-arrow-up"       type="button" onclick="history.back()"></button>
-  <button class="btn btn-outline-info    btn-sm mr-1 bi bi-folder-symlink" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"></button>
-  <button class="btn btn-outline-info    btn-sm mr-1 bi bi-tags"           type="button" data-toggle="modal" data-target="#Tag<%= short_md5 %>Modal"></button>
-  <button class="btn btn-outline-warning btn-sm mr-1 bi bi-bookmark-star"  type="button" onclick="addFavorite(this)" value="<%= media.md5_path %>"></button>
-  <button class="btn btn-outline-warning btn-sm mr-1 bi bi-recycle"        type="button" onclick="recreateThumb(this)" value="<%= media.md5_path %>"></button>
-  <button class="btn btn-outline-danger  btn-sm mr-1 bi bi-trash"          type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"></button>
+  <button class="btn btn-outline-primary btn-sm me-1 bi bi-arrow-up"       type="button" onclick="history.back()" data-tooltip title="Go back" aria-label="Go back"></button>
+  <button class="btn btn-outline-info    btn-sm me-1 bi bi-folder-symlink" type="button" data-bs-toggle="modal" data-bs-target="#Move<%= short_md5 %>Modal" data-tooltip title="Move media" aria-label="Move media"></button>
+  <button class="btn btn-outline-info    btn-sm me-1 bi bi-tags"           type="button" data-bs-toggle="modal" data-bs-target="#Tag<%= short_md5 %>Modal" data-tooltip title="Edit tags" aria-label="Edit tags"></button>
+  <%- unless is_folder -%>
+  <button class="btn btn-outline-warning btn-sm me-1 bi bi-bookmark-star"  type="button" onclick="addFavorite(this)" value="<%= media.md5_path %>" data-favorite="<%= media.favorite %>" data-tooltip title="<%= media.favorite ? 'Remove from favorites' : 'Add to favorites' %>" aria-label="<%= media.favorite ? 'Remove from favorites' : 'Add to favorites' %>"></button>
+  <%- end -%>
+  <button class="btn btn-outline-warning btn-sm me-1 bi bi-recycle"        type="button" onclick="recreateThumb(this)" value="<%= media.md5_path %>" data-tooltip title="Recreate thumbnail" aria-label="Recreate thumbnail"></button>
+  <button class="btn btn-outline-danger  btn-sm me-1 bi bi-trash"          type="button" data-bs-toggle="modal" data-bs-target="#Delete<%= short_md5 %>Modal" data-tooltip title="Delete media" aria-label="Delete media"></button>
 </div>
 <hr />
 
