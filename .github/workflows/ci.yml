@@ -28,6 +28,9 @@ jobs:
         bundle config set --local with 'development test'
         bundle install
 
+    - name: Run tests
+      run: bundle exec ruby test.rb
+
     - name: Run Rubocop
       run: bundle exec rake rubocop
 

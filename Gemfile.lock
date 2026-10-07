@@ -261,6 +261,7 @@ DEPENDENCIES
   faraday-retry
   github_changelog_generator
   mini_magick
+  minitest
   mysql2
   pagy (~> 43.0)
   parallel
