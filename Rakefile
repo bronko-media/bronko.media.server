@@ -2,6 +2,11 @@
 
 require 'sinatra/activerecord/rake'
 require './app'
+require 'rake/testtask'
+
+Rake::TestTask.new(:test) do |task|
+  task.pattern = 'test/*_test.rb'
+end
 
 begin
   require 'rubocop/rake_task'

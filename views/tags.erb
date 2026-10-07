@@ -1,18 +1,12 @@
 <div class="btn-toolbar">
   <form method="get">
-  <%- Tag.find_each do |tag| -%>
+  <%- tags.each do |tag| -%>
     <button class="btn btn-outline-primary btn-sm mr-1 mb-1" type="submit" name="tag" value="<%= tag.name %>" action="/tags"><%= tag.name %></button>
   <%- end -%>
   </form>
 </div>
 
-<%- unless params[:tag].nil? -%>
-<%-
-query = "SELECT * FROM images WHERE JSON_CONTAINS(tags, ?)"
-tag   = ActiveRecord::Base.sanitize_sql(params[:tag])
-pagy, images = pagy(:offset, Image.find_by_sql([query, "[\"#{tag}\"]"]), limit: Settings.images_per_page, page: params[:page])
-
--%>
+<%- unless images.nil? -%>
 <%= erb :_paginator, locals: {images: images, pagy: pagy} %>
 
 <div class="row mt-1">

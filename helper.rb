@@ -1,39 +1,15 @@
 # frozen_string_literal: true
 
-require 'config'
-require 'digest'
-require 'fileutils'
-require 'logger'
-require 'mini_magick'
 require 'optparse'
-require 'parallel'
-require 'sinatra/activerecord'
-require 'streamio-ffmpeg'
-require 'timeout'
-require 'yaml'
+require_relative 'config/boot'
 
-require_relative 'lib/helpers'
-require_relative 'lib/folders'
-require_relative 'lib/thumbs'
-require_relative 'lib/images'
-require_relative 'lib/models'
-
-Config.load_and_set_settings("#{File.dirname(__FILE__)}/config/settings.yml")
-
-def logger
-  @logger ||= Logger.new($stdout)
-end
-
-ActiveRecord::Base.establish_connection(
-  adapter: Settings.db_adapter,
-  database: Settings.db_name,
-  password: Settings.db_password,
-  username: Settings.db_username,
-  host: Settings.db_host,
-  encoding: Settings.db_ecnoding,
-  collation: Settings.db_collation,
-  pool: Settings.db_pool
-)
+logger = Logger.new($stdout)
+ActiveRecord::Base.establish_connection(BronkoMedia::Database.options(Settings))
+indexer = BronkoMedia::Indexer.new(settings: Settings, logger: logger)
+images = BronkoMedia::ImageService.new(settings: Settings, logger: logger)
+folders = BronkoMedia::FolderService.new(settings: Settings, logger: logger)
+thumbnails = BronkoMedia::ThumbnailService.new(settings: Settings, logger: logger)
+duplicates = BronkoMedia::DuplicateScanner.new(settings: Settings, logger: logger)
 
 image_root   = Settings.originals_path
 thumb_target = Settings.thumb_target
@@ -46,10 +22,6 @@ OptionParser.new do |opts|
 
   opts.on('--clean-thumbs', TrueClass, 'Clean obsolete Thumbs') do |e|
     @options[:clean_thumbs] = e.nil? || e
-  end
-
-  opts.on('--clean-files', TrueClass, 'Clean obsolete Files') do |e|
-    @options[:clean_files] = e.nil? || e
   end
 
   opts.on('--clean-files', TrueClass, 'Clean obsolete Files') do |e|
@@ -83,12 +55,12 @@ end.parse!
 
 ActiveRecord::Base.logger = nil unless @options[:ar_logger]
 
-build_index(image_root, thumb_target, extensions) if @options[:index]
-remove_thumb(Settings.thumb_target) if @options[:clean_thumbs]
-remove_folders                      if @options[:clean_folders]
-remove_files(Settings.thumb_target) if @options[:clean_files]
-find_duplicates                     if @options[:find_duplicates]
+indexer.build_index(image_root, thumb_target, extensions) if @options[:index]
+thumbnails.remove_thumbs(Settings.thumb_target) if @options[:clean_thumbs]
+folders.remove_folders if @options[:clean_folders]
+images.remove_files(Settings.thumb_target) if @options[:clean_files]
+duplicates.find_duplicates if @options[:find_duplicates]
 
 # temporary actions
-add_new_fields                      if @options[:add_new_fields]
-add_mtime_and_ctime                 if @options[:add_mtime_and_ctime]
+indexer.add_new_fields               if @options[:add_new_fields]
+indexer.add_mtime_and_ctime          if @options[:add_mtime_and_ctime]
