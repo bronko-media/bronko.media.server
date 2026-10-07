@@ -8,8 +8,6 @@ require 'json'
 require 'logger'
 require 'mini_magick'
 require 'pagy'
-require 'pagy/extras/bootstrap'
-require 'pagy/extras/pagy'
 require 'parallel'
 require 'rackup'
 require 'rack/handler/puma'
@@ -34,8 +32,7 @@ end
 class BronkoMediaServer < Sinatra::Base
   include ActionView::Helpers::TextHelper
   include ActionView::Helpers::NumberHelper
-  include Pagy::Backend
-  include Pagy::Frontend
+  include Pagy::Method
 
   register Sinatra::ActiveRecordExtension
 
@@ -143,7 +140,7 @@ class BronkoMediaServer < Sinatra::Base
   end
   get('/js/pagy.min.js') do
     content_type 'application/javascript'
-    send_file Pagy.root.join('javascripts', 'pagy.min.js')
+    send_file Pagy::ROOT.join('javascripts', 'pagy.min.js')
   end
 
   private

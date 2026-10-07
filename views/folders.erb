@@ -13,7 +13,7 @@
     filter = { folder_path: folder_root, is_video: true } if media_type == 'videos'
     filter = { folder_path: folder_root, is_image: true } if media_type == 'images'
 
-    pagy, images = pagy(Image.where(filter).order("created_at #{Settings.sort_order}, image_name"), items: Settings.images_per_page, page: params[:page])
+    pagy, images = pagy(:offset, Image.where(filter).order("created_at #{Settings.sort_order}, image_name"), limit: Settings.images_per_page, page: params[:page])
   end
 -%>
 

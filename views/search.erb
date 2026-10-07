@@ -2,7 +2,7 @@
 if params[:search].nil?
   search = nil
 else
-  pagy, search = pagy(Image.where("file_path LIKE ?", "%#{params[:search]}%"), items: Settings.images_per_page, page: params[:page])
+  pagy, search = pagy(:offset, Image.where("file_path LIKE ?", "%#{params[:search]}%"), limit: Settings.images_per_page, page: params[:page])
 end
 -%>
 <h3>Search</h3>
