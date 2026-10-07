@@ -8,7 +8,7 @@ The web app, migrations, and CLI share this configuration when `RACK_ENV=develop
 MySQL remains the default outside development.
 
 ```bash
-rvm use 3.4.4
+rvm use 4.0.7
 bundle config set --local path 'vendor/bundle'
 bundle config set --local with 'development test'
 bundle install
