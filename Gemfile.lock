@@ -262,7 +262,7 @@ DEPENDENCIES
   github_changelog_generator
   mini_magick
   mysql2
-  pagy
+  pagy (~> 43.0)
   parallel
   puma
   rackup

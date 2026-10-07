@@ -1,5 +1,5 @@
 <%-
-  pagy, images = pagy(Image.where(duplicate: true), items: Settings.images_per_page, page: params[:page])
+  pagy, images = pagy(:offset, Image.where(duplicate: true), limit: Settings.images_per_page, page: params[:page])
 -%>
 <%- unless images.empty? -%>
 <%= erb :_paginator, locals: {images: images, pagy: pagy} %>
