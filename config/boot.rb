@@ -19,7 +19,9 @@ require 'streamio-ffmpeg'
 require 'timeout'
 require 'yaml'
 
-Config.load_and_set_settings File.expand_path('settings.yml', __dir__)
+settings_files = [File.expand_path('settings.yml', __dir__)]
+settings_files << File.expand_path('settings.development.yml', __dir__) if ENV['RACK_ENV'] == 'development'
+Config.load_and_set_settings(*settings_files)
 
 require_relative '../lib/bronko_media/version'
 require_relative '../lib/bronko_media/database'

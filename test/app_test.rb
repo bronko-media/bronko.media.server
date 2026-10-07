@@ -224,8 +224,30 @@ class AppTest < Minitest::Test
     assert_equal 200, @request.get('/media/info/folder').status
   end
 
-  def test_database_configuration_is_shared
-    assert_equal 'localhost', BronkoMedia::Database.options(Settings, environment: 'development')[:host]
-    assert_equal Settings.db_host, BronkoMedia::Database.options(Settings, environment: 'production')[:host]
+  def test_tag_filter_matches_exact_tags_with_quotes
+    image = create_image
+    image.update!(tags: ['cat', 'a"b'])
+    other = create_image('other')
+    other.update!(tags: ['cats'])
+    assert_equal [image.id], Image.tagged_with('cat').pluck(:id)
+    assert_equal [image.id], Image.tagged_with('a"b').pluck(:id)
+    assert_empty Image.tagged_with('missing')
+    assert_equal 200, @request.get('/tags?tag=cat').status
+  end
+
+  def test_sqlite_configuration_excludes_mysql_options
+    options = BronkoMedia::Database.options(Settings)
+    assert_equal 'sqlite3', options[:adapter]
+    assert_equal ':memory:', options[:database]
+    assert_equal 5000, options[:timeout]
+    refute options.key?(:host)
+    refute options.key?(:collation)
+  end
+
+  def test_mysql_configuration_keeps_production_host
+    settings = Settings.dup
+    settings.db_adapter = 'mysql2'
+    assert_equal 'localhost', BronkoMedia::Database.options(settings, environment: 'development')[:host]
+    assert_equal settings.db_host, BronkoMedia::Database.options(settings, environment: 'production')[:host]
   end
 end

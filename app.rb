@@ -120,7 +120,7 @@ class BronkoMediaServer < Sinatra::Base
   get('/tags') do
     locals = { tags: Tag.order(:id), images: nil }
     unless params[:tag].nil?
-      scope = Image.where('JSON_CONTAINS(tags, ?)', [params[:tag]].to_json)
+      scope = Image.tagged_with(params[:tag])
       locals.merge!(paginated_locals(scope))
     end
     erb :tags, locals: locals
