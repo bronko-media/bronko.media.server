@@ -7,42 +7,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="/css/bootstrap<%= Settings.bootstrap_version %>.min.css" />
+    <link rel="stylesheet" href="/css/bootstrap5.min.css" />
     <link rel="stylesheet" href="/css/fancybox6.css" />
     <link rel="stylesheet" href="/css/bootstrap-icons.css">
     <link rel="stylesheet" href="/css/bronko.media.css" />
 
     <link rel="icon" href="/images/favicon.ico" />
 
-    <script src="/js/jquery-3.7.1.slim.min.js"></script>
-    <script src="/js/bootstrap<%= Settings.bootstrap_version %>.min.js"></script>
+    <script src="/js/bootstrap5.bundle.min.js"></script>
     <script src="/js/fancybox6.umd.js"></script>
     <script src="/js/pagy.min.js"></script>
   </head>
   <body>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <span class="navbar-brand mr-auto">BMS</span>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="mx-auto order-0">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active"><a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a></li>
+  <nav class="navbar navbar-expand-md bg-dark" data-bs-theme="dark">
+    <div class="container-fluid">
+      <span class="navbar-brand">BMS</span>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavigation"
+              aria-controls="mainNavigation" aria-expanded="false" data-tooltip title="Toggle navigation" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNavigation">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="/folders">Folders</a></li>
           <li class="nav-item"><a class="nav-link" href="/duplicates">Duplicates</a></li>
           <li class="nav-item"><a class="nav-link" href="/favorites">Favorites</a></li>
           <li class="nav-item"><a class="nav-link" href="/search">Search</a></li>
           <li class="nav-item"><a class="nav-link" href="/tags">Tags</a></li>
-          <div class="verticalLine">
-            <li class="nav-item"><a class="nav-link" href="/config">Config</a></li>
-          </div>
+          <li class="nav-item verticalLine"><a class="nav-link" href="/config">Config</a></li>
         </ul>
-    </div>
-    <div class="navbar-collapse collapse order-3">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item nav-link"><%= BronkoMedia::VERSION %></li>
-        </ul>
+        <span class="navbar-text"><%= BronkoMedia::VERSION %></span>
+      </div>
     </div>
   </nav>
     <br/>
@@ -51,27 +46,9 @@
       <%= yield %>
     </div>
 
-    <script type="text/javascript">
-    // get check images for multi move
-    var selectedImages = new Array();
+    <script src="/js/tooltips.js"></script>
 
-    jQuery(".image_checkbox").click(function(){
-        var n = jQuery(".image_checkbox:checked").length;
-        if (n > 0){
-          jQuery(".image_checkbox:checked").each(function(){
-            selectedImages.push($(this).val());
-          });
-        }
-    });
-
-    $('#ImagesMoveModal').on('show.bs.modal', function () {
-      document.getElementById('mv_md5s').value = selectedImages;
-    })
-
-    $('#ImagesDeleteModal').on('show.bs.modal', function () {
-      document.getElementById('del_md5s').value = selectedImages;
-    })
-    </script>
+    <script src="/js/selected_images.js"></script>
 
   <% loop_attribute = if Settings.video_do_loop == 'true'
                         'loop'

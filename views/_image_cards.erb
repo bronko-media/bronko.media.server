@@ -8,22 +8,22 @@
         <div class="card mb-1">
           <a href="/image/<%= image.md5_path %>" data-fancybox="gallery">
             <img src="/<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
-            <span class="badge badge-secondary"><%= image.extension %></span>
+            <span class="badge bg-secondary"><%= image.extension %></span>
           </a>
           <small class="mt-1" align="center"><%= truncate(image.image_name, :length => 27) %></small>
           <%- if show_path -%>
           <small class="mt-1"><%= image.folder_path.scan(/.{1,100}/).join("\n") %></small>
           <%- end -%>
           <div class="btn-toolbar justify-content-center" role="toolbar">
-            <div class="btn-group mr-1" role="group">
-              <button class="btn btn_black btn-outline-primary btn-sm bi bi-info-lg"        type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"></button>
-              <button class="btn btn_black btn-outline-info    btn-sm bi bi-arrow-left-right" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"></button>
-              <button class="btn btn_black btn-outline-info    btn-sm bi bi-tags"           type="button" data-toggle="modal" data-target="#Tag<%= short_md5 %>Modal"></button>
-              <button class="btn btn_black btn-outline-warning btn-sm <%= fav_icon %>"      type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"></button>
-              <button class="btn btn_black btn-outline-danger  btn-sm bi bi-trash"          type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"></button>
+            <div class="btn-group me-1" role="group">
+              <button class="btn btn_black btn-outline-primary btn-sm bi bi-info-lg"        type="button" data-bs-toggle="modal" data-bs-target="#Info<%= short_md5 %>Modal" data-tooltip title="Show media information" aria-label="Show media information"></button>
+              <button class="btn btn_black btn-outline-info    btn-sm bi bi-arrow-left-right" type="button" data-bs-toggle="modal" data-bs-target="#Move<%= short_md5 %>Modal" data-tooltip title="Move media" aria-label="Move media"></button>
+              <button class="btn btn_black btn-outline-info    btn-sm bi bi-tags"           type="button" data-bs-toggle="modal" data-bs-target="#Tag<%= short_md5 %>Modal" data-tooltip title="Edit tags" aria-label="Edit tags"></button>
+              <button class="btn btn_black btn-outline-warning btn-sm <%= fav_icon %>"      type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>" data-favorite="<%= image.favorite %>" data-tooltip title="<%= image.favorite ? 'Remove from favorites' : 'Add to favorites' %>" aria-label="<%= image.favorite ? 'Remove from favorites' : 'Add to favorites' %>"></button>
+              <button class="btn btn_black btn-outline-danger  btn-sm bi bi-trash"          type="button" data-bs-toggle="modal" data-bs-target="#Delete<%= short_md5 %>Modal" data-tooltip title="Delete media" aria-label="Delete media"></button>
             </div>
             <div class="btn-group" role="group">
-              <a class="btn btn_black btn-outline-primary btn-sm bi bi-arrow-up-right" type="button" href="/media/info/<%= image.md5_path %>"></a>
+              <a class="btn btn_black btn-outline-primary btn-sm bi bi-arrow-up-right" type="button" href="/media/info/<%= image.md5_path %>" data-tooltip title="Open media information" aria-label="Open media information"></a>
             </div>
           </div>
           <input class="image_checkbox" id="<%= image.md5_path %>" name="<%= image.md5_path %>" type="checkbox" value="<%= image.md5_path %>" >
@@ -34,19 +34,19 @@
       <div class="card mb-1">
         <a data-fancybox="gallery" data-type="html5video" data-src="/image/<%= image.md5_path %>">
           <img src="/<%= Settings.thumb_path %>/<%= image.md5_path %>.png" class="card-img-top">
-          <span class="badge badge-secondary"><%= image.extension %></span>
+          <span class="badge bg-secondary"><%= image.extension %></span>
         </a>
         <small class="mt-1" align="center"><%= truncate(image.image_name, :length => 27) %></small>
-        <div class="btn-toolbar mb-1 ml-1 justify-content-center" role="toolbar">
-          <div class="btn-group mr-1" role="group">
-            <button class="btn btn_black btn-outline-primary btn-sm bi bi-info-lg"        type="button" data-toggle="modal" data-target="#Info<%= short_md5 %>Modal"></button>
-            <button class="btn btn_black btn-outline-info    btn-sm bi bi-arrow-left-right" type="button" data-toggle="modal" data-target="#Move<%= short_md5 %>Modal"></button>
-            <button class="btn btn_black btn-outline-info    btn-sm bi bi-tags"           type="button" data-toggle="modal" data-target="#Tag<%= short_md5 %>Modal"></button>
-            <button class="btn btn_black btn-outline-warning btn-sm <%= fav_icon %>"      type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>"></button>
-            <button class="btn btn_black btn-outline-danger  btn-sm bi bi-trash"          type="button" data-toggle="modal" data-target="#Delete<%= short_md5 %>Modal"></button>
+        <div class="btn-toolbar mb-1 ms-1 justify-content-center" role="toolbar">
+          <div class="btn-group me-1" role="group">
+            <button class="btn btn_black btn-outline-primary btn-sm bi bi-info-lg"        type="button" data-bs-toggle="modal" data-bs-target="#Info<%= short_md5 %>Modal" data-tooltip title="Show media information" aria-label="Show media information"></button>
+            <button class="btn btn_black btn-outline-info    btn-sm bi bi-arrow-left-right" type="button" data-bs-toggle="modal" data-bs-target="#Move<%= short_md5 %>Modal" data-tooltip title="Move media" aria-label="Move media"></button>
+            <button class="btn btn_black btn-outline-info    btn-sm bi bi-tags"           type="button" data-bs-toggle="modal" data-bs-target="#Tag<%= short_md5 %>Modal" data-tooltip title="Edit tags" aria-label="Edit tags"></button>
+            <button class="btn btn_black btn-outline-warning btn-sm <%= fav_icon %>"      type="button" onclick="addFavorite(this)" value="<%= image.md5_path %>" data-favorite="<%= image.favorite %>" data-tooltip title="<%= image.favorite ? 'Remove from favorites' : 'Add to favorites' %>" aria-label="<%= image.favorite ? 'Remove from favorites' : 'Add to favorites' %>"></button>
+            <button class="btn btn_black btn-outline-danger  btn-sm bi bi-trash"          type="button" data-bs-toggle="modal" data-bs-target="#Delete<%= short_md5 %>Modal" data-tooltip title="Delete media" aria-label="Delete media"></button>
           </div>
           <div class="btn-group" role="group">
-            <a class="btn btn-outline-primary btn-sm bi bi-arrow-up-right" href="/media/info/<%= image.md5_path %>" type="button"></a>
+            <a class="btn btn-outline-primary btn-sm bi bi-arrow-up-right" href="/media/info/<%= image.md5_path %>" type="button" data-tooltip title="Open media information" aria-label="Open media information"></a>
           </div>
         </div>
         <input class="image_checkbox" id="<%= image.md5_path %>" name="<%= image.md5_path %>" type="checkbox" value="<%= image.md5_path %>" >
@@ -60,9 +60,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="Info<%= short_md5 %>ModalLabel">Info</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" data-tooltip title="Close dialog" aria-label="Close dialog"></button>
             </div>
             <div class="modal-body">
               <%= erb :_image_info, locals: { media: image } %>
@@ -77,14 +75,12 @@
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="Delete<%= short_md5 %>ModalLabel">Delete Image?</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" data-tooltip title="Close dialog" aria-label="Close dialog"></button>
             </div>
             <div class="modal-body">
                 <form action="/image/<%= image.md5_path %>" method="post">
                   <input name="_method" type="hidden" value="delete" />
-                  <button type="submit" class="btn btn-danger">Delete</button>
+                  <button type="submit" class="btn btn-danger" data-tooltip title="Confirm deletion" aria-label="Confirm deletion">Delete</button>
                 </form>
             </div>
           </div>
@@ -97,16 +93,14 @@
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="Move<%= short_md5 %>ModalLabel">Move Image</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" data-tooltip title="Close dialog" aria-label="Close dialog"></button>
             </div>
             <div class="modal-body">
               <form action="/image/move/<%= image.md5_path %>" method="post" >
                 <div class="input-group mb-2">
                   <input type="text" class="form-control" name="file_path" value="<%= image.file_path %>" >
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" data-tooltip title="Move media" aria-label="Move media">Submit</button>
               </form>
             </div>
           </div>
@@ -119,9 +113,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="Tag<%= short_md5 %>ModalLabel">Tag Image</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" data-tooltip title="Close dialog" aria-label="Close dialog"></button>
             </div>
             <div class="modal-body">
               <form action="/image/tag/<%= image.md5_path %>" method="post" >
@@ -129,7 +121,7 @@
                   <%- tags = image.tags.nil? ? '' : image.tags.join(',') -%>
                   <input type="text" class="form-control" name="tags" value="<%= tags %>" >
                 </div>
-                <button type="submit "class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" data-tooltip title="Save tags" aria-label="Save tags">Submit</button>
               </form>
             </div>
           </div>

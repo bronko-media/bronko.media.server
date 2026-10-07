@@ -4,16 +4,14 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="FolderPlusModalLabel">Add Folder</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" data-tooltip title="Close dialog" aria-label="Close dialog"></button>
         </div>
         <div class="modal-body">
           <form action="/folder/create" method="post">
             <div class="input-group mb-2">
               <input type="text" class="form-control" name="add_folder" value="<%= this_folder %>" >
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary" data-tooltip title="Create folder" aria-label="Create folder">Submit</button>
           </form>
         </div>
       </div>
@@ -26,16 +24,14 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="FolderDeleteModalLabel">Delete Folder</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" data-tooltip title="Close dialog" aria-label="Close dialog"></button>
         </div>
         <div class="modal-body">
           <form action="/folder/delete/<%= folder.md5_path %>" method="post">
             <div class="input-group mb-2">
               <input name="_method" type="hidden" value="delete" />
             </div>
-            <button type="submit" class="btn btn-danger">Delete</button>
+            <button type="submit" class="btn btn-danger" data-tooltip title="Confirm deletion" aria-label="Confirm deletion">Delete</button>
           </form>
         </div>
       </div>
@@ -48,16 +44,14 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="FolderMoveModalLabel">Move Folder</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" data-tooltip title="Close dialog" aria-label="Close dialog"></button>
         </div>
         <div class="modal-body">
           <form action="/folder/move/<%= folder.md5_path %>" method="post" >
             <div class="input-group mb-2">
               <input type="text" class="form-control" name="move_folder" value="<%= this_folder %>" >
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary" data-tooltip title="Move folder" aria-label="Move folder">Submit</button>
           </form>
         </div>
       </div>
@@ -70,17 +64,15 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="FolderUploadModalLabel">Upload Image</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" data-tooltip title="Close dialog" aria-label="Close dialog"></button>
         </div>
         <div class="modal-body">
           <form action='/image/upload' enctype="multipart/form-data" method='POST'>
             <div class="input-group mb-2">
-              <input name="files[]" multiple type="file" class="form-control-file" />
+              <input name="files[]" multiple type="file" class="form-control" />
               <input type="hidden" name="file_target" value="<%= this_folder %>">
             </div>
-            <button type="submit" class="btn btn-primary">Upload</button>
+            <button type="submit" class="btn btn-primary" data-tooltip title="Upload selected files" aria-label="Upload selected files">Upload</button>
           </form>
         </div>
       </div>
@@ -93,16 +85,14 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="FolderScanModalLabel">Scan Folder</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" data-tooltip title="Close dialog" aria-label="Close dialog"></button>
         </div>
         <div class="modal-body">
           <form action="/folder/scan/<%= folder.md5_path %>" method="post">
             <div class="input-group mb-2">
               <input name="_method" type="hidden" value="scan" />
             </div>
-            <button type="submit" class="btn btn-danger">Scan</button>
+            <button type="submit" class="btn btn-danger" data-tooltip title="Scan folder for media" aria-label="Scan folder for media">Scan</button>
           </form>
         </div>
       </div>
@@ -115,9 +105,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="ImagesMoveModalLabel">Move Images</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" data-tooltip title="Close dialog" aria-label="Close dialog"></button>
         </div>
         <div class="modal-body">
           <form action="/images/move" method="post">
@@ -125,7 +113,7 @@
               <input type="text" class="form-control" name="path" value="<%= this_folder %>">
               <input type="hidden" name="md5s" id="mv_md5s" value="">
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary" data-tooltip title="Move selected media" aria-label="Move selected media">Submit</button>
           </form>
         </div>
       </div>
@@ -138,16 +126,14 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="ImagesDeleteModalLabel">Delete Images</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" data-tooltip title="Close dialog" aria-label="Close dialog"></button>
         </div>
         <div class="modal-body">
           <form action="/images/delete" method="post">
             <div class="input-group mb-2">
               <input type="hidden" name="md5s" id="del_md5s" value="">
             </div>
-            <button type="submit" class="btn btn-danger">Delete</button>
+            <button type="submit" class="btn btn-danger" data-tooltip title="Confirm deletion" aria-label="Confirm deletion">Delete</button>
           </form>
         </div>
       </div>

@@ -7,11 +7,3 @@
 
 <%= erb :_paginator, locals: {images: images, pagy: pagy} %>
 <%- end -%>
-
-<script type="text/javascript">
-  function addFavorite(elem) {
-    var md5 = elem.value;
-    $.post("/favorite/" + md5, { favorite: false }, function(result){});
-    return false;
-  }
-</script>

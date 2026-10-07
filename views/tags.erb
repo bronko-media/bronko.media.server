@@ -1,7 +1,7 @@
 <div class="btn-toolbar">
   <form method="get">
   <%- tags.each do |tag| -%>
-    <button class="btn btn-outline-primary btn-sm mr-1 mb-1" type="submit" name="tag" value="<%= tag.name %>" action="/tags"><%= tag.name %></button>
+    <button class="btn btn-outline-primary btn-sm me-1 mb-1" type="submit" name="tag" value="<%= tag.name %>" action="/tags" data-tooltip title="Filter media by this tag" aria-label="Filter media by this tag"><%= tag.name %></button>
   <%- end -%>
   </form>
 </div>
