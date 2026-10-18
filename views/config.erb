@@ -1,23 +1,4 @@
-<%- settings_yaml = YAML.load_file('config/settings.yml') -%>
-
-<%- unless params.empty?
-  Settings.each do |setting|
-    if setting.first.to_s.include? 'extention'
-      settings_yaml[setting.first.to_s] = params[setting.first].split(',')
-    elsif setting.first.to_s == 'threads'
-      settings_yaml[setting.first.to_s] = params[setting.first].to_i
-    elsif setting.first.to_s == 'images_per_page'
-      settings_yaml[setting.first.to_s] = params[setting.first].to_i
-    else
-      settings_yaml[setting.first.to_s] = params[setting.first]
-    end
-  end
-
-  File.open("config/settings.yml", "w") { |file| file.write(settings_yaml.to_yaml) }
-  Settings.reload!
-end -%>
-
-  <%- unless params.empty? -%>
+  <%- if saved -%>
   <div class="alert alert-success alert-dismissible fade show" role="alert">
     All settings have been saved!
     <button type="button" class="btn-close" data-bs-dismiss="alert" data-tooltip title="Dismiss notification" aria-label="Dismiss notification"></button>
@@ -26,15 +7,17 @@ end -%>
 
 <div class="row ms-1">
   <div class="col-4">
-    <form action="/config" method="get" >
+    <form action="/config" method="post" >
 
-  <%- Settings.each do |setting| -%>
+      <input type="hidden" name="config_token" value="<%= Rack::Utils.escape_html(config_token) %>">
+  <%- editable_settings.each do |key| -%>
+    <%- setting = [key, Settings[key]] -%>
     <div class="input-group mb-1">
-        <div class="input-group-text"><%= setting.first %></div>
+        <div class="input-group-text"><%= Rack::Utils.escape_html(setting.first) %></div>
         <%- if setting.last.is_a? Array -%>
-        <input type="text" class="form-control" name="<%= setting.first %>" value="<%= setting.last.join(',') %>" >
+        <input type="text" class="form-control" name="<%= Rack::Utils.escape_html(setting.first) %>" value="<%= Rack::Utils.escape_html(setting.last.join(',')) %>" >
         <%- else -%>
-        <input type="text" class="form-control" name="<%= setting.first %>" value="<%= setting.last %>" >
+        <input type="text" class="form-control" name="<%= Rack::Utils.escape_html(setting.first) %>" value="<%= Rack::Utils.escape_html(setting.last.to_s) %>" >
         <%- end -%>
       </div>
   <%- end -%>
@@ -55,3 +38,5 @@ This may take a while...
 <div class="row ms-1">
   <a class="btn btn-outline-danger" href="/duplicate/scan" data-tooltip title="Scan for duplicate media" aria-label="Scan for duplicate media">Online Duplicate Scan</a>
 </div>
+
+<p>Storage paths and database credentials are configured in config/settings.yml. Restart the application after changing them.</p>

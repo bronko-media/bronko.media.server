@@ -3,12 +3,14 @@
 module BronkoMedia
   class Indexer < Service
     def build_index(image_root, thumb_target, extensions)
-      images.remove_files(thumb_target)
-      folders.remove_folders
-      thumbnails.remove_thumbs(thumb_target)
-      folders.write_folders_to_db(folders.index_folders(image_root))
-      images.index_files_to_db(image_root, extensions)
-      duplicates.find_duplicates
+      with_media_lock do
+        images.remove_files(thumb_target)
+        folders.remove_folders
+        thumbnails.remove_thumbs(thumb_target)
+        folders.write_folders_to_db(folders.index_folders(image_root))
+        images.index_files_to_db(image_root, extensions)
+        duplicates.find_duplicates
+      end
     end
 
     def add_new_fields

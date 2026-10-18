@@ -29,7 +29,8 @@ You can see the progress on the console or from `docker logs bronko.media.server
 
 All png, jpg, jpeg, gif and several movie files will be indexed into a database.
 Thumbs will be created and saved. They will be referenced only by their md5 hashed path.
-The files in the source stay untouched. Only their meta will be saved in the database.
+Indexing leaves source files untouched and stores their metadata in the database.
+The move and delete actions in the web interface do change or remove original files.
 
 ## Folders
 

@@ -28,6 +28,9 @@ jobs:
         bundle config set --local with 'development test'
         bundle install
 
+    - name: Install image processing dependency for upload tests
+      run: sudo apt-get update && sudo apt-get install -y imagemagick
+
     - name: Run tests
       run: bundle exec ruby test.rb
 
