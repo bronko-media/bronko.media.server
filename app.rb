@@ -75,7 +75,7 @@ class BronkoMediaServer < Sinatra::Base
 
   # Images
   get('/image/:md5') { send_file find_image(params[:md5]).file_path, disposition: 'inline' }
-  
+
   delete('/image/:md5') do
     find_image(params[:md5])
     image_service.delete_image(params[:md5])
