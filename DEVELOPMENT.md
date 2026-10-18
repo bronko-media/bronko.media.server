@@ -3,6 +3,8 @@
 ## Local development with SQLite
 
 Run commands from the project root with the Ruby version in `.ruby-version`.
+Ruby 4.x and Bundler 4 are required; Docker and `.ruby-version` currently pin Ruby 4.0.7.
+CI uses `.ruby-version` through `ruby/setup-ruby`.
 Development uses `config/settings.development.yml` to override the production database settings.
 The web app, migrations, and CLI share this configuration when `RACK_ENV=development` is set.
 MySQL remains the default outside development.
