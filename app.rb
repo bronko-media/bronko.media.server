@@ -14,6 +14,7 @@ class BronkoMediaServer < Sinatra::Base
   set :method_override, true
   set :logger, Logger.new($stdout)
   set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
+  set :configuration_file, File.expand_path('config/settings.yml', __dir__)
   set :database, BronkoMedia::Database.options(Settings)
 
   enable :sessions
@@ -23,6 +24,18 @@ class BronkoMediaServer < Sinatra::Base
 
   before do
     content_type :html
+  end
+
+  error BronkoMedia::PathConflict do
+    content_type :text
+    status 409
+    env['sinatra.error'].message
+  end
+
+  error BronkoMedia::InvalidOperation do
+    content_type :text
+    status 422
+    env['sinatra.error'].message
   end
 
   # Root
@@ -63,8 +76,8 @@ class BronkoMediaServer < Sinatra::Base
 
   post('/folder/move/:md5') do
     find_folder(params[:md5])
-    folder_service.move_folder(params[:md5], required_param(:move_folder))
-    redirect "/folders/#{required_param(:move_folder)}"
+    target = folder_service.move_folder(params[:md5], required_param(:move_folder))
+    redirect "/folders/#{target}"
   end
 
   post('/folder/scan/:md5') do
@@ -74,7 +87,10 @@ class BronkoMediaServer < Sinatra::Base
   end
 
   # Images
-  get('/image/:md5') { send_file find_image(params[:md5]).file_path, disposition: 'inline' }
+  get('/image/:md5') do
+    path = BronkoMedia::PathPolicy.new(Settings.originals_path).resolve(find_image(params[:md5]).file_path)
+    send_file path, disposition: 'inline'
+  end
 
   delete('/image/:md5') do
     find_image(params[:md5])
@@ -119,7 +135,21 @@ class BronkoMediaServer < Sinatra::Base
     erb :search, locals: locals
   end
 
-  get('/config') { erb :config }
+  get('/config') do
+    session[:config_token] ||= SecureRandom.hex(32)
+    erb :config, locals: { editable_settings: BronkoMedia::SettingsService::EDITABLE,
+                           config_token: session[:config_token], saved: session.delete(:config_saved) }
+  end
+
+  post('/config') do
+    token = params[:config_token]
+    halt 403, 'Invalid configuration token' unless token.is_a?(String) && session[:config_token] &&
+                                                   Rack::Utils.secure_compare(token, session[:config_token])
+    BronkoMedia::SettingsService.new(path: settings.configuration_file).update(params.except('config_token'))
+    Settings.reload!
+    session[:config_saved] = true
+    redirect '/config', 303
+  end
 
   get('/media/info/:md5') do
     media = Image.find_by(md5_path: params[:md5]) || find_folder(params[:md5])

@@ -71,7 +71,8 @@ node --test test/*_test.js
 
 Tests use a separate in-memory SQLite database and temporary media files.
 They cover HTTP responses, template rendering, file cleanup, indexing, and failed database updates during image moves.
-Tag filtering is tested with SQLite; the MySQL implementation and actual ImageMagick/FFmpeg thumbnail generation
+The upload tests exercise ImageMagick and require it locally and in CI.
+Tag filtering is tested with SQLite; the MySQL implementation and actual FFmpeg thumbnail generation
 require separate integration checks.
 Indexing and duplicate scans still run synchronously through their existing GET endpoints.
 
@@ -81,3 +82,28 @@ The application uses Bootstrap 5.3.3 with its bundled Popper dependency.
 Bootstrap 4 and the `bootstrap_version` setting have been removed.
 Remove `bootstrap_version` from existing custom settings files; it no longer selects frontend assets.
 JavaScript uses native DOM events and fetch; jQuery is not required.
+
+## Safe file operations
+
+Media paths are normalized against `originals_path`. Requests outside that root,
+paths containing `..`, and symlinks below the root are rejected. The media root itself
+cannot be moved or deleted. Existing destinations are rejected rather than overwritten;
+folder creation requires an existing parent. Storage roots must exist before use.
+
+Mutations and scans take an advisory filesystem lock on the media root, shared by the
+web application and CLI. This coordinates application workers; external programs that
+change files directly do not participate in that lock.
+
+Folder moves update existing image and folder records and relocate cached thumbnails,
+preserving IDs, tags, and favorites. Folder moves across filesystem boundaries are
+rejected. File moves support separate filesystems through an exclusive destination copy.
+Recursive deletion removes descendant records and thumbnails. Originals are staged until
+database deletion succeeds, allowing restoration after a database error. Filesystem and
+database changes are still not a crash-safe distributed transaction: an interrupted process
+or a failure during final cleanup can leave staged files requiring manual recovery.
+
+The web configuration form only edits display and processing settings, validates them,
+and saves via POST with a session token. Storage paths and database credentials must be
+edited in the configuration file, followed by an application restart. Secrets are not
+rendered into the form or sent in query strings. Configuration writes retain the file inode
+to support Docker bind mounts and use a file lock to serialize writers.

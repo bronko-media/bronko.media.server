@@ -6,7 +6,7 @@ module BronkoMedia
       ext = File.extname(input_path).delete('.').downcase
       source = ext == 'gif' ? "#{input_path}[0]" : input_path
 
-      MiniMagick::Tool::Convert.new do |convert|
+      MiniMagick.convert do |convert|
         convert << source
         convert.resize(size)
         convert.gravity('north')
@@ -30,11 +30,12 @@ module BronkoMedia
       logger.error "Video thumb error (#{input_path}): #{e.class} - #{e.message}"
     end
 
-    def create_thumb(md5, thumb_target, size)
+    def create_thumb(md5, _thumb_target, size)
       image = Image.find_by(md5_path: md5)
       return unless image&.file_path && image.extension
 
-      image_path = File.join(thumb_target, "#{md5}.png")
+      paths.resolve(image.file_path)
+      image_path = thumbnail_path(md5)
       ext = image.extension.downcase
 
       if settings.movie_extentions.include?(ext)
@@ -47,28 +48,36 @@ module BronkoMedia
     end
 
     def remove_thumbs(thumb_target)
-      return unless File.exist?(thumb_target)
+      with_media_lock do
+        return unless File.exist?(thumb_target)
 
-      thumbs = Dir.entries(thumb_target).reject { |f| File.directory?(File.join(thumb_target, f)) }
-      return if thumbs.empty?
+        thumbs = Dir.entries(thumb_target).reject { |f| File.directory?(File.join(thumb_target, f)) }
+        return if thumbs.empty?
 
-      used_thumbs = Image.pluck(:md5_path).map { |md5| "#{md5}.png" }
-      unused_thumbs = thumbs - used_thumbs
+        used_thumbs = Image.pluck(:md5_path).map { |md5| "#{md5}.png" }
+        unused_thumbs = thumbs - used_thumbs
 
-      Parallel.each(unused_thumbs, in_threads: settings.threads) do |t|
-        path = File.join(thumb_target, t)
-        logger.info "Removing unused thumb: #{path}"
-        FileUtils.rm_f(path)
+        Parallel.each(unused_thumbs, in_threads: settings.threads) do |t|
+          path = File.join(thumb_target, t)
+          logger.info "Removing unused thumb: #{path}"
+          FileUtils.rm_f(path)
+        end
       end
     end
 
     def recreate_thumb(md5)
-      begin
-        File.delete("#{settings.thumb_target}/#{md5}.png")
-      rescue Errno::ENOENT
-        # A missing thumbnail is expected when creating it for the first time.
+      with_media_lock do
+        begin
+          image = Image.find_by(md5_path: md5)
+          return unless image
+
+          paths.resolve(image.file_path)
+          File.delete(thumbnail_path(md5))
+        rescue Errno::ENOENT
+          # A missing thumbnail is expected when creating it for the first time.
+        end
+        create_thumb(md5, settings.thumb_target, settings.thumb_res)
       end
-      create_thumb(md5, settings.thumb_target, settings.thumb_res)
     end
   end
 end

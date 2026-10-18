@@ -43,19 +43,23 @@ ActiveRecord::Schema.define do
   end
 end
 
-class AppTest < Minitest::Test
-  TestSettings = Struct.new(:thumb_target, :threads, :movie_extentions, :image_extentions, :thumb_res,
+module MediaTestSupport
+  TestSettings = Struct.new(:originals_path, :thumb_target, :threads, :movie_extentions, :image_extentions, :thumb_res,
                             keyword_init: true)
 
   def setup
     [Image, Folder, Tag].each(&:delete_all)
     @directory = Dir.mktmpdir('bronko-test')
-    @settings = TestSettings.new(thumb_target: @directory, threads: 0, movie_extentions: [], image_extentions: [])
+    @settings = TestSettings.new(originals_path: @directory, thumb_target: @directory, threads: 0,
+                                 movie_extentions: [], image_extentions: [])
     @service = BronkoMedia::ImageService.new(settings: @settings, logger: Logger.new(File::NULL))
+    @original_root = Settings.originals_path
+    Settings.originals_path = @directory
     @request = Rack::MockRequest.new(BronkoMediaServer)
   end
 
   def teardown
+    Settings.originals_path = @original_root
     FileUtils.remove_entry(@directory)
   end
 
@@ -67,6 +71,10 @@ class AppTest < Minitest::Test
     Image.create!(file_path: path, folder_path: "#{@directory}/", md5_path: md5,
                   image_name: name, extension: 'jpg', size: 17)
   end
+end
+
+class AppTest < Minitest::Test
+  include MediaTestSupport
 
   def test_single_delete_removes_original_thumbnail_and_record
     image = create_image
@@ -239,8 +247,11 @@ class AppTest < Minitest::Test
 
   def test_thumbnail_removal_errors_are_not_hidden
     service = BronkoMedia::ThumbnailService.new(settings: @settings, logger: Logger.new(File::NULL))
-    FileUtils.mkdir_p(File.join(@directory, 'broken.png'))
-    assert_raises(Errno::EPERM, Errno::EISDIR) { service.recreate_thumb('broken') }
+    image = create_image
+    thumb = File.join(@directory, "#{image.md5_path}.png")
+    File.unlink(thumb)
+    Dir.mkdir(thumb)
+    assert_raises(Errno::EPERM, Errno::EISDIR) { service.recreate_thumb(image.md5_path) }
   end
 
   def test_indexer_cleans_stale_records_and_thumbnails_and_indexes_folders
