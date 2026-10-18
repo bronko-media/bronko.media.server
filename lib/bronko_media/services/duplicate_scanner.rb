@@ -3,12 +3,18 @@
 module BronkoMedia
   class DuplicateScanner < Service
     def find_duplicates
-      logger.info 'finding duplicates ...'
+      with_media_lock do
+        logger.info 'Finding duplicates ...'
+        Image.transaction do
+          Image.update_all(duplicate: false, duplicate_of: nil)
+          signatures = Image.where.not(signature: [nil, '']).where("TRIM(signature) <> ''")
+                            .group(:signature).having('COUNT(*) > 1').pluck(:signature)
+          signatures.each do |signature|
+            next if signature.strip.empty?
 
-      image_signatures = Image.select(:signature).group(:signature).having('count(*) > 1')
-
-      Parallel.each(image_signatures, in_threads: settings.threads) do |dupe|
-        Image.where(signature: dupe.signature).update(duplicate: true)
+            Image.where(signature: signature).update_all(duplicate: true)
+          end
+        end
       end
     end
   end

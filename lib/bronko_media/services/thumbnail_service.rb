@@ -6,29 +6,52 @@ module BronkoMedia
       ext = File.extname(input_path).delete('.').downcase
       source = ext == 'gif' ? "#{input_path}[0]" : input_path
 
-      MiniMagick.convert do |convert|
-        convert << source
-        convert.resize(size)
-        convert.gravity('north')
-        convert.extent(size)
-        convert << output_path
+      write_thumbnail(output_path) do |temporary|
+        MiniMagick.convert do |convert|
+          convert << source
+          convert.resize(size)
+          convert.gravity('north')
+          convert.extent(size)
+          convert << temporary
+        end
       end
       logger.info "Generated image thumb: #{output_path}"
+      true
     rescue StandardError => e
       logger.error "Image thumb error (#{input_path}): #{e.class} - #{e.message}"
+      false
     end
 
     def create_vid_thumb(input_path, output_path, size)
       movie = FFMPEG::Movie.new(input_path)
-      movie.screenshot(
-        output_path,
-        { seek_time: 1, resolution: size[0...-1], quality: 3 },
-        preserve_aspect_ratio: :height # fixed typo
-      )
+      write_thumbnail(output_path) do |temporary|
+        movie.screenshot(
+          temporary,
+          { seek_time: [1, movie.duration.to_f / 2].min, resolution: size.delete_suffix('^'), quality: 3 },
+          preserve_aspect_ratio: :height
+        )
+      end
       logger.info "Generated video thumb: #{output_path}"
+      true
     rescue StandardError => e
       logger.error "Video thumb error (#{input_path}): #{e.class} - #{e.message}"
+      false
     end
+
+    def write_thumbnail(output_path)
+      PathPolicy.new(settings.thumb_target).resolve(output_path)
+      temporary = File.join(File.dirname(output_path), ".thumb-#{SecureRandom.hex(16)}.png")
+      yield temporary
+      unless File.file?(temporary) && !File.empty?(temporary)
+        raise InvalidOperation,
+              'Thumbnail generation produced no output'
+      end
+
+      File.rename(temporary, output_path)
+    ensure
+      remove_if_present(temporary) if temporary
+    end
+    private :write_thumbnail
 
     def create_thumb(md5, _thumb_target, size)
       image = Image.find_by(md5_path: md5)

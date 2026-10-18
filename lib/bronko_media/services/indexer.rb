@@ -4,10 +4,11 @@ module BronkoMedia
   class Indexer < Service
     def build_index(image_root, thumb_target, extensions)
       with_media_lock do
+        folder_entries = folders.index_folders(image_root)
         images.remove_files(thumb_target)
         folders.remove_folders
         thumbnails.remove_thumbs(thumb_target)
-        folders.write_folders_to_db(folders.index_folders(image_root))
+        folders.write_folders_to_db(folder_entries)
         images.index_files_to_db(image_root, extensions)
         duplicates.find_duplicates
       end

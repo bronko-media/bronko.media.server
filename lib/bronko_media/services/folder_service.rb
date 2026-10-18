@@ -59,9 +59,9 @@ module BronkoMedia
       end
     end
 
-    def remove_folders
+    def remove_folders(folder_set = Folder.all)
       with_media_lock do
-        Parallel.each(Folder.all, in_threads: settings.threads) do |folder|
+        Parallel.each(folder_set, in_threads: settings.threads) do |folder|
           next if File.directory?(folder.folder_path)
 
           logger.info "Removing Folder from DB: #{folder.folder_path}"
@@ -71,13 +71,12 @@ module BronkoMedia
     end
 
     def index_folders(path)
-      Dir.glob("#{path}/**/").map do |folder|
-        {
-          md5_path: Digest::MD5.hexdigest(folder),
-          folder_path: folder,
-          parent_folder: "#{File.dirname(folder)}/",
-          sub_folders: Dir.glob("#{folder}*/")
-        }
+      media_entries(path).filter_map do |entry|
+        next unless File.directory?(entry)
+
+        folder = "#{entry}/"
+        { md5_path: Digest::MD5.hexdigest(folder), folder_path: folder,
+          parent_folder: "#{File.dirname(entry)}/", sub_folders: child_folders(entry) }
       end
     end
 
@@ -146,7 +145,10 @@ module BronkoMedia
         logger.info "Starting Folder Scan of: #{folder}"
         write_folders_to_db(index_folders(folder))
         images.index_files_to_db(folder, extensions)
-        images.remove_files(settings.thumb_target, Image.where(folder_path:))
+        prefix = "#{paths.resolve(folder)}/"
+        images.remove_files(settings.thumb_target, descendants(Image, :file_path, prefix))
+        remove_folders(descendants(Folder, :folder_path, prefix))
+        duplicates.find_duplicates
       end
     end
 
@@ -170,6 +172,8 @@ module BronkoMedia
         next if name.start_with?('.')
 
         child = File.join(path, name)
+        next if File.expand_path(child) == File.expand_path(settings.thumb_target)
+
         "#{child}/" if File.directory?(child) && !File.symlink?(child)
       end
     end
