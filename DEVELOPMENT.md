@@ -73,9 +73,8 @@ node --test test/*_test.js
 
 Tests use a separate in-memory SQLite database and temporary media files.
 They cover HTTP responses, template rendering, file cleanup, indexing, and failed database updates during image moves.
-The upload tests exercise ImageMagick and require it locally and in CI.
-Tag filtering is tested with SQLite; the MySQL implementation and actual FFmpeg thumbnail generation
-require separate integration checks.
+Upload and indexing tests exercise ImageMagick and FFmpeg and require both locally and in CI.
+Tag filtering and migrations are tested with SQLite; MySQL requires separate integration checks.
 Indexing and duplicate scans still run synchronously through their existing GET endpoints.
 
 ## Frontend
@@ -109,3 +108,28 @@ and saves via POST with a session token. Storage paths and database credentials 
 edited in the configuration file, followed by an application restart. Secrets are not
 rendered into the form or sent in query strings. Configuration writes retain the file inode
 to support Docker bind mounts and use a file lock to serialize writers.
+
+## Rescanning media
+
+Every scan reads image metadata and signatures again, even if a thumbnail already exists.
+Videos are probed with FFmpeg and receive a SHA-256 content signature, byte size, and dimensions.
+Reading content on each scan also catches changes with unchanged size and modification time,
+but takes longer for large collections and video files. Image signatures retain their existing
+ImageMagick pixel-signature semantics; video duplicates are byte-identical files, not visually
+similar videos or different encodings of the same video.
+
+Existing records are updated in place: IDs, favorites, and tags survive rescans. Unchanged
+records and thumbnails are retained. Missing or empty thumbnails are rebuilt, and changed
+media receives a new thumbnail via a temporary file and rename. Failed thumbnail generation
+removes the stale thumbnail so the next scan retries. Unreadable media is logged; existing
+records retain user metadata but their signature and dimensions are cleared until a successful
+scan. Other files continue to be indexed.
+
+Folder scans also clean removed descendants and recompute duplicate flags. Duplicate scans
+reset previous flags and exclude missing or empty signatures within a database transaction.
+Scans skip symlinks, hidden entries, and the configured thumbnail directory. A missing scan
+root aborts before cleanup; a directory that still exists but represents an unavailable mount
+cannot be distinguished from an intentionally empty collection.
+
+Run `bundle exec rake db:migrate` in the configured environment before using this version.
+The media size column now uses a 64-bit integer to accommodate videos larger than 2 GiB.

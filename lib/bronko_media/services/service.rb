@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'find'
+
 module BronkoMedia
   class Service
     def initialize(settings:, logger:)
@@ -30,6 +32,22 @@ module BronkoMedia
           locks.delete(root)
           directory.flock(File::LOCK_UN)
         end
+      end
+    end
+
+    def media_entries(path)
+      return enum_for(__method__, path) unless block_given?
+
+      root = paths.resolve(path)
+      raise InvalidOperation, 'Scan folder does not exist' unless File.directory?(root)
+
+      thumb_root = File.expand_path(settings.thumb_target)
+      Find.find(root, ignore_error: false) do |entry|
+        if File.symlink?(entry) || (entry != root && File.basename(entry).start_with?('.')) ||
+           (File.expand_path(entry) == thumb_root && entry != root)
+          Find.prune
+        end
+        yield paths.resolve(entry)
       end
     end
 

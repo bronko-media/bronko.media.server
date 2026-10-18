@@ -118,96 +118,73 @@ module BronkoMedia
     end
 
     def index_files_to_db(path, extensions)
-      path = paths.resolve(path)
-      time = Time.now
-      FileUtils.mkdir_p settings.thumb_target
-
-      logger.info "Indexing started - #{time}"
-
-      Dir.glob("#{path}/**/").each do |folder|
-        logger.info "Indexing Images from Folder: #{folder}"
-        folder_time = Time.now
-        files       = Dir.entries(folder).reject { |f| File.directory?(File.join(folder, f)) }
-
-        Parallel.each(files, in_threads: settings.threads) do |file|
-          extension = File.extname(file).delete('.').downcase
-          next unless extensions.include?(extension)
-
-          begin
-            file_path = paths.resolve("#{folder}#{file}")
-          rescue InvalidOperation => e
-            logger.warn "Skipping media: #{e.message}"
-            next
-          end
-          md5_path = Digest::MD5.hexdigest(file_path)
-          thumb_path = thumbnail_path(md5_path)
-
-          next if File.exist?(thumb_path)
-
-          logger.info "Indexing Image: #{file_path}"
-          is_video = settings.movie_extentions.include?(extension)
-          is_image = settings.image_extentions.include?(extension)
-          signature = size = dimensions = nil
-
-          if is_image
-            begin
-              mini_magic  = MiniMagick::Image.new(file_path)
-              signature   = mini_magic.signature
-              size        = mini_magic.size
-              dimensions  = mini_magic.dimensions
-            rescue StandardError => e
-              logger.error "MiniMagick error (#{file_path}): #{e.class} - #{e.message}"
-            ensure
-              mini_magic&.destroy!
-            end
-          end
-
-          file_meta_hash = {
-            dimensions: dimensions,
-            extension: extension,
-            file_path: file_path,
-            folder_path: folder,
-            image_name: File.basename(file, '.*'),
-            is_image: is_image,
-            is_video: is_video,
-            md5_path: md5_path,
-            signature: signature,
-            size: size,
-            file_mtime: File.mtime(file_path),
-            file_ctime: File.ctime(file_path)
-          }
-
-          write_file_to_db(file_meta_hash)
-
-          if is_video
-            thumbnails.create_vid_thumb(file_path, thumb_path, settings.thumb_res)
-          elsif is_image
-            thumbnails.create_img_thumb(file_path, thumb_path, settings.thumb_res)
-          end
+      with_media_lock do
+        files = media_entries(path).select do |entry|
+          File.file?(entry) && extensions.include?(File.extname(entry).delete('.').downcase)
         end
-        logger.info "Indexing Images from Folder took: #{Time.now - folder_time} seconds."
+        FileUtils.mkdir_p settings.thumb_target
+        logger.info "Indexing #{files.size} media files"
+        Parallel.each(files, in_threads: settings.threads) do |file|
+          Image.connection_pool.with_connection { index_file(file) }
+        end
       end
-      logger.info "Indexing took: #{Time.now - time} seconds."
     end
 
-    def write_file_to_db(file)
-      Image.find_or_create_by(md5_path: file[:md5_path]) do |image|
-        image.attributes = {
-          dimensions: file[:dimensions],
-          extension: file[:extension],
-          file_path: file[:file_path],
-          folder_path: file[:folder_path],
-          image_name: file[:image_name],
-          is_image: file[:is_image],
-          is_video: file[:is_video],
-          signature: file[:signature],
-          size: file[:size],
-          file_mtime: file[:file_mtime],
-          file_ctime: file[:file_ctime]
-        }
-        image.save
+    def index_file(file)
+      md5 = Digest::MD5.hexdigest(file)
+      image = Image.find_or_initialize_by(md5_path: md5)
+      thumb = thumbnail_path(md5)
+      before = File.stat(file)
+      metadata = media_metadata(file, before)
+      image.assign_attributes(metadata)
+      changed = image.new_record? || image.changed?
+      if changed || !File.file?(thumb) || File.empty?(thumb)
+        success = if metadata[:is_video]
+                    thumbnails.create_vid_thumb(file, thumb, settings.thumb_res)
+                  else
+                    thumbnails.create_img_thumb(file, thumb, settings.thumb_res)
+                  end
+        # A failed refresh must not leave a stale thumbnail that prevents a retry.
+        remove_if_present(thumb) unless success
+      end
+      after = File.stat(file)
+      unless [before.ino, before.size, before.mtime, before.ctime] == [after.ino, after.size, after.mtime, after.ctime]
+        raise InvalidOperation, 'File changed during indexing; retry on the next scan'
+      end
+
+      image.save! if image.changed?
+    rescue MiniMagick::Error, MiniMagick::Invalid, InvalidOperation, Errno::ENOENT, Errno::EACCES => e
+      logger.error "Unable to index #{file}: #{e.class} - #{e.message}"
+      remove_if_present(thumb) if thumb
+      if image&.persisted?
+        image.reload.update!(signature: nil, dimensions: nil, file_mtime: nil, file_ctime: nil,
+                             duplicate: false, duplicate_of: nil)
       end
     end
+    private :index_file
+
+    def media_metadata(file, stat)
+      extension = File.extname(file).delete('.').downcase
+      is_image = settings.image_extentions.include?(extension)
+      if is_image
+        media = MiniMagick::Image.new(file)
+        signature = media.signature
+        dimensions = media.dimensions
+      else
+        movie = FFMPEG::Movie.new(file)
+        raise InvalidOperation, 'Video metadata could not be read' unless movie.valid? && movie.width && movie.height
+
+        signature = "sha256:#{Digest::SHA256.file(file).hexdigest}"
+        dimensions = [movie.width, movie.height]
+      end
+      { file_path: file, folder_path: "#{File.dirname(file)}/", image_name: File.basename(file, '.*'),
+        extension: extension, is_image: is_image, is_video: !is_image,
+        signature: signature, dimensions: dimensions.to_s, size: stat.size,
+        file_mtime: stat.mtime, file_ctime: stat.ctime }
+    ensure
+      media&.destroy!
+    end
+    private :media_metadata
 
     def remove_files(_thumb_target, image_set = Image.all)
       with_media_lock do

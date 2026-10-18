@@ -19,7 +19,7 @@ ActiveRecord::Schema.define do
     table.string :image_name
     table.string :extension
     table.text :dimensions
-    table.integer :size
+    table.bigint :size
     table.string :duplicate_of
     table.datetime :file_mtime
     table.datetime :file_ctime
