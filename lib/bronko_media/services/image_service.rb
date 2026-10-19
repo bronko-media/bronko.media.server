@@ -167,7 +167,8 @@ module BronkoMedia
       extension = File.extname(file).delete('.').downcase
       is_image = settings.image_extentions.include?(extension)
       if is_image
-        media = MiniMagick::Image.new(file)
+        # Use a safe temporary filename: ImageMagick expands %[...] in paths.
+        media = MiniMagick::Image.open(file)
         signature = media.signature
         dimensions = media.dimensions
       else

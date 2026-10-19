@@ -74,8 +74,55 @@ node --test test/*_test.js
 Tests use a separate in-memory SQLite database and temporary media files.
 They cover HTTP responses, template rendering, file cleanup, indexing, and failed database updates during image moves.
 Upload and indexing tests exercise ImageMagick and FFmpeg and require both locally and in CI.
-Tag filtering and migrations are tested with SQLite; MySQL requires separate integration checks.
+The separate integration suite runs the real migration chain against a temporary SQLite
+file or a newly created MySQL database. It exercises PNG/JPEG/GIF and video processing,
+HTTP multipart uploads, exact JSON tag matching, rescans, folder cleanup, database-error
+recovery, and simultaneous moves to the same destination. Scans use three worker threads.
+Both adapters run in CI; JavaScript tests also run in CI.
 Indexing and duplicate scans still run synchronously through their existing GET endpoints.
+
+### Database and media integration tests
+
+ImageMagick and FFmpeg must be installed. Run the suite separately from the in-memory
+unit tests; it builds its schema from `db/migrate`, not a copied test schema:
+
+```bash
+bundle exec ruby test/integration/run.rb
+# Equivalent Rake entry point:
+bundle exec rake test:integration
+```
+
+To run the same suite against an isolated MySQL instance matching Docker Compose:
+
+```bash
+docker run --detach --rm --name bronko-integration-mysql \
+  --env MYSQL_ROOT_PASSWORD=bronko_test_only --env MYSQL_ROOT_HOST=% \
+  --publish 127.0.0.1:33060:3306 mysql:8.0.34
+# Wait until the server reports that it is ready:
+docker logs bronko-integration-mysql
+
+BRONKO_TEST_ADAPTER=mysql2 \
+BRONKO_TEST_MYSQL_HOST=127.0.0.1 \
+BRONKO_TEST_MYSQL_PORT=33060 \
+BRONKO_TEST_MYSQL_USER=root \
+BRONKO_TEST_MYSQL_PASSWORD=bronko_test_only \
+bundle exec ruby test/integration/run.rb
+
+docker stop bronko-integration-mysql
+```
+
+Podman can be substituted for Docker. The test account needs permission to create and
+drop databases and create triggers. The suite generates a unique `bronko_integration_*`
+database, runs all migrations, and removes that database and temporary files after the
+run, including failed tests. It never takes a database name from application settings
+or `DATABASE_URL`. Missing tools, connection failures, and migration failures fail the
+suite rather than silently skipping integration coverage.
+
+Migration checks cover a clean installation, upgrading the pre-bigint schema while
+retaining tags and favorites, and refusal to roll back sizes that would overflow.
+The file-operation failure tests use actual SQLite/MySQL database triggers, not mocked
+persistence. CI requires both the regular test job and integration job before Dependabot
+auto-merge can be enabled.
 
 ## Frontend
 
