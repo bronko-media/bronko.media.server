@@ -4,7 +4,8 @@ module BronkoMedia
   class ThumbnailService < Service
     def create_img_thumb(input_path, output_path, size)
       ext = File.extname(input_path).delete('.').downcase
-      source = ext == 'gif' ? "#{input_path}[0]" : input_path
+      image = MiniMagick::Image.open(input_path)
+      source = ext == 'gif' ? "#{image.path}[0]" : image.path
 
       write_thumbnail(output_path) do |temporary|
         MiniMagick.convert do |convert|
@@ -20,6 +21,8 @@ module BronkoMedia
     rescue StandardError => e
       logger.error "Image thumb error (#{input_path}): #{e.class} - #{e.message}"
       false
+    ensure
+      image&.destroy!
     end
 
     def create_vid_thumb(input_path, output_path, size)

@@ -34,6 +34,14 @@ jobs:
     - name: Run tests
       run: bundle exec ruby test.rb
 
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+
+    - name: Run JavaScript tests
+      run: node --test test/*_test.js
+
     - name: Run Rubocop
       run: bundle exec rake rubocop
 
@@ -43,9 +51,54 @@ jobs:
         publish: 'false'
         tags: 'ci/dummy:test'
 
+  integration:
+    name: Database and media integration
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    services:
+      mysql:
+        image: mysql:8.0.34
+        env:
+          MYSQL_ROOT_PASSWORD: bronko_test_only
+          MYSQL_ROOT_HOST: '%'
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 --silent"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=30
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y imagemagick ffmpeg libmysqlclient-dev
+        bundle config set --local path vendor/bundle
+        bundle config set --local with 'development test'
+        bundle install
+
+    - name: Run integration tests with migrated SQLite database
+      run: bundle exec ruby test/integration/run.rb
+
+    - name: Run integration tests with migrated MySQL database
+      if: ${{ !cancelled() }}
+      env:
+        BRONKO_TEST_ADAPTER: mysql2
+        BRONKO_TEST_MYSQL_HOST: 127.0.0.1
+        BRONKO_TEST_MYSQL_PORT: '3306'
+        BRONKO_TEST_MYSQL_USER: root
+        BRONKO_TEST_MYSQL_PASSWORD: bronko_test_only
+      run: bundle exec ruby test/integration/run.rb
+
   dependabot:
     name: 'Dependabot'
-    needs: [test]
+    needs: [test, integration]
     runs-on: ubuntu-latest
     if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'}}
     steps:

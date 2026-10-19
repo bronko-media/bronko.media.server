@@ -8,6 +8,10 @@ Rake::TestTask.new(:test) do |task|
   task.pattern = 'test/*_test.rb'
 end
 
+Rake::TestTask.new('test:integration') do |task|
+  task.pattern = 'test/integration/*_test.rb'
+end
+
 begin
   require 'rubocop/rake_task'
   RuboCop::RakeTask.new(:rubocop) do |t|
