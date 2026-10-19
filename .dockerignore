@@ -5,3 +5,12 @@
 vendor/
 docker-compose.yml
 reset.sh
+
+data/
+tmp/
+public/images/thumbs/
+backups/
+.env
+.env.*
+
+.backup.lock

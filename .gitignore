@@ -10,3 +10,7 @@ vendor/*
 tmp/puma/state
 tmp/puma/pid
 tmp/testdb
+backups/
+.env
+
+.backup.lock

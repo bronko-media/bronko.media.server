@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+export COMPOSE_FILE="$PWD/test/operations/compose.yml"
+export COMPOSE_PROJECT_NAME="bronko-ops-test-$$"
+workspace=$(mktemp -d)
+compose() {
+  if [[ -n ${COMPOSE_BIN:-} ]]; then "$COMPOSE_BIN" "$@"; else docker compose "$@"; fi
+}
+cleanup() {
+  local status=$?
+  trap - EXIT
+  if [[ $status != 0 ]]; then compose logs --tail 80 || true; fi
+  if ! compose down --volumes; then status=1; fi
+  rm -rf -- "$workspace"
+  exit "$status"
+}
+trap cleanup EXIT
+server=bronko.media.server
+wait_for_server() {
+  for attempt in $(seq 1 90); do
+    if compose exec -T "$server" ruby -rnet/http -e \
+      'exit(Net::HTTP.get_response(URI("http://127.0.0.1:4567/")).code == "200" ? 0 : 1)' >/dev/null 2>&1; then
+      return
+    fi
+    compose exec -T "$server" true >/dev/null 2>&1 || return 1
+    sleep 1
+  done
+  echo 'Application did not become ready.' >&2
+  return 1
+}
+compose up -d
+wait_for_server
+[[ $(compose exec -T "$server" id -u) == 1001 ]]
+compose exec -T "$server" sh -c 'tr "\0" " " < /proc/1/cmdline' | grep -q puma
+compose exec -T "$server" bundle exec ruby test/operations/fixture.rb create | grep '^RESTORED:' > "$workspace/expected"
+# Archive rejection must resume the application and publish no partial backup.
+compose exec -T "$server" ln -s /etc/passwd data/images/unsupported-link
+if script/backup create "$workspace/rejected"; then echo 'Unsafe archive accepted.' >&2; exit 1; fi
+[[ ! -e $workspace/rejected ]]
+wait_for_server
+compose exec -T "$server" rm data/images/unsupported-link
+script/backup create "$workspace/backup"
+wait_for_server
+# A populated/running deployment must never be overwritten.
+if script/backup restore "$workspace/backup"; then echo 'Unsafe restore succeeded.' >&2; exit 1; fi
+compose stop "$server"
+if script/backup restore "$workspace/backup"; then echo 'Populated database was overwritten.' >&2; exit 1; fi
+# Simulate losing the complete deployment; only the backup survives.
+compose down --volumes
+compose up -d bronko.media.db
+for attempt in $(seq 1 90); do
+  if compose exec -T bronko.media.db sh -c \
+    'MYSQL_PWD="$MYSQL_PASSWORD" mysql -u "$MYSQL_USER" "$MYSQL_DATABASE" -e "SELECT 1"' >/dev/null 2>&1; then break; fi
+  sleep 1
+done
+script/backup restore "$workspace/backup"
+compose up -d
+wait_for_server
+compose exec -T "$server" bundle exec ruby test/operations/fixture.rb verify | grep '^RESTORED:' > "$workspace/actual"
+cmp "$workspace/expected" "$workspace/actual"
+# Recreating the app must keep restored originals and thumbnails.
+compose up -d --force-recreate "$server"
+wait_for_server
+compose exec -T "$server" bundle exec ruby test/operations/fixture.rb verify | grep '^RESTORED:' > "$workspace/recreated"
+cmp "$workspace/expected" "$workspace/recreated"
+echo 'Container startup, non-root execution, persistence and backup/restore passed.'

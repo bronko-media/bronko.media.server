@@ -1,18 +1,24 @@
 ---
-version: "3.9"
 services:
+  bronko.media.tls:
+    image: ghcr.io/bronko-media/bronko.media.server:development
+    user: "0:0"
+    entrypoint: [/bronko.media/script/init_mysql_tls]
+    volumes:
+      - mysql_tls:/mysql-tls
+      - mysql_ca:/mysql-ca
   bronko.media.server:
     image: ghcr.io/bronko-media/bronko.media.server:development
     container_name: bronko.media.server
+    user: "${PUID:-1001}:${PGID:-1001}"
     environment:
-      - PUID=1001
-      - PGID=1001
-      - USER_UID=1001
-      - USER_GID=1001
       - TZ=Europe/Berlin
+      - DB_SSL_CA=/mysql-ca/ca.pem
     volumes:
+      - mysql_ca:/mysql-ca:ro
       - ./data/images:/bronko.media/data/images
-      - ./config/settings.yml:/bronko.media/config/settings.yml
+      - ./public/images/thumbs:/bronko.media/public/images/thumbs
+      - ./config/settings.yml:/bronko.media/config/settings.yml:ro
     ports:
       - 4567:4567
     restart: unless-stopped
@@ -22,14 +28,18 @@ services:
 
   bronko.media.db:
     image: mysql:8.0.34
+    command: --default-authentication-plugin=mysql_native_password --ssl-ca=/etc/mysql/tls/ca.pem --ssl-cert=/etc/mysql/tls/server-cert.pem --ssl-key=/etc/mysql/tls/server-key.pem
+    depends_on:
+      bronko.media.tls:
+        condition: service_completed_successfully
     container_name: bronko.media.db
-    command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_ROOT_PASSWORD: S3cr3t!12345
       MYSQL_PASSWORD: password
       MYSQL_USER: bronko
       MYSQL_DATABASE: BronkoMediaServer
     volumes:
+      - mysql_tls:/etc/mysql/tls:ro
       - ./tmp/testdb/config:/var/lib/mysql
     restart: unless-stopped
     healthcheck:
@@ -38,3 +48,7 @@ services:
       interval: 60s
       timeout: 5s
       retries: 5
+
+volumes:
+  mysql_tls:
+  mysql_ca:

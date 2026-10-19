@@ -15,8 +15,10 @@ module BronkoMedia
         host: environment == 'development' ? 'localhost' : settings.db_host,
         encoding: settings.db_ecnoding,
         collation: settings.db_collation,
-        pool: settings.db_pool
-      }
+        pool: settings.db_pool,
+        sslca: ENV.fetch('DB_SSL_CA', nil),
+        ssl_mode: ENV.fetch('DB_SSL_CA', nil) && 'verify_identity'
+      }.compact
     end
   end
 end

@@ -180,3 +180,8 @@ cannot be distinguished from an intentionally empty collection.
 
 Run `bundle exec rake db:migrate` in the configured environment before using this version.
 The media size column now uses a 64-bit integer to accommodate videos larger than 2 GiB.
+
+## Container and recovery tests
+
+See [OPERATIONS.md](OPERATIONS.md#automated-recovery-test) for the isolated Compose
+backup/restore test, container permissions and production operation.

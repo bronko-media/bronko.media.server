@@ -11,7 +11,8 @@ It is a ruby sinatra web app bundled with Bootstrap 5 and Fancybox.
 
 ## Installation
 
-see [`docker-compose.yaml`](docker-compose.yml)
+See [`docker-compose.yml`](docker-compose.yml) and [operations and backups](OPERATIONS.md)
+for directory permissions, startup, persistent thumbnails and recovery.
 
 ## Build the index
 

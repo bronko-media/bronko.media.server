@@ -45,11 +45,11 @@ jobs:
     - name: Run Rubocop
       run: bundle exec rake rubocop
 
-    - uses: voxpupuli/gha-build-and-publish-a-container@v2
-      with:
-        registry_password: ${{ secrets.GITHUB_TOKEN }}
-        publish: 'false'
-        tags: 'ci/dummy:test'
+    - name: Build runtime image
+      run: docker build --tag ci/dummy:test .
+
+    - name: Test container startup and backup restoration
+      run: test/operations/run
 
   integration:
     name: Database and media integration

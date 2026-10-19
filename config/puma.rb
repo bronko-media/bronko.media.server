@@ -2,6 +2,7 @@
 
 root = Dir.getwd
 
-pidfile "#{root}/tmp/puma/pid"
-state_path "#{root}/tmp/puma/state"
+run_directory = ENV.fetch('PUMA_RUN_DIR', "#{root}/tmp/puma")
+pidfile "#{run_directory}/pid"
+state_path "#{run_directory}/state"
 rackup "#{root}/config.ru"

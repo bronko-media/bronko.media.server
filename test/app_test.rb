@@ -301,6 +301,20 @@ class AppTest < Minitest::Test
     refute options.key?(:collation)
   end
 
+  def test_mysql_ca_enables_identity_verification_without_affecting_sqlite
+    previous = ENV.fetch('DB_SSL_CA', nil)
+    ENV['DB_SSL_CA'] = '/mysql-ca/ca.pem'
+    settings = Settings.dup
+    settings.db_adapter = 'mysql2'
+    options = BronkoMedia::Database.options(settings)
+    assert_equal '/mysql-ca/ca.pem', options[:sslca]
+    assert_equal 'verify_identity', options[:ssl_mode]
+    settings.db_adapter = 'sqlite3'
+    refute BronkoMedia::Database.options(settings).key?(:sslca)
+  ensure
+    ENV['DB_SSL_CA'] = previous
+  end
+
   def test_mysql_configuration_keeps_production_host
     settings = Settings.dup
     settings.db_adapter = 'mysql2'

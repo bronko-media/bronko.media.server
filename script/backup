@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+# Offline application snapshot for the supplied MySQL Compose deployment.
+set -euo pipefail
+umask 077
+
+compose() {
+  if [[ -n ${COMPOSE_BIN:-} ]]; then
+    "$COMPOSE_BIN" "$@" 9>&-
+  else
+    docker compose "$@" 9>&-
+  fi
+}
+
+server=bronko.media.server
+database=bronko.media.db
+resume=false
+staging=
+cleanup() {
+  local status=$?
+  trap - EXIT
+  if [[ $resume == true ]]; then
+    if ! compose start "$server"; then
+      echo 'Could not restart the application; run docker compose start bronko.media.server.' >&2
+      status=1
+    fi
+  fi
+  [[ -z $staging ]] || rm -rf -- "$staging"
+  exit "$status"
+}
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
+mysql_query() {
+  compose exec -T "$database" sh -c \
+    'MYSQL_PWD="$MYSQL_PASSWORD" exec mysql --default-character-set=utf8mb4 --user="$MYSQL_USER" --database="$MYSQL_DATABASE" --batch --skip-column-names' "$@"
+}
+
+validate_archive() {
+  compose run --rm -T --no-deps --entrypoint ruby "$server" script/validate_media_archive.rb < "$1"
+}
+
+if [[ $# != 2 || ( $1 != create && $1 != restore ) ]]; then
+  echo "Usage: $0 {create|restore} BACKUP_DIRECTORY" >&2
+  exit 2
+fi
+
+# Serialize operations from this checkout; a second backup must not resume a
+# service while the first operation still depends on it being stopped.
+exec 9> .backup.lock
+flock -n 9 || { echo 'Another backup or restore is already running.' >&2; exit 1; }
+
+# Refuse customized storage layouts instead of silently omitting their files.
+configured_database=$(compose run --rm -T --no-deps --entrypoint ruby "$server" -ryaml -e '
+  config = YAML.safe_load_file("config/settings.yml")
+  expected = { "db_adapter" => "mysql2", "originals_path" => "data/images",
+               "thumb_target" => "public/images/thumbs", "db_host" => "bronko.media.db" }
+  abort "Backup requires the default MySQL storage layout and production environment." unless
+    ENV["RACK_ENV"] == "production" && expected.all? { |key, value| config[key] == value }
+  puts config.fetch("db_name")
+')
+container_database=$(compose exec -T "$database" sh -c 'printf "%s" "$MYSQL_DATABASE"')
+[[ $configured_database == "$container_database" ]] || { echo 'Application and backup database names differ.' >&2; exit 1; }
+
+case $1 in
+  create)
+    [[ ! -e $2 ]] || { echo 'Backup destination already exists.' >&2; exit 1; }
+    mkdir -p -- "$(dirname -- "$2")"
+    staging=$(mktemp -d "${2}.partial.XXXXXX")
+    compose run --rm -T --no-deps --entrypoint cat "$server" config/settings.yml > "$staging/settings.yml"
+    if compose exec -T "$server" true >/dev/null 2>&1; then
+      resume=true
+      compose stop -t 120 "$server"
+    fi
+    compose exec -T "$database" sh -c \
+      'MYSQL_PWD="$MYSQL_PASSWORD" exec mysqldump --default-character-set=utf8mb4 --set-gtid-purged=OFF --user="$MYSQL_USER" --single-transaction --no-tablespaces --skip-lock-tables --hex-blob "$MYSQL_DATABASE"' \
+      > "$staging/database.sql"
+    compose run --rm -T --no-deps --entrypoint tar "$server" \
+      -czf - data/images public/images/thumbs > "$staging/media.tar.gz"
+    validate_archive "$staging/media.tar.gz"
+    (cd "$staging" && sha256sum database.sql media.tar.gz settings.yml > SHA256SUMS)
+    printf 'bronko-compose-mysql-v1\n' > "$staging/FORMAT"
+    mv -- "$staging" "$2"
+    staging=
+    echo "Backup created: $2"
+    ;;
+  restore)
+    [[ $(cat "$2/FORMAT") == bronko-compose-mysql-v1 ]] || { echo 'Unsupported backup format.' >&2; exit 1; }
+    # Require exactly our expected manifest entries before using sha256sum -c.
+    [[ $(wc -l < "$2/SHA256SUMS") == 3 ]] || { echo 'Invalid checksum manifest.' >&2; exit 1; }
+    for file in database.sql media.tar.gz settings.yml; do
+      grep -Eq "^[0-9a-f]{64}  ${file//./\\.}$" "$2/SHA256SUMS" || { echo 'Invalid checksum manifest.' >&2; exit 1; }
+    done
+    (cd "$2" && sha256sum --check SHA256SUMS)
+    validate_archive "$2/media.tar.gz"
+    if compose exec -T "$server" true >/dev/null 2>&1; then
+      echo 'Stop the application before restoring.' >&2
+      exit 1
+    fi
+    count=$(printf 'SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE();\n' | mysql_query)
+    [[ $count == 0 ]] || { echo 'Restore requires an empty database.' >&2; exit 1; }
+    compose run --rm -T --no-deps --entrypoint sh "$server" -eu -c '
+      for directory in data/images public/images/thumbs; do
+        if [ ! -d "$directory" ] || [ ! -w "$directory" ] || [ ! -r "$directory" ] || [ ! -x "$directory" ]; then
+          echo "Restore requires an accessible, writable $directory." >&2
+          exit 1
+        fi
+        contents=$(find "$directory" -mindepth 1 -print -quit)
+        test -z "$contents" || {
+          echo "Restore requires an empty $directory." >&2
+          exit 1
+        }
+      done
+    '
+    compose run --rm -T --no-deps --entrypoint tar "$server" \
+      -xzf - --no-same-owner --no-same-permissions < "$2/media.tar.gz"
+    mysql_query < "$2/database.sql"
+    echo 'Restore complete. Review configuration, then start the application with docker compose up -d.'
+    ;;
+esac
