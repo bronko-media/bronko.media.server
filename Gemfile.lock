@@ -137,7 +137,7 @@ GEM
       sawyer (~> 0.9)
     openssl (4.0.2)
     ostruct (0.6.3)
-    pagy (43.7.1)
+    pagy (43.8.0)
       json
       uri
       yaml
@@ -266,7 +266,7 @@ DEPENDENCIES
   mini_magick
   minitest
   mysql2
-  pagy (~> 43.7)
+  pagy (~> 43.8)
   parallel
   puma
   rackup
