@@ -137,7 +137,7 @@ GEM
       sawyer (~> 0.9)
     openssl (4.0.2)
     ostruct (0.6.3)
-    pagy (43.8.0)
+    pagy (43.8.1)
       json
       uri
       yaml
