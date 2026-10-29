@@ -60,7 +60,7 @@ GEM
       fiber-annotation
       fiber-local (~> 1.1)
       json
-    crass (1.0.7)
+    crass (1.0.8)
     deep_merge (1.2.2)
     drb (2.2.3)
     erubi (1.13.1)
